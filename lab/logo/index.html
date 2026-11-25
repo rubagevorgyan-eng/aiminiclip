@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recess - logo concepts</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: a designer's wall of first drafts, pinned up for a decision
+IDEA: five marks, each shown big on dark and light and tiny at real icon sizes
+PICTURE: the marks themselves
+COLOUR and TYPE: the Recess palette: near-black, bone, ember. Anton in the marks, Archivo for notes
+LAYOUT: one row per concept: dark lockup, light lockup, icon sizes, a one-line idea
+*/
+:root{--bg:#07080d;--panel:#11131f;--line:#1e2133;--bone:#f1ede6;--dim:#868aa3;--ember:#ff4d2e}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--bone);font:400 16px/1.5 Archivo,system-ui,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:32px 20px 60px}
+h1{font:400 44px/1 Anton,sans-serif;margin:0 0 6px;letter-spacing:.5px}
+.lede{color:var(--dim);margin:0 0 30px;max-width:60ch}
+.c{display:grid;grid-template-columns:1.25fr 1fr .7fr;gap:14px;margin-bottom:22px;border-top:1px solid var(--line);padding-top:22px}
+.c h2{grid-column:1/-1;margin:0;font:400 26px/1 Anton,sans-serif;letter-spacing:.5px}
+.c h2 span{color:var(--ember);margin-right:10px}
+.c p{grid-column:1/-1;margin:-4px 0 4px;color:var(--dim);max-width:70ch}
+.tile{display:grid;place-items:center;min-height:200px;padding:20px}
+.dark{background:var(--panel);border:1px solid var(--line)}
+.light{background:var(--bone);color:#0a0a0a}
+.tile svg{width:100%;max-width:420px;height:auto}
+.icons{display:flex;align-items:flex-end;justify-content:center;gap:16px;background:var(--panel);border:1px solid var(--line)}
+.icons div{text-align:center;font-size:12px;color:var(--dim)}
+.icons svg{display:block;margin:0 auto 6px}
+@media(max-width:860px){.c{grid-template-columns:1fr}.tile{min-height:150px}}
+</style>
+</head>
+<body>
+<main>
+<h1>Logo concepts</h1>
+<p class="lede">Five directions. Pick one to push, or mix (this mark with that wordmark). These are first drafts. Once one is picked, it gets refined and drawn as clean final artwork.</p>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- 1 bell -->
+    <symbol id="bell" viewBox="0 0 64 64">
+      <rect x="29" y="5" width="6" height="7" fill="currentColor"/>
+      <path d="M13 45 C13 23 21 12 32 12 C43 12 51 23 51 45 Z" fill="currentColor"/>
+      <rect x="8" y="45" width="48" height="6" fill="currentColor"/>
+      <rect x="28" y="53" width="8" height="7" fill="currentColor"/>
+      <path d="M3 22 L8 26 M2 32 L8 33 M61 22 L56 26 M62 32 L56 33" stroke="currentColor" stroke-width="3.5"/>
+    </symbol>
+    <!-- 4 block R -->
+    <symbol id="block" viewBox="0 0 64 64">
+      <path d="M0 0 H64 V50 L50 64 H0 Z" fill="#ff4d2e"/>
+      <path d="M17 14 H36 C44 14 48 19 48 26 C48 31 45 35 40 36.5 L49 50 H39.5 L31.5 37.5 H26 V50 H17 Z M26 21.5 V30.5 H35 C37.6 30.5 39 28.9 39 26 C39 23.1 37.6 21.5 35 21.5 Z" fill="#07080d" fill-rule="evenodd"/>
+    </symbol>
+    <!-- 5 clock -->
+    <symbol id="clock" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="28" fill="none" stroke="currentColor" stroke-width="6"/>
+      <g stroke="currentColor" stroke-width="3">
+        <path d="M32 8 V13 M32 51 V56 M8 32 H13 M51 32 H56"/>
+      </g>
+      <path d="M32 32 V15" stroke="currentColor" stroke-width="5"/>
+      <path d="M32 32 H46" stroke="#ff4d2e" stroke-width="6"/>
+      <rect x="29" y="29" width="6" height="6" fill="#ff4d2e"/>
+    </symbol>
+    <!-- 3 pass -->
+    <symbol id="pass" viewBox="0 0 64 64">
+      <path d="M6 10 H58 V54 H6 Z" fill="#ff4d2e"/>
+      <circle cx="32" cy="18" r="4.5" fill="#07080d"/>
+      <path d="M6 40 H58" stroke="#07080d" stroke-width="2.5" stroke-dasharray="3 3"/>
+      <text x="32" y="36" text-anchor="middle" font-family="Anton,sans-serif" font-size="15" fill="#07080d">PASS</text>
+      <text x="32" y="51" text-anchor="middle" font-family="Anton,sans-serif" font-size="9" fill="#07080d" letter-spacing=".5">RECESS</text>
+    </symbol>
+    <!-- 2 slash mask -->
+    <mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="420" height="120">
+      <rect width="420" height="120" fill="#fff"/>
+      <path d="M0 76 L420 50 L420 58 L0 84 Z" fill="#000"/>
+    </mask>
+    <mask id="cutS" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect width="64" height="64" fill="#fff"/>
+      <path d="M0 40 L64 30 L64 35 L0 45 Z" fill="#000"/>
+    </mask>
+    <symbol id="slashR" viewBox="0 0 64 64">
+      <text x="32" y="58" text-anchor="middle" font-family="Anton,sans-serif" font-size="66" fill="currentColor" mask="url(#cutS)">R</text>
+    </symbol>
+  </defs>
+</svg>
+
+<section class="c">
+  <h2><span>1</span>The Bell</h2>
+  <p>The school bell is the moment recess starts. A ringing bell works as an icon on its own, as a notification ("the bell rang" when a new game drops), and as a sound people would learn.</p>
+  <div class="tile dark"><svg viewBox="0 0 420 120" aria-label="Bell lockup"><use href="#bell" x="0" y="20" width="80" height="80" color="#ff4d2e"/><text x="96" y="92" font-family="Anton,sans-serif" font-size="78" fill="#f1ede6" letter-spacing="1">RECESS</text></svg></div>
+  <div class="tile light"><svg viewBox="0 0 420 120" aria-label="Bell lockup light"><use href="#bell" x="0" y="20" width="80" height="80" color="#0a0a0a"/><text x="96" y="92" font-family="Anton,sans-serif" font-size="78" fill="#0a0a0a" letter-spacing="1">RECESS</text></svg></div>
+  <div class="icons">
+    <div><svg width="64" height="64"><rect width="64" height="64" fill="#ff4d2e"/><use href="#bell" x="8" y="8" width="48" height="48" color="#07080d"/></svg>App</div>
+    <div><svg width="32" height="32"><rect width="32" height="32" fill="#ff4d2e"/><use href="#bell" x="4" y="4" width="24" height="24" color="#07080d"/></svg>Tab</div>
+    <div><svg width="16" height="16"><rect width="16" height="16" fill="#ff4d2e"/><use href="#bell" x="1" y="1" width="14" height="14" color="#07080d"/></svg>16px</div>
+  </div>
+</section>
+
+<section class="c">
+  <h2><span>2</span>The Slash</h2>
+  <p>One clean cut straight through the name, like it was keyed into a locker. No icon needed. The cut R alone becomes the app icon. The most "tough" of the five.</p>
+  <div class="tile dark"><svg viewBox="0 0 420 120" aria-label="Slash wordmark"><text x="210" y="104" text-anchor="middle" font-family="Anton,sans-serif" font-size="104" fill="#f1ede6" letter-spacing="2" mask="url(#cut)">RECESS</text><path d="M0 76 L420 50 L420 58 L0 84 Z" fill="#ff4d2e" opacity="0"/></svg></div>
+  <div class="tile light"><svg viewBox="0 0 420 120" aria-label="Slash wordmark light"><text x="210" y="104" text-anchor="middle" font-family="Anton,sans-serif" font-size="104" fill="#0a0a0a" letter-spacing="2" mask="url(#cut)">RECESS</text></svg></div>
+  <div class="icons">
+    <div><svg width="64" height="64"><rect width="64" height="64" fill="#07080d" stroke="#1e2133"/><use href="#slashR" width="64" height="64" color="#ff4d2e"/></svg>App</div>
+    <div><svg width="32" height="32"><rect width="32" height="32" fill="#07080d"/><use href="#slashR" width="32" height="32" color="#ff4d2e"/></svg>Tab</div>
+    <div><svg width="16" height="16"><rect width="16" height="16" fill="#07080d"/><use href="#slashR" width="16" height="16" color="#ff4d2e"/></svg>16px</div>
+  </div>
+</section>
+
+<section class="c">
+  <h2><span>3</span>The Hall Pass</h2>
+  <p>Your pass out of class. Doubles as a ticket: "get a pass" can become how room codes and invites work. Strong as a sticker and on merch.</p>
+  <div class="tile dark"><svg viewBox="0 0 420 120" aria-label="Hall pass lockup"><use href="#pass" x="0" y="14" width="92" height="92"/><text x="106" y="92" font-family="Anton,sans-serif" font-size="78" fill="#f1ede6" letter-spacing="1">RECESS</text></svg></div>
+  <div class="tile light"><svg viewBox="0 0 420 120" aria-label="Hall pass lockup light"><use href="#pass" x="0" y="14" width="92" height="92"/><text x="106" y="92" font-family="Anton,sans-serif" font-size="78" fill="#0a0a0a" letter-spacing="1">RECESS</text></svg></div>
+  <div class="icons">
+    <div><svg width="64" height="64"><rect width="64" height="64" fill="#07080d"/><use href="#pass" width="64" height="64"/></svg>App</div>
+    <div><svg width="32" height="32"><rect width="32" height="32" fill="#07080d"/><use href="#pass" width="32" height="32"/></svg>Tab</div>
+    <div><svg width="16" height="16"><rect width="16" height="16" fill="#07080d"/><use href="#pass" width="16" height="16"/></svg>16px</div>
+  </div>
+</section>
+
+<section class="c">
+  <h2><span>4</span>The Block R</h2>
+  <p>A solid ember block with an R knocked out and one corner clipped, the same cut as the featured game frame on the site. Simple, ownable, works anywhere at any size.</p>
+  <div class="tile dark"><svg viewBox="0 0 420 120" aria-label="Block R lockup"><use href="#block" x="0" y="16" width="88" height="88"/><text x="104" y="92" font-family="Anton,sans-serif" font-size="78" fill="#f1ede6" letter-spacing="1">RECESS</text></svg></div>
+  <div class="tile light"><svg viewBox="0 0 420 120" aria-label="Block R lockup light"><use href="#block" x="0" y="16" width="88" height="88"/><text x="104" y="92" font-family="Anton,sans-serif" font-size="78" fill="#0a0a0a" letter-spacing="1">RECESS</text></svg></div>
+  <div class="icons">
+    <div><svg width="64" height="64"><use href="#block" width="64" height="64"/></svg>App</div>
+    <div><svg width="32" height="32"><use href="#block" width="32" height="32"/></svg>Tab</div>
+    <div><svg width="16" height="16"><use href="#block" width="16" height="16"/></svg>16px</div>
+  </div>
+</section>
+
+<section class="c">
+  <h2><span>5</span>3:00</h2>
+  <p>The classroom clock stuck at 3:00, the moment you're free. The ember hand points at the 3. Quiet, and the kind of detail people explain to each other.</p>
+  <div class="tile dark"><svg viewBox="0 0 420 120" aria-label="Clock lockup"><use href="#clock" x="0" y="20" width="80" height="80" color="#f1ede6"/><text x="96" y="92" font-family="Anton,sans-serif" font-size="78" fill="#f1ede6" letter-spacing="1">RECESS</text></svg></div>
+  <div class="tile light"><svg viewBox="0 0 420 120" aria-label="Clock lockup light"><use href="#clock" x="0" y="20" width="80" height="80" color="#0a0a0a"/><text x="96" y="92" font-family="Anton,sans-serif" font-size="78" fill="#0a0a0a" letter-spacing="1">RECESS</text></svg></div>
+  <div class="icons">
+    <div><svg width="64" height="64"><rect width="64" height="64" fill="#07080d"/><use href="#clock" x="6" y="6" width="52" height="52" color="#f1ede6"/></svg>App</div>
+    <div><svg width="32" height="32"><rect width="32" height="32" fill="#07080d"/><use href="#clock" x="2" y="2" width="28" height="28" color="#f1ede6"/></svg>Tab</div>
+    <div><svg width="16" height="16"><rect width="16" height="16" fill="#07080d"/><use href="#clock" x="1" y="1" width="14" height="14" color="#f1ede6"/></svg>16px</div>
+  </div>
+</section>
+</main>
+</body>
+</html>
