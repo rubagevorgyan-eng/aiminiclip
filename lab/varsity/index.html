@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recess - Varsity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@500;700&family=DotGothic16&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: friday night under the stadium lights, but it's a browser game
+IDEA: the tough side of school: varsity letter patches, school bus yellow, the stadium LED scoreboard, jersey numbers, hall passes
+PICTURE: chenille R patch logo, LED scoreboard ticker, featured game on the big screen, ranks as jersey numbers
+COLOUR and TYPE: night navy, bus yellow, varsity red, chalk white. Alfa Slab One for block letters, Archivo for reading, DotGothic16 for the LED board
+LAYOUT: ticker, bar, hero split (game + live board), shelf, stream band
+*/
+:root{color-scheme:dark;--bg:#0a0d16;--bg2:#111626;--line:#232b42;--bone:#f3efe4;--dim:#8c93a8;--acid:#ffc400;--heat:#e23b2e;--disp:"Alfa Slab One",Rockwell,serif;--body:"Archivo",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--bone);font:400 16px/1.5 var(--body);overflow-x:clip}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.06;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+/* ticker */
+.tick{border-bottom:3px solid #000;background:#020202 radial-gradient(circle,#1a1206 1px,transparent 1.5px) 0 0/4px 4px;overflow:hidden;white-space:nowrap;font:400 15px/38px "DotGothic16",monospace;color:#ffae1a;text-shadow:0 0 6px rgba(255,174,26,.7);letter-spacing:1px}
+.tick .run{display:inline-block;animation:run 40s linear infinite;padding-left:100%}
+.tick b{color:#fff3c4;font-weight:400}
+.tick .live{display:inline-block;color:#ff5a3c;text-shadow:0 0 6px rgba(255,90,60,.8);margin:0 14px 0 0}
+.tick em{font-style:normal}
+.tick .sep{margin:0 22px;color:#6b4a0e;text-shadow:none}
+@keyframes run{to{transform:translateX(-100%)}}
+
+/* bar */
+.bar{display:flex;align-items:center;justify-content:space-between;height:78px;border-bottom:1px solid var(--line)}
+.logo{display:inline-flex;align-items:center;gap:14px;font:400 38px/1 var(--disp);letter-spacing:1px;text-transform:uppercase;color:var(--bone);text-decoration:none}
+.patch{width:52px;height:58px;display:grid;place-items:center;font:400 40px/1 var(--disp);color:var(--heat);background:var(--acid);border-radius:12px 12px 16px 16px;box-shadow:inset 0 0 0 3px var(--acid),inset 0 0 0 5px var(--heat),inset 0 0 0 8px var(--acid),0 0 0 2px #000;text-shadow:2px 2px 0 #7a1a12;-webkit-text-stroke:1px #000;background-image:radial-gradient(rgba(0,0,0,.08) 1px,transparent 1.2px);background-size:3px 3px;transform:rotate(-4deg)}
+.nav{display:flex;gap:28px;font:800 13px var(--body);letter-spacing:1.5px;text-transform:uppercase}
+.nav a{color:var(--dim);text-decoration:none}.nav a:hover,.nav a.on{color:var(--bone)}
+.me{display:flex;align-items:center;gap:12px;font:700 13px var(--mono)}
+.ring{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--acid) 0 62%,#2a2a2f 62%);position:relative}
+.ring::after{content:"R";position:absolute;inset:4px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;font:400 17px var(--disp)}
+.me small{display:block;color:var(--dim);font-weight:500}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:24px;padding:28px 0}
+.stagecard{position:relative;border:1px solid var(--line);background:var(--bg2);overflow:hidden;clip-path:polygon(0 0,100% 0,100% calc(100% - 28px),calc(100% - 28px) 100%,0 100%)}
+.stagecard{border:3px solid #000;box-shadow:8px 8px 0 var(--heat)}
+.screen{position:relative;aspect-ratio:16/9;background:radial-gradient(90% 80% at 60% 30%,#3a2563,#140d26 70%);display:grid;place-items:center;overflow:hidden}
+.screen::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 4px);pointer-events:none}
+.screen svg{width:30%;shape-rendering:crispEdges;filter:drop-shadow(0 0 30px rgba(255,75,62,.35));animation:spin 3s steps(12) infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.screen .ghost{position:absolute;left:-2%;bottom:-6%;font:400 clamp(90px,15vw,190px)/.8 var(--disp);color:transparent;-webkit-text-stroke:1px rgba(239,236,228,.12);text-transform:uppercase;white-space:nowrap}
+.chip{position:absolute;top:16px;left:16px;display:flex;gap:8px}
+.chip span{font:700 11px var(--mono);letter-spacing:1px;padding:5px 8px;background:rgba(9,9,10,.8);border:1px solid var(--line)}
+.chip .hot{background:var(--acid);border-color:var(--acid);color:#111}
+.info{padding:22px 26px 28px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.info h1{margin:0;font:400 clamp(48px,6.2vw,80px)/.9 var(--disp);text-transform:uppercase;letter-spacing:1px;text-shadow:4px 4px 0 var(--heat)}
+.info p{margin:10px 0 0;color:var(--dim);max-width:40ch}
+.cta{display:flex;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 26px;font:400 22px/1 var(--disp);letter-spacing:1px;text-transform:uppercase;text-decoration:none;color:#111;background:var(--acid);border:3px solid #000;box-shadow:5px 5px 0 var(--heat);border-radius:6px;transition:filter .15s,transform .1s}
+.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn.alt{background:var(--bone);color:#111;box-shadow:5px 5px 0 #000}
+.btn:focus-visible{outline:2px solid var(--heat);outline-offset:4px}
+
+/* live board */
+.board{border:1px solid var(--line);background:var(--bg2);display:flex;flex-direction:column}
+.board .hd{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+.board h2{margin:0;font:400 26px/1 var(--disp);text-transform:uppercase}
+.board .reset{font:500 11px var(--mono);color:var(--dim)}
+.board .reset b{color:var(--acid)}
+.rows{list-style:none;margin:0;padding:6px 0;flex:1}
+.rows li{display:grid;grid-template-columns:44px 1fr auto 34px;align-items:center;gap:10px;padding:10px 18px;font:700 15px var(--mono)}
+.rows li:nth-child(odd){background:rgba(255,255,255,.02)}
+.rows .rk{font:400 28px/1 var(--disp);color:transparent;-webkit-text-stroke:1.5px var(--dim)}
+.rows li:first-child .rk{color:var(--acid);-webkit-text-stroke:1.5px #000;text-shadow:2px 2px 0 var(--heat)}
+.rows .nm small{display:block;font:500 11px var(--mono);color:var(--dim)}
+.rows .sc{text-align:right}
+.rows .mv{text-align:right;font-size:11px}
+.up{color:var(--acid)}.dn{color:var(--heat)}.eq{color:var(--dim)}
+.you{outline:1px solid var(--acid);outline-offset:-1px}
+.board .ft{padding:12px 18px;border-top:1px solid var(--line);font:500 11px var(--mono);color:var(--dim)}
+
+/* shelf */
+.hazard{height:12px;margin-top:30px;background:repeating-linear-gradient(-45deg,var(--acid) 0 14px,#000 14px 28px);border:2px solid #000}
+.sec{display:flex;align-items:baseline;justify-content:space-between;margin:36px 0 14px}
+.sec h3{margin:0;font:400 34px/1 var(--disp);text-transform:uppercase}
+.sec span{font:500 12px var(--mono);color:var(--dim)}
+.shelf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.g{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);background:var(--bg2);transition:border-color .15s,transform .15s}
+.g:hover{border-color:var(--acid);transform:translateY(-3px)}
+.g .s{aspect-ratio:4/3;position:relative;display:grid;place-items:center;background:radial-gradient(90% 80% at 60% 30%,#3a2563,#140d26 70%);overflow:hidden}
+.g .s::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 4px)}
+.g .s svg{width:40%;shape-rendering:crispEdges}
+.g .t{padding:12px 14px}
+.g h4{margin:0;font:400 22px/1.1 var(--disp);text-transform:uppercase}
+.g .tags{margin-top:6px;font:500 11px var(--mono);color:var(--dim)}
+.g.lock .s{background:repeating-linear-gradient(135deg,#121729 0 8px,#0f1322 8px 16px)}
+.g.lock .s b{font:400 60px var(--disp);color:transparent;-webkit-text-stroke:2px #2a3350}
+.g.lock h4{color:#4a4a50}
+
+/* stream band */
+.stream{margin:46px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr}
+.stream>div{padding:26px 22px;border-left:1px solid var(--line)}
+.stream>div:first-child{border-left:0}
+.stream h3{margin:0;font:400 36px/1 var(--disp);text-transform:uppercase}
+.stream h3 span{color:var(--acid)}
+.stream h5{margin:0 0 6px;font:800 13px var(--body);letter-spacing:1.5px;text-transform:uppercase}
+.stream p{margin:0;color:var(--dim);font-size:15px}
+.foot{display:flex;justify-content:space-between;padding:26px 0 40px;font:500 12px var(--mono);color:var(--dim)}
+.sample{font:500 11px var(--mono);color:#55545a;margin-top:10px}
+
+@media(max-width:980px){
+  .hero{grid-template-columns:1fr}
+  .shelf{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stream{grid-template-columns:1fr 1fr}.stream>div:nth-child(3){border-left:0}.stream>div{border-top:1px solid var(--line)}
+  .nav{display:none}
+}
+@media(max-width:560px){
+  .wrap{padding:0 16px}
+  .shelf,.stream{grid-template-columns:1fr}.stream>div{border-left:0}
+  .info{padding:18px}
+  .cta{width:100%}.cta .btn{flex:1}
+  .me small{display:none}
+}
+@media(prefers-reduced-motion:reduce){.tick .run,.screen svg{animation:none}.tick .run{padding-left:16px}}
+</style>
+</head>
+<body>
+<div class="tick" aria-label="Live activity (sample)"><div class="run">
+  <span class="live">PA SYSTEM &gt;&gt;</span><b>@jayy</b> <em>joined the Half-Second Club</em> on Needle Drop<span class="sep">***</span><b>@mari</b> <em>took #2</em> this week<span class="sep">***</span><b>@ruben</b> <em>shared a pack:</em> "aux cord crimes"<span class="sep">***</span><b>@dev</b> <em>found something they weren't supposed to</em><span class="sep">***</span><b>142</b> <em>songs named in under a second today</em><span class="sep">***</span>sample feed
+</div></div>
+
+<div class="wrap">
+  <header class="bar">
+    <a class="logo" href="/lab/"><span class="patch" aria-hidden="true">R</span>Recess</a>
+    <nav class="nav"><a class="on" href="#">Games</a><a href="#">Leaderboards</a><a href="#">Packs</a><a href="#">Stream</a></nav>
+    <div class="me"><div><span>@RUBEN</span><small>LVL 3 &middot; 2 BADGES</small></div><div class="ring" aria-label="Level progress 62 percent"></div></div>
+  </header>
+
+  <section class="hero">
+    <article class="stagecard">
+      <div class="screen">
+        <div class="chip"><span class="hot">GAME OF THE WEEK</span><span>MUSIC</span><span>1-8 PLAYERS</span></div>
+        <svg viewBox="0 0 24 24" data-rec aria-hidden="true"></svg>
+        <div class="ghost" aria-hidden="true">Needle Drop</div>
+      </div>
+      <div class="info">
+        <div><h1>Needle<br>Drop</h1><p>Half a second of a song. Name it before the clip gets long. Wrong guesses cost you.</p></div>
+        <div class="cta"><a class="btn" href="/games/needle-drop/">Play</a><a class="btn alt" href="#">Host a room</a></div>
+      </div>
+    </article>
+
+    <aside class="board">
+      <div class="hd"><h2>Varsity board</h2><span class="reset">RESETS IN <b id="cd">--</b></span></div>
+      <ol class="rows">
+        <li><span class="rk">01</span><span class="nm">@ruben<small>Needle Drop</small></span><span class="sc">1,240</span><span class="mv up">&#9650;2</span></li>
+        <li><span class="rk">02</span><span class="nm">@mari<small>Needle Drop</small></span><span class="sc">980</span><span class="mv up">&#9650;1</span></li>
+        <li><span class="rk">03</span><span class="nm">@jayy<small>Needle Drop</small></span><span class="sc">910</span><span class="mv dn">&#9660;2</span></li>
+        <li><span class="rk">04</span><span class="nm">@dev<small>Needle Drop</small></span><span class="sc">655</span><span class="mv eq">&#8212;</span></li>
+        <li><span class="rk">05</span><span class="nm">@kxng<small>Needle Drop</small></span><span class="sc">540</span><span class="mv up">NEW</span></li>
+        <li><span class="rk">06</span><span class="nm">@tay<small>Needle Drop</small></span><span class="sc">480</span><span class="mv dn">&#9660;1</span></li>
+        <li><span class="rk">07</span><span class="nm">@nico<small>Needle Drop</small></span><span class="sc">410</span><span class="mv eq">&#8212;</span></li>
+        <li><span class="rk">08</span><span class="nm">@bree<small>Needle Drop</small></span><span class="sc">395</span><span class="mv up">&#9650;4</span></li>
+      </ol>
+      <div class="ft">Top 3 on Monday letter for the week. Sample board.</div>
+    </aside>
+  </section>
+
+  <div class="hazard" aria-hidden="true"></div>
+  <div class="sec"><h3>The lineup</h3><span>NEW GAME EVERY OTHER FRIDAY</span></div>
+  <section class="shelf">
+    <a class="g" href="/games/needle-drop/"><div class="s"><svg viewBox="0 0 24 24" data-rec aria-hidden="true"></svg></div><div class="t"><h4>Needle Drop</h4><div class="tags">MUSIC &middot; STREAM SAFE &middot; CUSTOM PACKS</div></div></a>
+    <div class="g lock"><div class="s"><b>02</b></div><div class="t"><h4>Locked</h4><div class="tags">DROPPING SOON</div></div></div>
+    <div class="g lock"><div class="s"><b>03</b></div><div class="t"><h4>Locked</h4><div class="tags">DROPPING SOON</div></div></div>
+    <div class="g lock"><div class="s"><b>04</b></div><div class="t"><h4>Locked</h4><div class="tags">DROPPING SOON</div></div></div>
+  </section>
+
+  <section class="stream">
+    <div><h3>Built for<br><span>stream</span></h3></div>
+    <div><h5>Hall pass</h5><p>Get a four-letter room code. Chat joins from their phones while you play on stream.</p></div>
+    <div><h5>Big screen mode</h5><p>Huge text, no clutter, readable at 720p on a phone.</p></div>
+    <div><h5>Your pack, your name</h5><p>Build a custom pack, share the link, watch your community play your playlist.</p></div>
+  </section>
+  <p class="sample">Design direction. Room codes and big screen mode are planned, not built yet.</p>
+
+  <footer class="foot"><span>RECESS</span><span>&copy; <span id="yr"></span></span></footer>
+</div>
+<script>
+{
+  const P={o:'#0b0814',g1:'#2a2340',g2:'#1a1528',r:'#ff4b3e',rd:'#b3261d',y:'#ffcc33'};let out='';const c=11.5;
+  for(let y=0;y<24;y++)for(let x=0;x<24;x++){const d=Math.hypot(x-c,y-c);if(d>12)continue;const a=Math.atan2(y-c,x-c);let f;if(d>11||d<1.3)f=P.o;else if(d<4.6)f=(a>0&&a<1.2)?P.y:(x<c?P.rd:P.r);else if(d<5.4)f=P.o;else f=(Math.floor(d*1.2)%2)?P.g1:P.g2;out+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${f}"/>`}
+  document.querySelectorAll('[data-rec]').forEach(s=>s.innerHTML=out);
+  document.getElementById('yr').textContent=new Date().getFullYear();
+  const cd=document.getElementById('cd');
+  const tick=()=>{const n=new Date(),m=new Date(n);m.setDate(n.getDate()+((8-n.getDay())%7||7));m.setHours(0,0,0,0);let s=Math.floor((m-n)/1000);const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;cd.textContent=`${d}D ${String(h).padStart(2,'0')}H ${String(Math.floor(s/60)).padStart(2,'0')}M`};
+  tick();setInterval(tick,30000);
+}
+</script>
+</body>
+</html>
