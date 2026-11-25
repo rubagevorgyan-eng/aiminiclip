@@ -146,11 +146,12 @@ body.playing .eq i{animation:eq .48s steps(4) infinite alternate}
 #stage .ac input[type=text]{padding-left:36px;min-height:46px;font-size:15px}
 .ac.shake{animation:shake .4s steps(4)}
 @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:10;background:var(--cream);color:var(--nl);border:2px solid var(--nl);box-shadow:4px 4px 0 rgba(0,0,0,.45);overflow-y:auto;max-height:330px}
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:10;background:var(--cream);color:var(--nl);border:2px solid var(--nl);box-shadow:4px 4px 0 rgba(0,0,0,.45);overflow-y:auto;max-height:380px}
 .sugg div{padding:7px 10px;cursor:pointer;font-weight:bold;font-size:13px;border-bottom:1px dotted #c9bda7}
 .sugg div:last-child{border-bottom:0}
 .sugg div.on,.sugg div:hover{background:var(--gold)}
-.sugg small{display:block;color:#6a5d80;font-size:11px;font-weight:normal}
+.sugg small{display:block;color:#5d6072;font-size:11px;font-weight:normal}
+.sugg .hd{margin:0;padding:6px 10px;font:700 11px var(--px);background:#1f2336;color:var(--cream);position:sticky;top:0;z-index:1}
 .sugg mark{background:none;color:var(--redD)}
 .rules{margin-top:14px;background:var(--n1);border:2px solid var(--nl);padding:8px 10px;font-size:11px;color:#d9cfe8}
 .rules b{font:700 11px var(--px);color:var(--gold)}
@@ -682,7 +683,7 @@ async function newRound(){
   const gs=$('gameStatus');gs.className='status';
   ['guessing','hintBox','guessBox','revealBox'].forEach(b=>show(b,b==='guessing'));
   $('playBtn').disabled=true;$('moreBtn').disabled=true;
-  $('guess').value='';matches=[];drawSugg();$('verdict').textContent='';
+  $('guess').value='';rows=[];matches=[];drawSugg();$('verdict').textContent='';
   stage=0;played=false;phase='guess';
   renderAll();
   gs.textContent='Digging through the crate...';
@@ -738,7 +739,7 @@ function renderAll(){
 $('playBtn').onclick=()=>{SFX.blip();played=true;$('moreBtn').disabled=false;renderAll();playFor(STAGES[stage],startAt)};
 $('moreBtn').onclick=()=>{
   if(stage<STAGES.length-1){SFX.more();stage++;renderAll();playFor(STAGES[stage],startAt)}
-  else{stopAudio();SFX.hint();phase='hint';$('artistHint').textContent=cur.artist;show('guessing',false);show('hintBox',true);renderAll()}
+  else{stopAudio();SFX.hint();phase='hint';$('artistHint').textContent=cur.artist;show('guessing',false);show('hintBox',true);renderAll();$('guess').focus();search()}
 };
 $('replay10').onclick=()=>playFor(10,startAt);
 $('nobody').onclick=()=>reveal(null,0);
@@ -770,34 +771,51 @@ function hl(t,q){
   const i=t.toLowerCase().indexOf(q);
   return i<0||!q?esc(t):esc(t.slice(0,i))+'<mark>'+esc(t.slice(i,i+q.length))+'</mark>'+esc(t.slice(i+q.length));
 }
+let rows=[];
 function drawSugg(){
   const raw=$('guess').value.trim().toLowerCase();
-  $('sugg').innerHTML=matches.map((m,i)=>`<div role="option" data-i="${i}" class="${i===sel?'on':''}">${hl(m.t,raw)}<small>${hl(m.line,raw)}</small></div>`).join('');
+  $('sugg').innerHTML=rows.map(r=>r.hd?`<p class="hd">${esc(r.hd)}</p>`:`<div role="option" data-i="${r.i}" class="${r.i===sel?'on':''}">${hl(r.m.t,raw)}<small>${hl(r.m.line,raw)}</small></div>`).join('');
   show('sugg',matches.length>0);
+  const on=$('sugg').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
 }
-$('guess').oninput=()=>{
-  const q=norm($('guess').value);sel=-1;
-  if(!q){matches=[];return drawSugg()}
-  const a=[],b=[],c=[],ar=[];
-  for(const x of titles){
-    if(x.k.startsWith(q))a.push(x);
-    else if(x.k.includes(' '+q))b.push(x);
-    else if(q.length>=2&&x.artists.some(z=>z.n.startsWith(q)||z.n.includes(' '+q)))ar.push(x);
-    else if(x.k.includes(q))c.push(x);
+function setResults(groups){
+  rows=[];matches=[];
+  groups.forEach(g=>{if(!g.items.length)return;if(g.hd)rows.push({hd:g.hd});g.items.forEach(m=>{rows.push({m,i:matches.length});matches.push(m)})});
+  sel=matches.length?0:-1;drawSugg();
+}
+function artistGroup(n){
+  const items=titles.filter(x=>x.artists.some(z=>z.n===n)).sort((a,b)=>a.t.localeCompare(b.t));
+  const name=items.length?items[0].artists.find(z=>z.n===n).name:n;
+  return {hd:`${name} · ${items.length} song${items.length===1?'':'s'}`,items};
+}
+function search(){
+  const q=norm($('guess').value);
+  if(!q){
+    if(phase==='hint'&&cur){const n=norm(String(cur.artist).split(',')[0]);return setResults([artistGroup(n)])}
+    rows=[];matches=[];sel=-1;return drawSugg();
   }
-  matches=a.concat(b,ar,c).slice(0,20);sel=matches.length?0:-1;drawSugg();
-};
+  const a=[],b=[],c=[];const hitArtists=new Map();
+  for(const x of titles){
+    if(x.k.startsWith(q))a.push(x);else if(x.k.includes(' '+q))b.push(x);else if(x.k.includes(q))c.push(x);
+    if(q.length>=2)x.artists.forEach(z=>{if(z.n.startsWith(q)||z.n.includes(' '+q))hitArtists.set(z.n,(hitArtists.get(z.n)||0)+1)});
+  }
+  const groups=[...hitArtists.entries()].sort((x,y)=>y[1]-x[1]).slice(0,4).map(([n])=>artistGroup(n));
+  const songHits=a.concat(b,c).slice(0,groups.length?8:40);
+  setResults([{hd:groups.length&&songHits.length?'Song titles':'',items:songHits},...groups]);
+}
+$('guess').oninput=search;
+$('guess').onfocus=()=>{if(!$('guess').value&&phase==='hint')search()};
 $('guess').onkeydown=e=>{
   if(e.key==='ArrowDown'&&matches.length){sel=(sel+1)%matches.length;drawSugg();e.preventDefault()}
   else if(e.key==='ArrowUp'&&matches.length){sel=(sel-1+matches.length)%matches.length;drawSugg();e.preventDefault()}
   else if(e.key==='Enter'){if(matches[sel])pick(matches[sel]);e.preventDefault()}
-  else if(e.key==='Escape'){matches=[];drawSugg()}
+  else if(e.key==='Escape'){rows=[];matches=[];drawSugg()}
 };
-$('guess').onblur=()=>setTimeout(()=>{matches=[];drawSugg()},150);
+$('guess').onblur=()=>setTimeout(()=>{rows=[];matches=[];drawSugg()},150);
 $('sugg').onmousedown=e=>e.preventDefault();
 $('sugg').onclick=e=>{const d=e.target.closest('[data-i]');if(d)pick(matches[+d.dataset.i])};
 function pick(m){
-  $('guess').value='';matches=[];drawSugg();
+  $('guess').value='';rows=[];matches=[];drawSugg();
   const v=$('verdict');
   if(!played){v.className='status err';v.textContent='Play the clip first.';return}
   if(m.k===norm(cur.title)){$('guess').blur();reveal(guesser||players[0],phase==='hint'?HINT_POINTS:POINTS[stage]);return}
