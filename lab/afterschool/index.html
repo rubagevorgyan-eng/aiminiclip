@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recess - After School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@500;700&family=DotGothic16&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: the bell just rang, it's 3:15, everyone's heading to the computer lab
+IDEA: an after-school anime title card wrapped around a 2000s game portal; badges are collectible pin badges you put on your own bag
+PICTURE: twilight sky band with speed lines behind the featured game panel; a profile bag covered in pins
+COLOUR and TYPE: night indigo, sunset coral, cream, gold for pins. Dela Gothic One for titles (latin and katakana), Archivo for reading, JetBrains Mono for numbers, DotGothic16 for the PA board
+LAYOUT: PA ticker, bar, hero panel + board, your bag, the lineup, every game footer
+*/
+:root{color-scheme:dark;--bg:#0c0d22;--bg2:#14163a;--panel:#191c48;--line:#2a2e66;--cream:#fff3e3;--dim:#9a9cc8;--coral:#ff6b4a;--coralD:#c2402a;--gold:#ffc94a;--sky:#59c7ff;--ink:#05061a;
+  --disp:"Dela Gothic One","Arial Black",sans-serif;--body:"Archivo",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--cream);font:400 16px/1.5 var(--body);overflow-x:clip}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+a{color:inherit}
+
+/* PA ticker */
+.tick{background:#020208 radial-gradient(circle,#191206 1px,transparent 1.5px) 0 0/4px 4px;border-bottom:2px solid #000;overflow:hidden;white-space:nowrap;font:400 15px/36px "DotGothic16",monospace;color:#ffae1a;text-shadow:0 0 6px rgba(255,174,26,.65)}
+.tick .run{display:inline-block;padding-left:100%;animation:run 42s linear infinite}
+.tick .pa{color:#ff6b4a;margin-right:16px}
+.tick .sep{margin:0 22px;color:#6b4a0e;text-shadow:none}
+@keyframes run{to{transform:translateX(-100%)}}
+
+/* bar */
+.bar{display:flex;align-items:center;justify-content:space-between;height:80px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo .w{font:400 34px/1 var(--disp);letter-spacing:1px;color:var(--cream)}
+.logo .kana{writing-mode:vertical-rl;font:400 11px/1 var(--disp);color:var(--coral);letter-spacing:2px;border-left:2px solid var(--coral);padding-left:6px;height:40px;display:flex;align-items:center}
+.nav{display:flex;gap:26px;font:800 13px var(--body);letter-spacing:1.5px;text-transform:uppercase}
+.nav a{color:var(--dim);text-decoration:none}.nav a.on,.nav a:hover{color:var(--cream)}
+.me{display:flex;align-items:center;gap:10px;font:700 13px var(--mono);text-decoration:none}
+.me small{display:block;color:var(--dim);font-weight:500}
+.ava{display:block;flex:none;width:44px;height:44px;border-radius:50%;background:linear-gradient(160deg,#ffd9b8,#f2a27a);border:3px solid var(--cream);box-shadow:0 0 0 3px var(--coral);position:relative;overflow:hidden}
+.ava::before{content:"";position:absolute;left:-4px;right:-4px;top:-6px;height:22px;background:#2a1f4a;border-radius:0 0 50% 50%}
+.ava::after{content:"";position:absolute;left:12px;top:22px;width:5px;height:7px;background:#2a1f4a;border-radius:3px;box-shadow:12px 0 #2a1f4a}
+
+/* hero */
+.hero{position:relative;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;padding:10px 0 30px}
+.sky{position:absolute;left:50%;transform:translateX(-50%);top:-10px;bottom:-40px;width:100vw;z-index:-1;
+  background:linear-gradient(180deg,#0c0d22 0,#1b1a52 30%,#4a2a6e 55%,#c45a5a 74%,#ff9a5a 84%,#0c0d22 100%)}
+.sky::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(255,255,255,.7) 1px,transparent 1.5px) 0 0/90px 70px;mask:linear-gradient(#000 0,transparent 60%);-webkit-mask:linear-gradient(#000 0,transparent 60%);opacity:.5}
+.panel{position:relative;background:var(--cream);color:var(--ink);border:4px solid var(--ink);box-shadow:8px 8px 0 var(--ink);clip-path:polygon(0 0,100% 0,100% 100%,22px 100%,0 calc(100% - 22px))}
+.screen{position:relative;aspect-ratio:16/9;background:radial-gradient(90% 80% at 55% 35%,#3a2563,#140d26 70%);border-bottom:4px solid var(--ink);display:grid;place-items:center;overflow:hidden}
+.screen .lines{position:absolute;inset:-20%;width:140%;height:140%;opacity:.16}
+.screen::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.25) 0 2px,transparent 2px 4px);pointer-events:none}
+.screen svg.rec{position:relative;width:28%;shape-rendering:crispEdges;animation:spin 3s steps(12) infinite;filter:drop-shadow(0 0 24px rgba(255,107,74,.45))}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tagrow{position:absolute;top:14px;left:14px;display:flex;gap:6px;z-index:2}
+.tagrow span{font:700 11px var(--mono);letter-spacing:1px;padding:5px 8px;background:var(--cream);color:var(--ink);border:2px solid var(--ink)}
+.tagrow .hot{background:var(--coral);color:#fff}
+.cap{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap;padding:18px 22px 22px;background-image:radial-gradient(rgba(5,6,26,.12) 1px,transparent 1.3px);background-size:6px 6px}
+.cap h1{margin:0;font:400 clamp(40px,5.4vw,66px)/.95 var(--disp)}
+.cap .kana{display:block;font:400 13px var(--disp);color:var(--coralD);letter-spacing:3px;margin-bottom:6px}
+.cap p{margin:8px 0 0;max-width:40ch;color:#3a3a5e}
+.cta{display:flex;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;font:400 18px/1 var(--disp);text-decoration:none;color:#fff;background:var(--coral);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.alt{background:var(--cream);color:var(--ink)}
+.btn:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+
+/* board */
+.board{background:var(--panel);border:3px solid var(--ink);box-shadow:8px 8px 0 var(--ink);display:flex;flex-direction:column}
+.board .hd{display:flex;justify-content:space-between;align-items:baseline;padding:16px 18px;border-bottom:2px solid var(--line)}
+.board h2{margin:0;font:400 24px var(--disp)}
+.board h2 small{display:block;font-size:11px;color:var(--coral);letter-spacing:2px}
+.board .reset{font:500 11px var(--mono);color:var(--dim)}.board .reset b{color:var(--gold)}
+.rows{list-style:none;margin:0;padding:6px 0;flex:1}
+.rows li{display:grid;grid-template-columns:38px 30px 1fr auto;align-items:center;gap:10px;padding:9px 18px;font:700 14px var(--mono)}
+.rows li:nth-child(odd){background:rgba(255,255,255,.03)}
+.rows .rk{font:400 22px var(--disp);color:var(--dim)}
+.rows li:nth-child(1) .rk{color:var(--gold)}.rows li:nth-child(2) .rk{color:#d6d9f2}.rows li:nth-child(3) .rk{color:#e59a6a}
+.mini{width:28px;height:28px;border-radius:50%;border:2px solid var(--cream)}
+.rows small{display:block;font:500 10px var(--mono);color:var(--dim)}
+.board .ft{padding:12px 18px;border-top:2px solid var(--line);font:500 11px var(--mono);color:var(--dim)}
+
+/* the bag */
+.sec{display:flex;align-items:baseline;gap:14px;margin:40px 0 16px}
+.sec h3{margin:0;font:400 30px/1 var(--disp)}
+.sec .k{font:400 13px var(--disp);color:var(--coral);letter-spacing:3px}
+.sec .r{margin-left:auto;font:500 12px var(--mono);color:var(--dim)}
+.bagrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:24px}
+.card{background:var(--panel);border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink)}
+.banner{height:120px;position:relative;border-bottom:3px solid var(--ink);overflow:hidden}
+.bg-roof{background:linear-gradient(180deg,#3a2f7a,#ff8a5a)}
+.bg-roof::after{content:"";position:absolute;left:0;right:0;bottom:0;height:30px;background:repeating-linear-gradient(90deg,#20184a 0 4px,transparent 4px 22px),linear-gradient(#20184a,#20184a) 0 6px/100% 3px no-repeat}
+.bg-train{background:linear-gradient(180deg,#1f6fa8,#a9e1ff)}
+.bg-train::after{content:"";position:absolute;inset:auto 0 0 0;height:46px;background:linear-gradient(#e9eef5,#cfd8e4);border-top:4px solid #2c3e66;box-shadow:inset 0 10px 0 -6px #ff6b4a}
+.bg-arcade{background:#120a2a radial-gradient(circle,#ff6b4a 1.5px,transparent 2px) 0 0/16px 16px}
+.prof{padding:0 18px 18px;margin-top:-34px;position:relative}
+.prof .ava{width:68px;height:68px;box-shadow:0 0 0 4px var(--ink)}
+.prof .ava::after{left:19px;top:34px;width:7px;height:10px;box-shadow:18px 0 #2a1f4a}
+.prof h4{margin:10px 0 0;font:400 22px var(--disp)}
+.prof .title{display:inline-block;margin-top:6px;font:700 12px var(--mono);color:var(--ink);background:var(--gold);padding:3px 8px;border:2px solid var(--ink)}
+.prof .lvl{display:flex;align-items:center;gap:10px;margin-top:12px;font:700 12px var(--mono);color:var(--dim)}
+.prof .xp{flex:1;height:10px;background:var(--bg);border:2px solid var(--ink)}.prof .xp i{display:block;height:100%;width:62%;background:var(--coral)}
+.skins{display:flex;gap:8px;margin-top:14px}
+.skins button{position:relative;overflow:hidden;width:54px;height:34px;border:3px solid var(--ink);cursor:pointer;padding:0}
+.skins button::after{height:40%!important}
+.skins button[aria-pressed=true]{outline:3px solid var(--gold);outline-offset:2px}
+.skins .label{font:500 11px var(--mono);color:var(--dim);align-self:center;margin-left:6px}
+.bag{padding:20px;position:relative;background:var(--panel) radial-gradient(rgba(255,255,255,.04) 1px,transparent 1.3px) 0 0/8px 8px}
+.bag h5{margin:0 0 4px;font:400 18px var(--disp)}
+.bag p{margin:0 0 14px;color:var(--dim);font-size:14px}
+.pins{display:flex;flex-wrap:wrap;gap:14px}
+.pin{width:88px;text-align:center;font:700 10px/1.3 var(--mono);color:var(--dim);cursor:default}
+.pin .c{width:76px;height:76px;margin:0 auto 6px;border-radius:50%;display:grid;place-items:center;position:relative;border:3px solid var(--ink);
+  box-shadow:inset 0 0 0 3px #e7e9f5,inset 0 0 0 5px #9aa0c0,3px 4px 0 var(--ink);transition:transform .2s cubic-bezier(.3,1.6,.5,1)}
+.pin .c::after{content:"";position:absolute;inset:9px 34px 46px 15px;border-radius:50%;background:rgba(255,255,255,.55);transform:rotate(-28deg)}
+.pin:hover .c{transform:rotate(-8deg) scale(1.06)}
+.pin svg{width:46px;height:46px;shape-rendering:crispEdges}
+.pin.lock .c::after{display:none}
+.pin.lock .c{background:var(--bg)!important;box-shadow:inset 0 0 0 3px #2a2e66,3px 4px 0 var(--ink)}
+.pin.lock .c b{font:400 26px var(--disp);color:#3a3f80}
+
+/* lineup */
+.shelf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.g{display:block;text-decoration:none;background:var(--panel);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);transition:transform .12s}
+.g:hover{transform:translate(-2px,-2px)}
+.g .s{aspect-ratio:4/3;position:relative;display:grid;place-items:center;background:radial-gradient(90% 80% at 55% 35%,#3a2563,#140d26 70%);border-bottom:3px solid var(--ink);overflow:hidden}
+.g .s::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.25) 0 2px,transparent 2px 4px)}
+.g .s svg{width:40%;shape-rendering:crispEdges}
+.g .t{padding:12px 14px}
+.g h4{margin:0;font:400 18px var(--disp)}
+.g .tags{font:500 11px var(--mono);color:var(--dim);margin-top:4px}
+.g.lock .s{background:repeating-linear-gradient(135deg,#141638 0 8px,#101231 8px 16px)}
+.g.lock .s b{font:400 50px var(--disp);color:#272b62}
+.g.lock h4{color:#4a4f8a}
+
+/* footer + teacher key */
+.foot{margin-top:46px;border-top:3px solid var(--ink);background:#090a1c;padding:28px 0 40px;text-align:center}
+.foot h6{margin:0 0 10px;font:400 14px var(--disp);color:var(--dim)}
+.foot .az{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-bottom:16px}
+.foot .az a{font-weight:800;text-decoration:none;border-bottom:2px solid var(--coral)}
+.foot p{margin:0;font:500 12px var(--mono);color:var(--dim)}
+.kbd{display:inline-block;font:700 12px var(--mono);padding:2px 7px;border:2px solid var(--line);border-bottom-width:4px;color:var(--cream)}
+.note{font:500 11px var(--mono);color:#4a4f8a;margin-top:10px}
+#teacher{position:fixed;inset:0;z-index:999;background:#fff;color:#111;overflow:auto;font:16px/1.7 "Times New Roman",Times,serif}
+#teacher .page{max-width:680px;margin:48px auto;padding:0 24px}
+#teacher h1{font:bold 20px "Times New Roman",serif;text-align:center;margin:28px 0}
+#teacher .nm{display:flex;justify-content:space-between}
+#teacher p{text-indent:40px;margin:0 0 14px}
+
+@media(max-width:980px){.hero,.bagrow{grid-template-columns:1fr}.shelf{grid-template-columns:repeat(2,minmax(0,1fr))}.nav{display:none}}
+@media(max-width:560px){.wrap{padding:0 16px}.sec .r{display:none}.shelf{grid-template-columns:1fr 1fr;gap:12px}.cta{width:100%}.cta .btn{flex:1}.me small{display:none}.pin{width:74px}.pin .c{width:64px;height:64px}.pin svg{width:38px;height:38px}}
+@media(prefers-reduced-motion:reduce){.tick .run,.screen svg.rec{animation:none}.tick .run{padding-left:16px}*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="tick" aria-label="Announcements (sample)"><div class="run">
+  <span class="pa">PA SYSTEM &gt;&gt;</span>@jayy joined the Half-Second Club<span class="sep">***</span>@mari took #2 on the board<span class="sep">***</span>@ruben shared a pack: "aux cord crimes"<span class="sep">***</span>somebody found a secret pin today<span class="sep">***</span>new game drops friday<span class="sep">***</span>sample announcements
+</div></div>
+
+<div class="wrap">
+  <header class="bar">
+    <a class="logo" href="/lab/"><span class="w">RECESS</span><span class="kana">リセス</span></a>
+    <nav class="nav"><a class="on" href="#">Games</a><a href="#">Board</a><a href="#">Packs</a><a href="#bag">My Bag</a></nav>
+    <a class="me" href="#bag"><div><span>@ruben</span><small>LV 3 &middot; 4 PINS</small></div><span class="ava" aria-hidden="true"></span></a>
+  </header>
+
+  <section class="hero">
+    <div class="sky" aria-hidden="true"></div>
+    <article class="panel">
+      <div class="screen">
+        <svg class="lines" viewBox="-50 -50 100 100" aria-hidden="true" id="lines"></svg>
+        <div class="tagrow"><span class="hot">GAME OF THE WEEK</span><span>MUSIC</span><span>1-8 PLAYERS</span></div>
+        <svg class="rec" viewBox="0 0 24 24" data-rec aria-hidden="true"></svg>
+      </div>
+      <div class="cap">
+        <div><h1><span class="kana">ニードル・ドロップ</span>Needle Drop</h1><p>Half a second of a song. Name it before the clip gets long. Wrong guesses cost you.</p></div>
+        <div class="cta"><a class="btn" href="/games/needle-drop/">Play</a><a class="btn alt" href="#">Host a room</a></div>
+      </div>
+    </article>
+    <aside class="board">
+      <div class="hd"><h2><small>ランキング</small>This week</h2><span class="reset">RESETS IN <b id="cd">--</b></span></div>
+      <ol class="rows">
+        <li><span class="rk">1</span><span class="mini" style="background:#ff6b4a"></span><span>@ruben<small>Needle Drop</small></span><span>1,240</span></li>
+        <li><span class="rk">2</span><span class="mini" style="background:#59c7ff"></span><span>@mari<small>Needle Drop</small></span><span>980</span></li>
+        <li><span class="rk">3</span><span class="mini" style="background:#ffc94a"></span><span>@jayy<small>Needle Drop</small></span><span>910</span></li>
+        <li><span class="rk">4</span><span class="mini" style="background:#a98bff"></span><span>@dev<small>Needle Drop</small></span><span>655</span></li>
+        <li><span class="rk">5</span><span class="mini" style="background:#3fd39a"></span><span>@kxng<small>Needle Drop</small></span><span>540</span></li>
+        <li><span class="rk">6</span><span class="mini" style="background:#ff9ec7"></span><span>@tay<small>Needle Drop</small></span><span>480</span></li>
+      </ol>
+      <div class="ft">Top 3 on Monday get that week's pin. Sample board.</div>
+    </aside>
+  </section>
+
+  <div class="sec" id="bag"><h3>My Bag</h3><span class="k">カバン</span><span class="r">PROFILE PREVIEW</span></div>
+  <section class="bagrow">
+    <div class="card">
+      <div class="banner bg-roof" id="banner"></div>
+      <div class="prof">
+        <span class="ava" aria-hidden="true"></span>
+        <h4>@ruben</h4>
+        <span class="title">Aux Cord Criminal</span>
+        <div class="lvl">LV 3<span class="xp"><i></i></span>LV 4</div>
+        <div class="skins" role="group" aria-label="Profile background">
+          <button class="bg-roof" data-bg="bg-roof" aria-pressed="true" aria-label="Rooftop"></button>
+          <button class="bg-train" data-bg="bg-train" aria-pressed="false" aria-label="Train ride"></button>
+          <button class="bg-arcade" data-bg="bg-arcade" aria-pressed="false" aria-label="Arcade"></button>
+          <span class="label">BACKGROUNDS</span>
+        </div>
+      </div>
+    </div>
+    <div class="card bag">
+      <h5>Pins</h5>
+      <p>Earn them in games, pin your favorites to your bag. Some are secret.</p>
+      <div class="pins" id="pins"></div>
+    </div>
+  </section>
+  <p class="note">Sample profile. Accounts come next.</p>
+
+  <div class="sec"><h3>The Lineup</h3><span class="k">ゲーム</span><span class="r">NEW GAME EVERY OTHER FRIDAY</span></div>
+  <section class="shelf">
+    <a class="g" href="/games/needle-drop/"><div class="s"><svg viewBox="0 0 24 24" data-rec aria-hidden="true"></svg></div><div class="t"><h4>Needle Drop</h4><div class="tags">MUSIC &middot; CUSTOM PACKS</div></div></a>
+    <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tags">DROPPING SOON</div></div></div>
+    <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tags">DROPPING SOON</div></div></div>
+    <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tags">DROPPING SOON</div></div></div>
+  </section>
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <h6>EVERY GAME ON RECESS</h6>
+    <div class="az"><a href="/games/needle-drop/">Needle Drop</a></div>
+    <p>&copy; <span id="yr"></span> RECESS &middot; someone coming? <span class="kbd">`</span></p>
+  </div>
+</footer>
+<script src="/assets/teacher.js"></script>
+<script>
+{
+  const P={o:'#0b0814',g1:'#2a2340',g2:'#1a1528',r:'#ff4b3e',rd:'#b3261d',y:'#ffcc33'};let out='';const c=11.5;
+  for(let y=0;y<24;y++)for(let x=0;x<24;x++){const d=Math.hypot(x-c,y-c);if(d>12)continue;const a=Math.atan2(y-c,x-c);let f;if(d>11||d<1.3)f=P.o;else if(d<4.6)f=(a>0&&a<1.2)?P.y:(x<c?P.rd:P.r);else if(d<5.4)f=P.o;else f=(Math.floor(d*1.2)%2)?P.g1:P.g2;out+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${f}"/>`}
+  document.querySelectorAll('[data-rec]').forEach(s=>s.innerHTML=out);
+
+  let L='';for(let i=0;i<72;i++){const a=i/72*Math.PI*2+(i%3)*.02,w=(i%4===0)?1.6:.6;L+=`<path d="M${Math.cos(a)*14} ${Math.sin(a)*14} L${Math.cos(a+.012)*80} ${Math.sin(a+.012)*80} L${Math.cos(a-.012)*80} ${Math.sin(a-.012)*80}Z" fill="#fff" opacity="${w/1.6}"/>`}
+  document.getElementById('lines').innerHTML=L;
+
+  const pix=(rows,cols)=>{let o='';rows.forEach((r,y)=>[...r].forEach((ch,x)=>{if(cols[ch])o+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${cols[ch]}"/>`}));return `<svg viewBox="0 0 10 10" aria-hidden="true">${o}</svg>`};
+  const PINS=[
+    {n:'Half-Second Club',bg:'#ff6b4a',art:pix(['..aaaaaa..','.aabbbbaa.','aabbbbbbaa','abbbccbbba','abbcddcbba','abbcddcbba','abbbccbbba','aabbbbbbaa','.aabbbbaa.','..aaaaaa..'],{a:'#05061a',b:'#2a2340',c:'#ffc94a',d:'#05061a'})},
+    {n:'First Drop',bg:'#59c7ff',art:pix(['....aa....','...abba...','..abbbba..','.abbbbbba.','.abbbbbba.','abbbbbbbba','abbbccbbba','.abbccbba.','..abbbba..','...aaaa...'],{a:'#05061a',b:'#ffffff',c:'#59c7ff'})},
+    {n:'Varsity Week',bg:'#ffc94a',art:pix(['aaaaaaaaaa','abbbbbbbba','abbaaaabba','abbabbabba','abbaaaabba','abbabbbbba','abbabbbbba','abbabbbbba','abbbbbbbba','aaaaaaaaaa'],{a:'#05061a',b:'#ff6b4a'})},
+    {n:"Teacher's Pet",bg:'#3fd39a',art:pix(['.....a....','....a.....','..aaaaaa..','.abbbbbba.','abbbbbbcba','abbbbbbbba','abbbbbbbba','.abbbbbba.','..abbbba..','...aaaa...'],{a:'#05061a',b:'#ff4b3e',c:'#ffffff'}),secret:1},
+    {n:'???',lock:1},{n:'???',lock:1}
+  ];
+  document.getElementById('pins').innerHTML=PINS.map(p=>p.lock?`<div class="pin lock"><div class="c"><b>?</b></div>LOCKED</div>`:`<div class="pin"><div class="c" style="background:${p.bg}">${p.art}</div>${p.n.toUpperCase()}${p.secret?'<br><span style="color:#ff6b4a">SECRET</span>':''}</div>`).join('');
+
+  const banner=document.getElementById('banner');
+  document.querySelectorAll('.skins button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.skins button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');banner.className='banner '+b.dataset.bg});
+
+  document.getElementById('yr').textContent=new Date().getFullYear();
+  const cd=document.getElementById('cd');
+  const tick=()=>{const n=new Date(),m=new Date(n);m.setDate(n.getDate()+((8-n.getDay())%7||7));m.setHours(0,0,0,0);let s=Math.floor((m-n)/1000);const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;cd.textContent=`${d}D ${String(h).padStart(2,'0')}H ${String(Math.floor(s/60)).padStart(2,'0')}M`};
+  tick();setInterval(tick,30000);
+}
+</script>
+</body>
+</html>
