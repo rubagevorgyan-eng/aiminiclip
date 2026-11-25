@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recess - logo round 2</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: a sketchbook page of marks, each one a small act of getting out
+IDEA: four marks built on breaking out quietly: the hole in the fence, a tag, a bored doodle, and the fence plus tag together
+PICTURE: the marks, big, then tiny, then on a hoodie chest
+COLOUR and TYPE: near-black, bone, ember. Marks drawn by hand in SVG. Archivo for notes
+LAYOUT: one row per concept: dark tile, light tile, sizes + hoodie
+*/
+:root{--bg:#07080d;--panel:#11131f;--line:#1e2133;--bone:#f1ede6;--dim:#868aa3;--ember:#ff4d2e}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--bone);font:400 16px/1.5 Archivo,system-ui,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:32px 20px 60px}
+h1{font:400 44px/1 Anton,sans-serif;margin:0 0 6px;letter-spacing:.5px}
+.lede{color:var(--dim);margin:0 0 30px;max-width:66ch}
+.c{display:grid;grid-template-columns:1fr 1fr .9fr;gap:14px;margin-bottom:22px;border-top:1px solid var(--line);padding-top:22px}
+.c h2{grid-column:1/-1;margin:0;font:400 26px/1 Anton,sans-serif;letter-spacing:.5px}
+.c h2 span{color:var(--ember);margin-right:10px}
+.c p{grid-column:1/-1;margin:-4px 0 4px;color:var(--dim);max-width:72ch}
+.tile{display:grid;place-items:center;min-height:240px;padding:20px}
+.dark{background:var(--panel);border:1px solid var(--line)}
+.light{background:var(--bone);color:#0a0a0a}
+.tile svg{width:100%;max-width:300px;height:auto}
+.side{display:grid;grid-template-rows:auto 1fr;gap:14px}
+.icons{display:flex;align-items:flex-end;justify-content:center;gap:16px;padding:16px;background:var(--panel);border:1px solid var(--line)}
+.icons div{text-align:center;font-size:12px;color:var(--dim)}
+.icons svg{display:block;margin:0 auto 6px}
+.hoodie{background:var(--panel);border:1px solid var(--line);display:grid;place-items:center;padding:10px}
+.hoodie svg{width:100%;max-width:220px}
+@media(max-width:860px){.c{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<h1>Logo round 2</h1>
+<p class="lede">Built on what kids actually live with at school: the fence, the filter, the boredom. Each one is about quietly getting out, not shouting about it. Rough drafts, drawn by hand in code. The hoodie preview is there because if it doesn't look good small on a chest, it's not the one.</p>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- chain link pattern -->
+    <pattern id="link" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M0 0 V12 M0 0 H12" stroke="#fff" stroke-width="2.2" fill="none"/>
+    </pattern>
+    <mask id="fenceMask" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
+      <rect x="8" y="8" width="104" height="104" fill="url(#link)"/>
+      <path d="M38 112 L37 94 L44 84 L40 72 L50 64 L58 67 L68 59 L77 68 L75 79 L84 90 L82 112 Z" fill="#000"/>
+    </mask>
+    <symbol id="fence" viewBox="0 0 120 120">
+      <rect width="120" height="120" fill="currentColor" mask="url(#fenceMask)"/>
+      <rect x="8" y="8" width="104" height="104" rx="3" fill="none" stroke="currentColor" stroke-width="5"/>
+      <path d="M38 112 L37 94 L44 84 L40 72 L50 64 L58 67 L68 59 L77 68 L75 79 L84 90 L82 112 Z" fill="#ff4d2e"/>
+      <g stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <path d="M37 94 L32 92"/><path d="M40 72 L35 69"/><path d="M50 64 L48 58"/><path d="M68 59 L69 53"/><path d="M77 68 L83 66"/><path d="M84 90 L89 89"/><path d="M44 84 L39 82"/><path d="M75 79 L80 78"/>
+      </g>
+    </symbol>
+    <!-- bored doodle -->
+    <symbol id="bored" viewBox="0 0 120 120">
+      <path d="M60 10 C88 9 110 30 109 60 C110 88 89 110 59 109 C31 110 10 89 11 59 C10 31 32 11 60 10 Z" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M33 50 C38 47 46 47 51 50" stroke="currentColor" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M69 50 C74 47 82 47 87 50" stroke="currentColor" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <circle cx="44" cy="56" r="4.5" fill="currentColor"/><circle cx="80" cy="56" r="4.5" fill="currentColor"/>
+      <path d="M44 82 C55 80 66 81 78 79" stroke="currentColor" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M92 70 C93 76 91 80 88 81 C85 80 84 76 86 71 C88 67 90 66 92 70 Z" fill="#ff4d2e"/>
+    </symbol>
+  </defs>
+</svg>
+
+<section class="c">
+  <h2><span>1</span>The hole in the fence</h2>
+  <p>Every school has one: the gap in the chain-link where people slip out. A fence with a hole peeled open, orange showing through. It says "we got out" without saying anything. Small, symbolic, works as a patch on a hoodie the way the best streetwear marks do.</p>
+  <div class="tile dark"><svg viewBox="0 0 120 120" role="img" aria-label="Fence mark"><use href="#fence" color="#f1ede6"/></svg></div>
+  <div class="tile light"><svg viewBox="0 0 120 120" role="img" aria-label="Fence mark light"><use href="#fence" color="#0a0a0a"/></svg></div>
+  <div class="side">
+    <div class="icons">
+      <div><svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" fill="#07080d"/><use href="#fence" x="2" y="2" width="60" height="60" color="#f1ede6"/></svg>App</div>
+      <div><svg width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" fill="#07080d"/><use href="#fence" width="32" height="32" color="#f1ede6"/></svg>Tab</div>
+      <div><svg width="16" height="16" viewBox="0 0 16 16"><rect width="16" height="16" fill="#07080d"/><use href="#fence" width="16" height="16" color="#f1ede6"/></svg>16px</div>
+    </div>
+    <div class="hoodie"><svg viewBox="0 0 220 160" aria-hidden="true"><path d="M30 160 L36 60 Q40 30 80 20 Q110 40 140 20 Q180 30 184 60 L190 160 Z" fill="#1b1d26"/><path d="M80 20 Q110 48 140 20" fill="none" stroke="#0e0f15" stroke-width="6"/><use href="#fence" x="138" y="62" width="30" height="30" color="#f1ede6"/></svg></div>
+  </div>
+</section>
+
+<section class="c">
+  <h2><span>2</span>The tag</h2>
+  <p>"recess" written like a tag on a bathroom stall or the back of a desk. This one is the strongest answer to "it feels AI": the best version is literally you writing it with a Sharpie, scanned in. That's how Stüssy started. Shown here with a stand-in handstyle font.</p>
+  <div class="tile dark"><svg viewBox="0 0 300 120" role="img" aria-label="Tag wordmark"><text x="150" y="82" text-anchor="middle" font-family="'Sedgwick Ave Display',cursive" font-size="78" fill="#f1ede6" transform="rotate(-6 150 60)">recess</text><path d="M58 98 C120 92 190 90 246 84" stroke="#ff4d2e" stroke-width="5" fill="none" stroke-linecap="round" transform="rotate(-6 150 60)"/></svg></div>
+  <div class="tile light"><svg viewBox="0 0 300 120" role="img" aria-label="Tag wordmark light"><text x="150" y="82" text-anchor="middle" font-family="'Sedgwick Ave Display',cursive" font-size="78" fill="#0a0a0a" transform="rotate(-6 150 60)">recess</text><path d="M58 98 C120 92 190 90 246 84" stroke="#ff4d2e" stroke-width="5" fill="none" stroke-linecap="round" transform="rotate(-6 150 60)"/></svg></div>
+  <div class="side">
+    <div class="icons">
+      <div><svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" fill="#07080d"/><text x="32" y="46" text-anchor="middle" font-family="'Sedgwick Ave Display',cursive" font-size="48" fill="#f1ede6" transform="rotate(-6 32 32)">r</text><path d="M18 52 C30 50 40 49 48 47" stroke="#ff4d2e" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg>App</div>
+      <div><svg width="32" height="32" viewBox="0 0 64 64"><rect width="64" height="64" fill="#07080d"/><text x="32" y="46" text-anchor="middle" font-family="'Sedgwick Ave Display',cursive" font-size="48" fill="#f1ede6" transform="rotate(-6 32 32)">r</text><path d="M18 52 C30 50 40 49 48 47" stroke="#ff4d2e" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg>Tab</div>
+      <div><svg width="16" height="16" viewBox="0 0 64 64"><rect width="64" height="64" fill="#07080d"/><text x="32" y="46" text-anchor="middle" font-family="'Sedgwick Ave Display',cursive" font-size="48" fill="#f1ede6">r</text></svg>16px</div>
+    </div>
+    <div class="hoodie"><svg viewBox="0 0 220 160" aria-hidden="true"><path d="M30 160 L36 60 Q40 30 80 20 Q110 40 140 20 Q180 30 184 60 L190 160 Z" fill="#1b1d26"/><path d="M80 20 Q110 48 140 20" fill="none" stroke="#0e0f15" stroke-width="6"/><text x="110" y="104" text-anchor="middle" font-family="'Sedgwick Ave Display',cursive" font-size="40" fill="#f1ede6" transform="rotate(-6 110 96)">recess</text></svg></div>
+  </div>
+</section>
+
+<section class="c">
+  <h2><span>3</span>The bored face</h2>
+  <p>The face everyone makes in 4th period. Drawn like a margin doodle: half-shut eyes, flat mouth, one orange drop of sweat. Deadpan is how this generation jokes. It can become the mascot: it reacts in games, it shows up on loading screens, it gets merch.</p>
+  <div class="tile dark"><svg viewBox="0 0 120 120" role="img" aria-label="Bored face"><use href="#bored" color="#f1ede6"/></svg></div>
+  <div class="tile light"><svg viewBox="0 0 120 120" role="img" aria-label="Bored face light"><use href="#bored" color="#0a0a0a"/></svg></div>
+  <div class="side">
+    <div class="icons">
+      <div><svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" fill="#ff4d2e"/><use href="#bored" x="6" y="6" width="52" height="52" color="#07080d"/></svg>App</div>
+      <div><svg width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" fill="#ff4d2e"/><use href="#bored" x="2" y="2" width="28" height="28" color="#07080d"/></svg>Tab</div>
+      <div><svg width="16" height="16" viewBox="0 0 16 16"><rect width="16" height="16" fill="#ff4d2e"/><use href="#bored" width="16" height="16" color="#07080d"/></svg>16px</div>
+    </div>
+    <div class="hoodie"><svg viewBox="0 0 220 160" aria-hidden="true"><path d="M30 160 L36 60 Q40 30 80 20 Q110 40 140 20 Q180 30 184 60 L190 160 Z" fill="#1b1d26"/><path d="M80 20 Q110 48 140 20" fill="none" stroke="#0e0f15" stroke-width="6"/><use href="#bored" x="88" y="66" width="44" height="44" color="#f1ede6"/></svg></div>
+  </div>
+</section>
+
+<section class="c">
+  <h2><span>4</span>Fence and tag together</h2>
+  <p>The full lockup: the fence mark as the icon, the tag as the name. The fence lives on the app icon and the chest. The tag lives on the site header and the back print.</p>
+  <div class="tile dark"><svg viewBox="0 0 300 120" role="img" aria-label="Fence and tag lockup"><use href="#fence" x="6" y="14" width="92" height="92" color="#f1ede6"/><text x="200" y="80" text-anchor="middle" font-family="'Sedgwick Ave Display',cursive" font-size="60" fill="#f1ede6" transform="rotate(-6 200 60)">recess</text></svg></div>
+  <div class="tile light"><svg viewBox="0 0 300 120" role="img" aria-label="Fence and tag lockup light"><use href="#fence" x="6" y="14" width="92" height="92" color="#0a0a0a"/><text x="200" y="80" text-anchor="middle" font-family="'Sedgwick Ave Display',cursive" font-size="60" fill="#0a0a0a" transform="rotate(-6 200 60)">recess</text></svg></div>
+  <div class="side">
+    <div class="hoodie" style="grid-row:span 2"><svg viewBox="0 0 220 160" aria-hidden="true"><path d="M30 160 L36 60 Q40 30 80 20 Q110 40 140 20 Q180 30 184 60 L190 160 Z" fill="#1b1d26"/><path d="M80 20 Q110 48 140 20" fill="none" stroke="#0e0f15" stroke-width="6"/><use href="#fence" x="138" y="62" width="26" height="26" color="#f1ede6"/><text x="96" y="130" text-anchor="middle" font-family="'Sedgwick Ave Display',cursive" font-size="22" fill="#f1ede6" opacity=".9" transform="rotate(-6 96 124)">recess</text></svg></div>
+  </div>
+</section>
+</main>
+</body>
+</html>
