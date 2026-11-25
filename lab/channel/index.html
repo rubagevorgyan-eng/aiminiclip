@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recess - Channel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: 2007 living room console menu, calm, glossy, a little bit of magic
+IDEA: games are channels on a console home menu; the bottom bar holds your profile, a live clock and the leaderboards
+PICTURE: a 4x3 grid of glossy channel tiles over pinstripes, curved bottom dock
+COLOUR and TYPE: pale grey pinstripe, white glass, console cyan for selection. M PLUS Rounded for everything
+LAYOUT: tiles fill the screen, dock pinned to the bottom
+*/
+:root{--bg:#e8ecef;--line:#dde2e6;--tile:#fff;--rim:#cfd6dc;--cyan:#34beed;--ink:#5a5f66;--deep:#2b3036;--font:"M PLUS Rounded 1c",system-ui,sans-serif}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%}
+body{background:repeating-linear-gradient(0deg,var(--bg) 0 3px,var(--line) 3px 4px);color:var(--ink);font:500 16px/1.4 var(--font);display:flex;flex-direction:column;min-height:100vh;overflow-x:clip}
+.top{display:flex;justify-content:space-between;align-items:center;padding:16px 28px 0}
+.logo{font:800 26px/1 var(--font);color:#9aa2aa;letter-spacing:-.5px;text-decoration:none}
+.logo b{color:var(--cyan)}
+.page{font:700 13px var(--font);color:#9aa2aa}
+.grid{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;padding:22px 28px 150px;max-width:1240px;width:100%;margin:0 auto;align-content:start}
+.ch{position:relative;aspect-ratio:16/10;border-radius:22px;background:var(--tile);border:3px solid var(--rim);box-shadow:inset 0 -6px 14px rgba(0,0,0,.05),0 2px 0 #fff;overflow:hidden;text-decoration:none;color:inherit;transition:transform .18s cubic-bezier(.3,1.6,.5,1),border-color .15s,box-shadow .15s}
+.ch:hover,.ch:focus-visible{transform:scale(1.05);border-color:var(--cyan);box-shadow:0 0 0 4px rgba(52,190,237,.35),0 10px 24px -8px rgba(52,190,237,.6);outline:0;z-index:2}
+.ch .scr{position:absolute;inset:7px;border-radius:15px;overflow:hidden;display:grid;place-items:center}
+.ch .scr::after{content:"";position:absolute;inset:0;background:linear-gradient(170deg,rgba(255,255,255,.55),rgba(255,255,255,0) 45%);pointer-events:none}
+.nd{background:radial-gradient(110% 90% at 50% 10%,#3a2563,#1b1230 70%)}
+.nd svg{width:42%;shape-rendering:crispEdges}
+.nd b{position:absolute;bottom:8%;font:800 15px var(--font);color:#ffcc33;letter-spacing:1px}
+.empty .scr{background:repeating-linear-gradient(0deg,#f1f3f5 0 3px,#e9ecef 3px 4px)}
+.empty span{font:700 12px var(--font);color:#b8bec4}
+.dock{position:fixed;left:0;right:0;bottom:0;height:128px;pointer-events:none}
+.dock svg.bar{position:absolute;inset:0;width:100%;height:100%}
+.dock .in{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:22px 34px 0;pointer-events:auto}
+.round{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle at 40% 30%,#fff,#e9eef2 70%);border:3px solid var(--rim);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.12);font:800 12px/1.1 var(--font);color:var(--ink);text-align:center;transition:transform .15s}
+.round:hover{transform:scale(1.07);border-color:var(--cyan)}
+.av{width:44px;height:44px;border-radius:50%;background:linear-gradient(#ffd8a8,#f5b77a);border:3px solid #fff;box-shadow:0 0 0 2px var(--rim);position:relative}
+.av::before,.av::after{content:"";position:absolute;top:16px;width:5px;height:7px;border-radius:3px;background:#3b2a20}
+.av::before{left:12px}.av::after{right:12px}
+.clock{text-align:center;color:#8f979f}
+.clock .t{font:700 44px/1 var(--font);letter-spacing:1px}
+.clock .d{font:700 15px var(--font);margin-top:4px}
+.panel{position:fixed;right:24px;bottom:140px;width:300px;background:rgba(255,255,255,.94);border:3px solid var(--rim);border-radius:20px;padding:16px;box-shadow:0 14px 30px -10px rgba(0,0,0,.25);display:none}
+.panel.open{display:block}
+.panel h3{margin:0 0 10px;font:800 15px var(--font);color:var(--deep)}
+.lb{list-style:none;margin:0;padding:0}
+.lb li{display:flex;justify-content:space-between;padding:7px 4px;border-top:2px dotted #e3e7ea;font-weight:700}
+.lb li b{color:var(--cyan)}
+.me{left:24px;right:auto}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.badge{font:800 11px var(--font);padding:6px 10px;border-radius:999px;background:#eef7fb;border:2px solid #bfe7f6;color:#2a8db3}
+.badge.lock{background:#f3f4f5;border-color:#e1e4e7;color:#b0b6bc}
+.note{font-size:11px;color:#a5acb3;margin:8px 0 0}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px 14px 150px}.dock .in{padding:22px 16px 0}.round{width:68px;height:68px}.clock .t{font-size:34px}.panel{left:12px;right:12px;width:auto}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="top"><a class="logo" href="/lab/">re<b>cess</b></a><span class="page">1 / 1</span></div>
+<main class="grid" id="grid">
+  <a class="ch" href="/games/needle-drop/"><div class="scr nd"><svg viewBox="0 0 24 24" data-rec></svg><b>NEEDLE DROP</b></div></a>
+</main>
+<div class="dock">
+  <svg class="bar" viewBox="0 0 1000 128" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 Q 120 40 170 18 Q 200 6 240 6 L 760 6 Q 800 6 830 18 Q 880 40 1000 40 L1000 128 L0 128Z" fill="#f7f9fa" stroke="#cfd6dc" stroke-width="3"/></svg>
+  <div class="in">
+    <button class="round" id="meBtn" aria-label="Your profile"><span class="av"></span></button>
+    <div class="clock"><div class="t" id="t">--:--</div><div class="d" id="d"></div></div>
+    <button class="round" id="lbBtn">TOP<br>SCORES</button>
+  </div>
+</div>
+<div class="panel me" id="mePanel">
+  <h3>@ruben &middot; level 3</h3>
+  <div class="badges"><span class="badge">First Drop</span><span class="badge">Half-Second Club</span><span class="badge lock">???</span></div>
+  <p class="note">Sample profile. Accounts come next.</p>
+</div>
+<div class="panel" id="lbPanel">
+  <h3>Needle Drop &middot; this week</h3>
+  <ol class="lb"><li>@ruben <b>1,240</b></li><li>@jayy <b>980</b></li><li>@mari <b>710</b></li><li>@dev <b>655</b></li></ol>
+  <p class="note">Sample scores.</p>
+</div>
+<script>
+{
+  const g=document.getElementById('grid');
+  for(let i=0;i<11;i++){const d=document.createElement('div');d.className='ch empty';d.innerHTML='<div class="scr"><span></span></div>';g.appendChild(d)}
+  const P={o:'#0b0814',g1:'#2a2340',g2:'#1a1528',r:'#ff4b3e',rd:'#b3261d',y:'#ffcc33'};let out='';const c=11.5;
+  for(let y=0;y<24;y++)for(let x=0;x<24;x++){const d=Math.hypot(x-c,y-c);if(d>12)continue;const a=Math.atan2(y-c,x-c);let f;if(d>11||d<1.3)f=P.o;else if(d<4.6)f=(a>0&&a<1.2)?P.y:(x<c?P.rd:P.r);else if(d<5.4)f=P.o;else f=(Math.floor(d*1.2)%2)?P.g1:P.g2;out+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${f}"/>`}
+  document.querySelectorAll('[data-rec]').forEach(s=>s.innerHTML=out);
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const tick=()=>{const n=new Date();let h=n.getHours()%12||12;document.getElementById('t').textContent=h+(n.getSeconds()%2?' ':':')+String(n.getMinutes()).padStart(2,'0');document.getElementById('d').textContent=days[n.getDay()]+' '+(n.getMonth()+1)+'/'+n.getDate()};
+  tick();setInterval(tick,1000);
+  const tog=(b,p,o)=>document.getElementById(b).onclick=()=>{document.getElementById(o).classList.remove('open');document.getElementById(p).classList.toggle('open')};
+  tog('meBtn','mePanel','lbPanel');tog('lbBtn','lbPanel','mePanel');
+}
+</script>
+</body>
+</html>
