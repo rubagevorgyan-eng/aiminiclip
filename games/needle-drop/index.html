@@ -67,6 +67,15 @@ LAYOUT: 880x640 stage (550x400 x1.6) with two columns on desktop, stacked on pho
 .title-rec .disc{animation:spin 2.4s steps(12) infinite}
 .blurb{max-width:42ch;margin:0 auto 16px;color:#d9cfe8}
 .title .gb{max-width:300px;margin:0 auto}
+.src{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:0 auto 10px;max-width:600px}
+.src button{font:700 12px var(--px);padding:8px 10px;background:var(--n2);color:var(--cream);border:2px solid var(--nl);cursor:pointer}
+.src button[aria-selected=true]{background:var(--gold);color:var(--nl)}
+.src button:focus-visible{outline:2px dashed var(--gold);outline-offset:2px}
+.srcp{max-width:520px;width:100%;margin:0 auto 12px;text-align:left}
+.srcp .note{color:var(--lav);font-size:12px;margin:4px 0 0;text-align:center}
+.srcp label{display:block;font-weight:bold;margin:10px 0 4px;font-size:12px}
+.title .title-rec{width:84px;height:84px;margin:12px auto 8px}
+.title .blurb{margin-bottom:12px}
 details.opts{max-width:520px;width:100%;margin:16px auto 0;text-align:left;background:var(--n1);border:2px solid var(--nl)}
 details.opts summary{cursor:pointer;padding:10px 12px;font:700 12px var(--px);color:var(--gold);list-style:none}
 details.opts summary::-webkit-details-marker{display:none}
@@ -264,19 +273,26 @@ body.playing .eq i{animation:eq .48s steps(4) infinite alternate}
       <h2 class="nd-logo">NEEDLE<span>DROP</span></h2>
       <div class="title-rec" aria-hidden="true"><span class="disc"></span><span class="shine"></span></div>
       <p class="blurb">Half a second of a song. Name it. Can't? Take a second. Then three, five, ten. The longer you need, the less you get.</p>
+      <div class="src" role="tablist" aria-label="Song source">
+        <button role="tab" data-s="charts">TOP CHARTS</button><button role="tab" data-s="artists">PICK ARTISTS</button><button role="tab" data-s="mine">MY PLAYLIST</button><button role="tab" data-s="ruben">RUBEN'S PACK</button>
+      </div>
+      <div class="srcp" id="p-charts"><p class="note">The 100 biggest songs right now, pulled fresh every game.</p></div>
+      <div class="srcp hide" id="p-artists"><input type="text" id="artists" placeholder="Drake, SZA, Travis Scott, Kanye West" aria-label="Artists, separated by commas"><p class="note">Type 5 or more artists, commas between. We grab each one's top 15 songs.</p></div>
+      <div class="srcp hide" id="p-mine">
+        <p class="note" id="mineSaved"></p>
+        <label for="csv">Upload an Exportify CSV</label>
+        <input type="file" id="csv" accept=".csv,text/csv">
+        <label for="paste">Or paste songs (Song - Artist), one per line, or a public Deezer playlist link</label>
+        <textarea id="paste" placeholder="Money Trees - Kendrick Lamar"></textarea>
+      </div>
+      <div class="srcp hide" id="p-ruben"><p class="note">Ruben's playlist and Liked Songs. 1,120 songs.</p></div>
       <button class="gb g-red" id="startBtn">START</button>
       <p class="status" id="setupStatus"></p>
       <details class="opts">
         <summary>OPTIONS</summary>
         <div class="in">
-          <p class="note">Ruben's playlist and Liked Songs (1,120 songs) are loaded. Leave both song boxes empty to play it.</p>
           <label for="players">Players (commas between names)</label>
           <input type="text" id="players" value="Me">
-          <label for="csv">Your own playlist (Exportify CSV)</label>
-          <input type="file" id="csv" accept=".csv,text/csv">
-          <label for="paste">Or paste songs, one per line</label>
-          <textarea id="paste" placeholder="Money Trees - Kendrick Lamar"></textarea>
-          <p class="note">Song - Artist. A public Deezer playlist link works too.</p>
           <label class="check"><input type="checkbox" id="fromStart"> Clips start at the top of the preview</label>
         </div>
       </details>
@@ -626,6 +642,7 @@ async function loadDeezerPlaylist(id){
 }
 
 async function resolve(song){
+  if(song.preview)return {title:song.title,artist:song.artist,preview:song.preview,cover:song.cover};
   let ok=false;
   if(song.isrc){
     try{const d=await jsonp('https://api.deezer.com/track/isrc:'+encodeURIComponent(song.isrc));ok=true;
@@ -656,17 +673,61 @@ async function nextPlayable(){
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
 
+/* song sources */
+const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return false}}};
+let mySongs=null;try{mySongs=JSON.parse(store.get('nd-my')||'null')}catch(e){}
+let source=store.get('nd-src')||(mySongs&&mySongs.length?'mine':'charts');
+$('artists').value=store.get('nd-artists')||'';
+function drawMine(){$('mineSaved').textContent=mySongs&&mySongs.length?`Your saved playlist: ${mySongs.length} songs. Upload or paste to replace it.`:'Nothing saved yet. Upload or paste once and it stays on this device.'}
+function pickSource(s){
+  source=s;store.set('nd-src',s);
+  document.querySelectorAll('.src button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.s===s)));
+  ['charts','artists','mine','ruben'].forEach(k=>show('p-'+k,k===s));
+}
+document.querySelectorAll('.src button').forEach(b=>b.onclick=()=>pickSource(b.dataset.s));
+drawMine();pickSource(source);
+const dzTrack=t=>({title:t.title,artist:(t.contributors&&t.contributors.length?t.contributors:[t.artist]).map(c=>c.name).join(', '),preview:t.preview,cover:t.album&&(t.album.cover_big||t.album.cover_medium)});
+function dedupe(list){const seen=new Set();return list.filter(x=>{const k=(x.title+'|'+String(x.artist).split(',')[0]).toLowerCase();if(seen.has(k))return false;seen.add(k);return true})}
+async function loadSource(st){
+  if(source==='ruben')return MINE.slice();
+  if(source==='charts'){
+    st.textContent='Pulling the charts...';
+    const d=await jsonp('https://api.deezer.com/chart/0/tracks?limit=100');
+    return dedupe((d.data||[]).filter(t=>t.preview).map(dzTrack));
+  }
+  if(source==='artists'){
+    const names=$('artists').value.split(',').map(x=>x.trim()).filter(Boolean).slice(0,15);
+    if(names.length<2)throw new Error('Type at least 2 artists, with commas between them.');
+    store.set('nd-artists',$('artists').value);
+    const out=[];const missed=[];
+    for(let i=0;i<names.length;i++){
+      st.textContent=`Grabbing ${names[i]} (${i+1}/${names.length})...`;
+      const s=await jsonp('https://api.deezer.com/search/artist?limit=1&q='+encodeURIComponent(names[i]));
+      const a=s.data&&s.data[0];if(!a){missed.push(names[i]);continue}
+      const t=await jsonp(`https://api.deezer.com/artist/${a.id}/top?limit=15`);
+      (t.data||[]).filter(x=>x.preview).forEach(x=>out.push(dzTrack(x)));
+    }
+    if(missed.length)st.textContent='Could not find: '+missed.join(', ');
+    return dedupe(out);
+  }
+  const file=$('csv').files[0];const text=$('paste').value.trim();
+  if(file||text){
+    st.textContent='Loading your songs...';
+    const dz=text.match(/deezer\.com\/(?:[a-z]{2}\/)?playlist\/(\d+)/);
+    const list=file?parseCSV(await file.text()):dz?await loadDeezerPlaylist(dz[1]):parsePaste(text);
+    mySongs=list;if(!store.set('nd-my',JSON.stringify(list)))st.textContent='Loaded, but this browser would not save it for next time.';
+    $('csv').value='';$('paste').value='';drawMine();
+    return list;
+  }
+  if(mySongs&&mySongs.length)return mySongs.slice();
+  throw new Error('Upload a playlist or paste some songs first.');
+}
 $('startBtn').onclick=async()=>{
   const st=$('setupStatus');st.className='status';
   try{
-    const file=$('csv').files[0];const text=$('paste').value.trim();
     st.textContent='Loading songs...';
-    const dz=text.match(/deezer\.com\/(?:[a-z]{2}\/)?playlist\/(\d+)/);
-    if(file)songs=parseCSV(await file.text());
-    else if(!text)songs=MINE.slice();
-    else if(dz)songs=await loadDeezerPlaylist(dz[1]);
-    else songs=parsePaste(text);
-    if(songs.length<2)throw new Error('Add at least a couple of songs first.');
+    try{songs=await loadSource(st)}catch(e){if(/network|timeout/.test(e.message))throw new Error("Can't reach Deezer. Open this in Chrome or Safari, not inside the Claude app.");throw e}
+    if(songs.length<2)throw new Error('Not enough songs with previews. Try more artists or a bigger playlist.');
     players=$('players').value.split(',').map(s=>s.trim()).filter(Boolean);
     if(!players.length)players=['Me'];
     scores={};lastScores={};players.forEach(p=>{scores[p]=0;lastScores[p]=0});
