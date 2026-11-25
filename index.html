@@ -3,97 +3,87 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>gotoAndPlay - free games, no downloads</title>
+<title>Recess</title>
 <meta name="description" content="Free browser games. No downloads, no accounts.">
-<meta name="theme-color" content="#2a2e35">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23ff6a00'/%3E%3Cpath d='M6 4l6 4-6 4z' fill='%23fff'/%3E%3C/svg%3E">
-<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#FBF8F1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%23FF8A1F'/%3E%3Ctext x='8' y='12.5' font-family='Arial Black,Arial' font-weight='900' font-size='12' text-anchor='middle' fill='%231D1B22'%3Er%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Karla:wght@500;700&family=Silkscreen:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
 <style>
-.feature{display:grid;grid-template-columns:330px 1fr;gap:16px}
-.thumb{display:block;border:1px solid #000;padding:2px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)}
-.thumb .art{position:relative;aspect-ratio:4/3;background:radial-gradient(120% 90% at 50% 20%,#3a2563,#1b1230 70%);overflow:hidden;display:grid;place-items:center}
-.thumb svg.rec{width:46%;shape-rendering:crispEdges;image-rendering:pixelated}
-.thumb .t{position:absolute;left:0;right:0;bottom:10px;text-align:center;font:700 20px/1 Silkscreen,monospace;color:#ffcc33;text-shadow:2px 2px 0 #000}
-.feature h3{margin:2px 0 2px;font:bold 20px/1.2 var(--site)}
-.meta{color:var(--mute);font-size:11px;margin:0 0 10px}
-.meta a{color:var(--mute)}
-.feature p{margin:0 0 10px;font-size:13px}
-.how{background:#fff;border:1px solid var(--rule2);padding:8px 10px;margin:0 0 14px;font-size:12px}
-.how b{display:block;font-size:11px;color:var(--mute);text-transform:none}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.card{display:block;text-decoration:none;color:inherit}
-.card .thumb .t{font-size:13px;bottom:6px}
-.card h4{margin:6px 0 0;font:bold 12px/1.3 var(--site);color:var(--link)}
-.card:hover h4{color:var(--linkHi);text-decoration:underline}
-.card .meta{margin:1px 0 0}
-.slot .thumb .art{background:repeating-linear-gradient(135deg,#cfd3d9 0 6px,#c3c8cf 6px 12px)}
-.slot .thumb .t{color:#59606b;text-shadow:none;font-weight:400;bottom:auto;position:static}
-.slot h4{color:var(--mute)}
-.about p{margin:0 0 8px;font-size:13px;max-width:70ch}
-@media(max-width:980px){
-  .feature{grid-template-columns:1fr}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.lede{font-size:20px;max-width:30ch;margin:18px 0 34px;color:var(--mute)}
+.lede b{color:var(--ink);font-weight:700}
+.shelf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px}
+.game{display:block;text-decoration:none;color:inherit;transition:transform .15s}
+a.game:hover{transform:translateY(-4px) rotate(-.4deg)}
+a.game:focus-visible{outline:3px solid var(--ink);outline-offset:6px;border-radius:26px}
+.game .screen-in{aspect-ratio:16/10;display:grid;place-items:center;position:relative;background:radial-gradient(110% 90% at 50% 10%,#3a2563,#1b1230 70%)}
+.game svg.rec{width:38%;shape-rendering:crispEdges}
+.game .t{position:absolute;left:0;right:0;bottom:14px;text-align:center;font:700 22px/1 Silkscreen,monospace;color:#ffcc33;text-shadow:3px 3px 0 #0b0814}
+.game .row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:16px 6px 4px;color:#fff}
+.game h3{margin:0;font:400 30px/1 var(--display);text-shadow:0 2px 0 rgba(0,0,0,.18)}
+.game .meta{margin:6px 0 0;font-weight:700;font-size:14px;opacity:.9}
+.soon .screen-in{background:repeating-linear-gradient(135deg,#2a1d48 0 10px,#24183f 10px 20px)}
+.soon .q{font:400 64px/1 var(--display);color:rgba(255,255,255,.18)}
+.strip{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:34px}
+.strip .card{padding:18px 22px}
+.strip h2{font-size:20px;margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.about{margin-top:48px;display:grid;grid-template-columns:1.4fr 1fr;gap:20px}
+.about p{margin:0 0 10px}
+@media(max-width:760px){
+  .shelf,.about,.strip{grid-template-columns:1fr}
+  .lede{font-size:18px;margin-bottom:24px}
+  .game h3{font-size:26px}
 }
 </style>
 </head>
 <body>
-<header class="top">
-  <div class="wrap">
-    <a class="logo" href="/"><span class="ico" aria-hidden="true"></span><span class="word">goto<i>And</i><b>Play</b></span></a>
-    <span class="tagline">free games &middot; no downloads &middot; no accounts</span>
-  </div>
-</header>
-<nav class="nav"><div class="wrap">
-  <a class="on" href="/">Games</a>
-  <a href="#all">All Games</a>
-  <a href="/games/needle-drop/" id="rnd">Random</a>
-  <a href="#about">About</a>
-</div></nav>
+<header class="top"><div class="wrap">
+  <a class="logo" href="/">recess</a>
+  <nav class="nav"><a class="on" href="/">Games</a><a href="#about">About</a></nav>
+</div></header>
 
-<main class="wrap main">
-  <section class="well">
-    <h2 class="bar">Featured</h2>
-    <div class="pad feature">
-      <a class="thumb" href="/games/needle-drop/" aria-label="Play Needle Drop">
-        <span class="art"><svg class="rec" viewBox="0 0 24 24" data-rec></svg><span class="t">NEEDLE DROP</span></span>
-      </a>
-      <div>
-        <h3>Needle Drop</h3>
-        <p class="meta">by Ruben &middot; <a href="#all">Music</a> &middot; 1 to 8 players, one screen</p>
-        <p>You get half a second of a song. Then a second. Then three, five, ten. Name it before the clip gets long and you take the big points. Guess wrong and it costs you.</p>
-        <div class="how"><b>Controls</b>Mouse to play clips, keyboard to type your guess. Arrow keys and Enter pick from the list.</div>
-        <a class="btn-or" href="/games/needle-drop/">Play Now &raquo;</a>
+<main class="wrap">
+  <p class="lede">Games for when you're <b>supposed to be doing something else.</b></p>
+
+  <section class="strip" aria-label="Your games">
+    <div class="card"><h2>Last played</h2><div class="chips" id="recent"></div></div>
+    <div class="card"><h2>My Recess</h2><div class="chips" id="mine"></div></div>
+  </section>
+
+  <section class="shelf" aria-label="Games">
+    <a class="game candy c-tangerine" href="/games/needle-drop/">
+      <div class="screen-in"><svg class="rec" viewBox="0 0 24 24" data-rec aria-hidden="true"></svg><span class="t">NEEDLE DROP</span></div>
+      <div class="row">
+        <div><h3>Needle Drop</h3><p class="meta">Name the song from half a second of it</p></div>
+        <span class="pill light small">Play</span>
+      </div>
+    </a>
+    <div class="game candy c-grape soon">
+      <div class="screen-in"><span class="q">?</span></div>
+      <div class="row">
+        <div><h3>Next one</h3><p class="meta">Still cooking</p></div>
       </div>
     </div>
   </section>
 
-  <section class="well" id="all">
-    <h2 class="bar">All Games <small>newest first</small></h2>
-    <div class="pad grid">
-      <a class="card" href="/games/needle-drop/">
-        <span class="thumb"><span class="art"><svg class="rec" viewBox="0 0 24 24" data-rec></svg><span class="t">NEEDLE DROP</span></span></span>
-        <h4>Needle Drop</h4>
-        <p class="meta">Music &middot; Ruben</p>
-      </a>
-      <div class="card slot" aria-label="Next game coming soon">
-        <span class="thumb"><span class="art"><span class="t">LOADING...</span></span></span>
-        <h4>Next game</h4>
-        <p class="meta">On the bench</p>
-      </div>
+  <section class="about" id="about">
+    <div class="card">
+      <h2>What is this</h2>
+      <p>A little shelf of browser games. They run right here, no installs, no logins, no "get the app" popups.</p>
+      <p>New ones show up when they're done. Got an idea for one? Tell Ruben.</p>
     </div>
-  </section>
-
-  <section class="well about" id="about">
-    <h2 class="bar">About</h2>
-    <div class="pad">
-      <p>gotoAndPlay is a small corner of the internet for browser games. Everything runs right in the page. No installs, no logins, no "download our app" popups.</p>
-      <p>New games show up when they're ready, not on a schedule. If you've got one you want to see on here, hit up Ruben.</p>
+    <div class="card">
+      <h2>House rules</h2>
+      <p>Sound on. Bring friends. And if someone walks up behind you, there's a key for that. <span class="kbd">`</span></p>
     </div>
   </section>
 </main>
 
-<footer class="foot">&copy; <span id="yr"></span> gotoAndPlay &middot; stop();</footer>
+<footer class="foot"><p class="az-h">Every game on Recess</p><nav class="az" id="allgames" aria-label="All games"></nav>&copy; <span id="yr"></span> Recess</footer>
+<script src="/assets/teacher.js"></script>
+<script src="/assets/recess.js"></script>
 <script>
 {
   document.getElementById('yr').textContent=new Date().getFullYear();
@@ -105,8 +95,8 @@
     out+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${f}"/>`;
   }
   document.querySelectorAll('[data-rec]').forEach(s=>s.innerHTML=out);
-  const games=['/games/needle-drop/'];
-  document.getElementById('rnd').href=games[Math.random()*games.length|0];
+  Recess.list(document.getElementById('recent'),Recess.recent(),'Nothing yet. Go play something.');
+  Recess.list(document.getElementById('mine'),Recess.mine(),'Hit the heart on a game to keep it here.');
 }
 </script>
 </body>
