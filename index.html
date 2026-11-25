@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>gotoAndPlay - free games, no downloads</title>
+<meta name="description" content="Free browser games. No downloads, no accounts.">
+<meta name="theme-color" content="#2a2e35">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23ff6a00'/%3E%3Cpath d='M6 4l6 4-6 4z' fill='%23fff'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.feature{display:grid;grid-template-columns:330px 1fr;gap:16px}
+.thumb{display:block;border:1px solid #000;padding:2px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.thumb .art{position:relative;aspect-ratio:4/3;background:radial-gradient(120% 90% at 50% 20%,#3a2563,#1b1230 70%);overflow:hidden;display:grid;place-items:center}
+.thumb svg.rec{width:46%;shape-rendering:crispEdges;image-rendering:pixelated}
+.thumb .t{position:absolute;left:0;right:0;bottom:10px;text-align:center;font:700 20px/1 Silkscreen,monospace;color:#ffcc33;text-shadow:2px 2px 0 #000}
+.feature h3{margin:2px 0 2px;font:bold 20px/1.2 var(--site)}
+.meta{color:var(--mute);font-size:11px;margin:0 0 10px}
+.meta a{color:var(--mute)}
+.feature p{margin:0 0 10px;font-size:13px}
+.how{background:#fff;border:1px solid var(--rule2);padding:8px 10px;margin:0 0 14px;font-size:12px}
+.how b{display:block;font-size:11px;color:var(--mute);text-transform:none}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{display:block;text-decoration:none;color:inherit}
+.card .thumb .t{font-size:13px;bottom:6px}
+.card h4{margin:6px 0 0;font:bold 12px/1.3 var(--site);color:var(--link)}
+.card:hover h4{color:var(--linkHi);text-decoration:underline}
+.card .meta{margin:1px 0 0}
+.slot .thumb .art{background:repeating-linear-gradient(135deg,#cfd3d9 0 6px,#c3c8cf 6px 12px)}
+.slot .thumb .t{color:#59606b;text-shadow:none;font-weight:400;bottom:auto;position:static}
+.slot h4{color:var(--mute)}
+.about p{margin:0 0 8px;font-size:13px;max-width:70ch}
+@media(max-width:980px){
+  .feature{grid-template-columns:1fr}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="ico" aria-hidden="true"></span><span class="word">goto<i>And</i><b>Play</b></span></a>
+    <span class="tagline">free games &middot; no downloads &middot; no accounts</span>
+  </div>
+</header>
+<nav class="nav"><div class="wrap">
+  <a class="on" href="/">Games</a>
+  <a href="#all">All Games</a>
+  <a href="/games/needle-drop/" id="rnd">Random</a>
+  <a href="#about">About</a>
+</div></nav>
+
+<main class="wrap main">
+  <section class="well">
+    <h2 class="bar">Featured</h2>
+    <div class="pad feature">
+      <a class="thumb" href="/games/needle-drop/" aria-label="Play Needle Drop">
+        <span class="art"><svg class="rec" viewBox="0 0 24 24" data-rec></svg><span class="t">NEEDLE DROP</span></span>
+      </a>
+      <div>
+        <h3>Needle Drop</h3>
+        <p class="meta">by Ruben &middot; <a href="#all">Music</a> &middot; 1 to 8 players, one screen</p>
+        <p>You get half a second of a song. Then a second. Then three, five, ten. Name it before the clip gets long and you take the big points. Guess wrong and it costs you.</p>
+        <div class="how"><b>Controls</b>Mouse to play clips, keyboard to type your guess. Arrow keys and Enter pick from the list.</div>
+        <a class="btn-or" href="/games/needle-drop/">Play Now &raquo;</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="well" id="all">
+    <h2 class="bar">All Games <small>newest first</small></h2>
+    <div class="pad grid">
+      <a class="card" href="/games/needle-drop/">
+        <span class="thumb"><span class="art"><svg class="rec" viewBox="0 0 24 24" data-rec></svg><span class="t">NEEDLE DROP</span></span></span>
+        <h4>Needle Drop</h4>
+        <p class="meta">Music &middot; Ruben</p>
+      </a>
+      <div class="card slot" aria-label="Next game coming soon">
+        <span class="thumb"><span class="art"><span class="t">LOADING...</span></span></span>
+        <h4>Next game</h4>
+        <p class="meta">On the bench</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="well about" id="about">
+    <h2 class="bar">About</h2>
+    <div class="pad">
+      <p>gotoAndPlay is a small corner of the internet for browser games. Everything runs right in the page. No installs, no logins, no "download our app" popups.</p>
+      <p>New games show up when they're ready, not on a schedule. If you've got one you want to see on here, hit up Ruben.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">&copy; <span id="yr"></span> gotoAndPlay &middot; stop();</footer>
+<script>
+{
+  document.getElementById('yr').textContent=new Date().getFullYear();
+  const P={o:'#0b0814',g1:'#2a2340',g2:'#1a1528',r:'#ff4b3e',rd:'#b3261d',y:'#ffcc33'};
+  let out='';const c=11.5;
+  for(let y=0;y<24;y++)for(let x=0;x<24;x++){
+    const d=Math.hypot(x-c,y-c);if(d>12)continue;const a=Math.atan2(y-c,x-c);let f;
+    if(d>11||d<1.3)f=P.o;else if(d<4.6)f=(a>0&&a<1.2)?P.y:(x<c?P.rd:P.r);else if(d<5.4)f=P.o;else f=(Math.floor(d*1.2)%2)?P.g1:P.g2;
+    out+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${f}"/>`;
+  }
+  document.querySelectorAll('[data-rec]').forEach(s=>s.innerHTML=out);
+  const games=['/games/needle-drop/'];
+  document.getElementById('rnd').href=games[Math.random()*games.length|0];
+}
+</script>
+</body>
+</html>
