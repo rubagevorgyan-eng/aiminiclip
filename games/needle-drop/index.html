@@ -103,6 +103,9 @@ details.opts[open] summary::before{content:"- "}
 .seg small{display:block;font:400 11px/1.2 var(--px);color:var(--lav);margin-top:2px}
 .seg.done{background:#160f27;color:#6e6390}.seg.done small{color:#5b5179}
 .seg.now{background:var(--gold);color:var(--nl)}.seg.now small{color:var(--nl)}
+button.seg{font:inherit;color:var(--cream);width:100%;cursor:pointer}button.seg.now{color:var(--nl)}
+button.seg:not(.now):hover{background:#2c3150;outline:2px solid var(--gold);outline-offset:-4px}
+button.seg:focus-visible{outline:2px solid var(--cream);outline-offset:-4px}
 .seg i{position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--red);transform:scaleX(0);transform-origin:left}
 body.playing .seg.now i{animation:fill var(--clip) steps(10) forwards}
 @keyframes fill{to{transform:scaleX(1)}}
@@ -147,7 +150,11 @@ body.playing .eq i{animation:eq .48s steps(4) infinite alternate}
 .ac.shake{animation:shake .4s steps(4)}
 @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:10;background:var(--cream);color:var(--nl);border:2px solid var(--nl);box-shadow:4px 4px 0 rgba(0,0,0,.45);overflow-y:auto;max-height:380px}
-.sugg div{padding:7px 10px;cursor:pointer;font-weight:bold;font-size:13px;border-bottom:1px dotted #c9bda7}
+.sugg div{display:flex;align-items:center;gap:10px;padding:6px 10px;cursor:pointer;font-weight:bold;font-size:13px;border-bottom:1px dotted #c9bda7}
+.sugg .tx{min-width:0;flex:1}
+.sugg .th{flex:none;width:36px;height:36px;border:2px solid var(--nl);background:radial-gradient(circle,#F0412E 0 3px,#1f2336 4px 9px,#2c3150 10px 11px,#1f2336 12px);object-fit:cover}
+.sugg .th[src]{background:#1f2336}
+.sugg.up{top:auto;bottom:calc(100% + 4px)}
 .sugg div:last-child{border-bottom:0}
 .sugg div.on,.sugg div:hover{background:var(--gold)}
 .sugg small{display:block;color:#5d6072;font-size:11px;font-weight:normal}
@@ -160,7 +167,7 @@ body.playing .eq i{animation:eq .48s steps(4) infinite alternate}
 /* reveal overlay */
 #revealBox{position:absolute;inset:0;z-index:15;background:rgba(11,8,20,.86);display:grid;place-items:center;text-align:center}
 .rcard{width:min(420px,92%)}
-.sleeve{position:relative;width:170px;height:170px;margin:0 auto;transform:translateX(-24px)}
+.sleeve{position:relative;width:170px;height:170px;margin:0 auto}
 .sleeve img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;background:var(--n2);border:2px solid var(--nl);outline:2px solid var(--cream);animation:pop .3s steps(4)}
 .sleeve .disc{inset:8px;z-index:1;animation:slide .45s .12s steps(5) both,spin 2s .6s steps(12) infinite}
 @keyframes slide{from{translate:0 0}to{translate:32% 0}}
@@ -170,7 +177,15 @@ body.playing .eq i{animation:eq .48s steps(4) infinite alternate}
 #revealBox.miss .result b{color:var(--lav)}
 .result span{display:block;font:400 12px var(--px);margin-top:8px}
 .r-title{font:bold 17px/1.3 var(--rd);margin:14px 0 0}
-.r-artist{color:var(--lav);margin:4px 0 14px}
+.r-artist{color:var(--lav);margin:4px 0 10px}
+.rbar{display:flex;align-items:center;gap:10px;margin:0 auto 14px;width:min(360px,100%)}
+.wave{flex:1;height:36px;display:flex;align-items:center;gap:2px}
+.wave i{flex:1;min-width:2px;height:var(--h);background:#4a2219;border-radius:1px;transition:background .08s}
+.wave i.on{background:linear-gradient(180deg,#ff8a3d,#ff4d2e 50%,#ff8a3d)}
+.wave i.head{background:#ffe1c4;box-shadow:0 0 6px #ff6a2e}
+body.playing .wave i.on{animation:wv .5s steps(3) infinite alternate;animation-delay:var(--d)}
+@keyframes wv{to{transform:scaleY(.8)}}
+.rbar .t{flex:none;min-width:34px;font:700 11px var(--px);color:var(--cream);text-align:right}
 
 .float{position:fixed;z-index:60;font:700 20px/1 Silkscreen,monospace;pointer-events:none;text-shadow:2px 2px 0 #0b0814;animation:up 1s steps(10) forwards}
 @keyframes up{to{transform:translateY(-60px);opacity:0}}
@@ -341,8 +356,9 @@ body.playing .eq i{animation:eq .48s steps(4) infinite alternate}
           <div class="result"><b id="rPts"></b><span id="rWho"></span></div>
           <p class="r-title" id="rTitle"></p>
           <p class="r-artist" id="rArtist"></p>
+          <div class="rbar" aria-label="Time left"><span class="wave" id="rWave" aria-hidden="true"></span><span class="t" id="rTime">0:30</span></div>
           <div class="row">
-            <button class="gb g-dim" id="playFull">PREVIEW</button>
+            <button class="gb g-dim" id="playFull">REPLAY</button>
             <button class="gb g-mint" id="nextSong">NEXT</button>
           </div>
         </div>
@@ -612,6 +628,12 @@ function parsePaste(text){
   });
 }
 
+const COMMA_NAMES=['Tyler, The Creator','Grover Washington, Jr.','Earth, Wind & Fire','Crosby, Stills, Nash & Young','Crosby, Stills & Nash','Emerson, Lake & Palmer','Peter, Paul and Mary','Blood, Sweat & Tears'];
+function splitArtists(str){
+  let t=String(str||'');
+  COMMA_NAMES.forEach(n=>{t=t.replace(new RegExp(n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'ig'),m=>m.replace(/,/g,'\u0001'))});
+  return t.split(',').map(x=>x.replace(/\u0001/g,',').trim()).filter(Boolean);
+}
 function clean(t){return t.replace(/\s*[\(\[](feat|ft|with|from|remaster|live|radio|explicit)[^\)\]]*[\)\]]/ig,'').replace(/\s+-\s+(remaster|live|radio|single|mono|stereo).*$/i,'').trim()}
 
 async function loadDeezerPlaylist(id){
@@ -619,7 +641,7 @@ async function loadDeezerPlaylist(id){
   while(url){
     const d=await jsonp(url);
     if(d.error)throw new Error('Deezer could not open that playlist. Make sure it is public.');
-    d.data.forEach(t=>out.push({title:t.title,artist:t.artist.name}));
+    d.data.forEach(t=>out.push({title:t.title,artist:t.artist.name,dz:t.id,cover:t.album&&(t.album.cover_medium||t.album.cover_small)}));
     url=d.next||null;
   }
   return out;
@@ -631,7 +653,7 @@ async function resolve(song){
     try{const d=await jsonp('https://api.deezer.com/track/isrc:'+encodeURIComponent(song.isrc));ok=true;
       if(d&&d.preview)return {title:song.title,artist:song.artist||d.artist.name,preview:d.preview,cover:d.album&&(d.album.cover_big||d.album.cover_medium)};}catch(e){}
   }
-  const t=clean(song.title),a=song.artist.split(',')[0].trim();
+  const t=clean(song.title),a=(splitArtists(song.artist)[0]||'');
   const tries=a?[`artist:"${a}" track:"${t}"`,`${t} ${a}`]:[t];
   for(const q of tries){
     try{
@@ -703,7 +725,7 @@ async function newRound(){
 }
 
 let raf=0;
-function stopAudio(){cancelAnimationFrame(raf);clearTimeout(timer);audio.pause();document.body.classList.remove('playing')}
+function stopAudio(){cancelAnimationFrame(raf);clearTimeout(timer);audio.pause();audio.volume=1;document.body.classList.remove('playing')}
 function playFor(secs,from){
   stopAudio();
   audio.currentTime=from;
@@ -728,7 +750,9 @@ function renderAll(){
   $('left').textContent=queue.length+' LEFT';
   $('stages').innerHTML=STAGES.map((s,i)=>{
     const now=i===stage&&phase==='guess', done=i<stage||phase!=='guess';
-    return `<div class="seg${now?' now':done&&played?' done':''}"><b>${s}s</b><small>${POINTS[i]}</small><i></i></div>`;
+    const cls=`seg${now?' now':done&&played?' done':''}`, inner=`<b>${s}s</b><small>${POINTS[i]}</small><i></i>`;
+    // tiles from the current one onward can be clicked: current = replay, later = jump ahead
+    return canJump(i)?`<button type="button" class="${cls}" data-s="${i}" aria-label="${i===stage?'Replay':'Jump to'} ${s} second clip, worth ${POINTS[i]}">${inner}</button>`:`<div class="${cls}">${inner}</div>`;
   }).join('');
   $('recLen').textContent=STAGES[stage]+'s';
   $('moreBtn').textContent=stage<STAGES.length-1?'MORE TIME: '+STAGES[stage+1]+'s':'REVEAL ARTIST';
@@ -741,25 +765,81 @@ $('moreBtn').onclick=()=>{
   if(stage<STAGES.length-1){SFX.more();stage++;renderAll();playFor(STAGES[stage],startAt)}
   else{stopAudio();SFX.hint();phase='hint';$('artistHint').textContent=cur.artist;show('guessing',false);show('hintBox',true);renderAll();$('guess').focus();search()}
 };
+function canJump(i){return phase==='guess'&&cur&&!$('playBtn').disabled&&i>=stage}
+$('stages').onclick=e=>{
+  const b=e.target.closest('[data-s]');if(!b)return;
+  const i=+b.dataset.s;if(!canJump(i))return;
+  if(i===stage){$('playBtn').click();return}
+  SFX.more();stage=i;played=true;$('moreBtn').disabled=false;renderAll();playFor(STAGES[stage],startAt);
+};
 $('replay10').onclick=()=>playFor(10,startAt);
 $('nobody').onclick=()=>reveal(null,0);
 
 const norm=s=>clean(String(s)).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,'and').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
 let titles=[],matches=[],sel=-1,guesser=null;
+// Album covers + full artist credits for the guess list, fetched lazily from Deezer and cached.
+const META_KEY='nd-meta-v1';let metaCache={};
+try{metaCache=JSON.parse(localStorage.getItem(META_KEY)||'{}')||{}}catch(e){}
+let metaSaveT=0;
+function saveMeta(){clearTimeout(metaSaveT);metaSaveT=setTimeout(()=>{try{localStorage.setItem(META_KEY,JSON.stringify(metaCache))}catch(e){}},800)}
+const metaKey=x=>x.src.isrc?'i:'+x.src.isrc:x.src.dz?'d:'+x.src.dz:'q:'+x.k+'|'+(x.artists[0]?x.artists[0].n:'');
+function applyMeta(x){
+  const m=metaCache[metaKey(x)];if(!m)return false;
+  if(m.c&&!x.cover)x.cover=m.c;
+  (m.a||[]).forEach(a=>{const n=norm(a);if(n&&!x.artists.some(z=>z.n===n))x.artists.push({n,name:a})});
+  x.line=x.artists.map(z=>z.name).join(', ');
+  return true;
+}
+const metaQ=[],metaBusy=new Set();let metaRun=0;
+function wantMeta(x){
+  if(x.metaDone||metaBusy.has(x.id))return;
+  if(metaCache[metaKey(x)]){x.metaDone=true;applyMeta(x);return}
+  metaBusy.add(x.id);metaQ.push(x);pumpMeta();
+}
+function pumpMeta(){
+  while(metaRun<4&&metaQ.length){
+    const x=metaQ.shift();
+    if(!rows.some(r=>r.m===x)){metaBusy.delete(x.id);continue}   // scrolled out of the list, skip for now
+    metaRun++;
+    fetchMeta(x).then(m=>{
+      if(m){metaCache[metaKey(x)]=m;saveMeta();applyMeta(x);x.metaDone=true;patchRow(x)}
+    }).catch(()=>{}).finally(()=>{metaRun--;metaBusy.delete(x.id);pumpMeta()});
+  }
+}
+async function fetchMeta(x){
+  let tr=null;
+  if(x.src.isrc){const d=await jsonp('https://api.deezer.com/track/isrc:'+encodeURIComponent(x.src.isrc));if(d&&!d.error)tr=d}
+  if(!tr&&x.src.dz){const d=await jsonp('https://api.deezer.com/track/'+x.src.dz);if(d&&!d.error)tr=d}
+  if(!tr){
+    const a=x.artists[0]?x.artists[0].name:'';
+    const d=await jsonp('https://api.deezer.com/search?limit=3&q='+encodeURIComponent(a?`artist:"${a}" track:"${x.t}"`:x.t));
+    const hit=(d.data||[])[0];if(!hit)return {c:'',a:[]};
+    const full=await jsonp('https://api.deezer.com/track/'+hit.id);tr=full&&!full.error?full:hit;
+  }
+  const names=(tr.contributors||[]).map(c=>c.name);if(!names.length&&tr.artist)names.push(tr.artist.name);
+  return {c:tr.album?(tr.album.cover_medium||tr.album.cover_small||''):'',a:names};
+}
+function patchRow(x){
+  const raw=$('guess').value.trim().toLowerCase();
+  $('sugg').querySelectorAll(`[data-t="${x.id}"]`).forEach(d=>{
+    const img=d.querySelector('.th');if(x.cover&&img.getAttribute('src')!==x.cover)img.src=x.cover;
+    d.querySelector('small').innerHTML=hl(x.line,raw);
+  });
+}
 function buildTitles(){
   const m=new Map();
   songs.forEach(s=>{
     const k=norm(s.title);if(!k)return;
-    const names=String(s.artist||'').split(',').map(x=>x.trim()).filter(Boolean);
+    const names=splitArtists(s.artist);
     const ft=String(s.title).match(/[\(\[](?:feat\.?|ft\.?|featuring|with)\s+([^\)\]]+)[\)\]]/ig)||[];
     ft.forEach(g=>g.replace(/^[\(\[](?:feat\.?|ft\.?|featuring|with)\s+/i,'').replace(/[\)\]]$/,'').split(/,|&|\band\b|\bfeat\.?|\bft\.?/i).map(x=>x.trim()).filter(Boolean).forEach(x=>names.push(x)));
     const key=k+'|'+norm(names[0]||'');
-    if(!m.has(key))m.set(key,{k,t:clean(s.title)||s.title,artists:[]});
-    const e=m.get(key);
+    if(!m.has(key))m.set(key,{k,t:clean(s.title)||s.title,artists:[],src:s,cover:s.cover||''});
+    const e=m.get(key);if(!e.src.isrc&&s.isrc)e.src=s;if(!e.cover&&s.cover)e.cover=s.cover;
     names.forEach(a=>{const n=norm(a);if(n&&!e.artists.some(z=>z.n===n))e.artists.push({n,name:a})});
   });
   titles=[...m.values()].sort((a,b)=>a.t.localeCompare(b.t));
-  titles.forEach(x=>x.line=x.artists.map(z=>z.name).join(', '));
+  titles.forEach((x,i)=>{x.id=i;x.line=x.artists.map(z=>z.name).join(', ');applyMeta(x)});
   guesser=players[0];drawWho();
 }
 function drawWho(){
@@ -774,10 +854,22 @@ function hl(t,q){
 let rows=[];
 function drawSugg(){
   const raw=$('guess').value.trim().toLowerCase();
-  $('sugg').innerHTML=rows.map(r=>r.hd?`<p class="hd">${esc(r.hd)}</p>`:`<div role="option" data-i="${r.i}" class="${r.i===sel?'on':''}">${hl(r.m.t,raw)}<small>${hl(r.m.line,raw)}</small></div>`).join('');
+  $('sugg').innerHTML=rows.map(r=>r.hd?`<p class="hd">${esc(r.hd)}</p>`:`<div role="option" data-i="${r.i}" data-t="${r.m.id}" class="${r.i===sel?'on':''}"><img class="th" alt="" loading="lazy"${r.m.cover?` src="${esc(r.m.cover)}"`:''}><span class="tx">${hl(r.m.t,raw)}<small>${hl(r.m.line,raw)}</small></span></div>`).join('');
+  rows.forEach(r=>{if(r.m)wantMeta(r.m)});
   show('sugg',matches.length>0);
+  if(matches.length)placeSugg();
   const on=$('sugg').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
 }
+// #stage clips overflow, so fit the list into the room left inside it, and flip it above the box when that side has more space.
+function placeSugg(){
+  const sg=$('sugg'),st=$('stage').getBoundingClientRect(),ip=$('guess').getBoundingClientRect();
+  const hd=document.querySelector('header'),topB=Math.max(st.top,hd&&getComputedStyle(hd).position.match(/sticky|fixed/)?hd.getBoundingClientRect().bottom:0,0);
+  const below=Math.min(st.bottom,innerHeight)-ip.bottom-12,above=ip.top-topB-12;
+  const up=below<240&&above>below;
+  sg.classList.toggle('up',up);
+  sg.style.maxHeight=Math.max(120,Math.min(380,up?above:below))+'px';
+}
+addEventListener('resize',()=>{if(matches.length)placeSugg()});
 function setResults(groups){
   rows=[];matches=[];
   groups.forEach(g=>{if(!g.items.length)return;if(g.hd)rows.push({hd:g.hd});g.items.forEach(m=>{rows.push({m,i:matches.length});matches.push(m)})});
@@ -791,7 +883,7 @@ function artistGroup(n){
 function search(){
   const q=norm($('guess').value);
   if(!q){
-    if(phase==='hint'&&cur){const n=norm(String(cur.artist).split(',')[0]);return setResults([artistGroup(n)])}
+    if(phase==='hint'&&cur){const n=norm(splitArtists(cur.artist)[0]||'');return setResults([artistGroup(n)])}
     rows=[];matches=[];sel=-1;return drawSugg();
   }
   const a=[],b=[],c=[];const hitArtists=new Map();
@@ -830,14 +922,55 @@ function reveal(who,pts){
   ['guessing','hintBox','guessBox'].forEach(b=>show(b,false));
   const box=$('revealBox');box.classList.toggle('miss',!who);show('revealBox',true);
   $('cover').src=cur.cover||'';
-  $('rTitle').textContent=cur.title;$('rArtist').textContent=cur.artist;
+  $('rTitle').textContent=cur.title;$('rArtist').textContent=cur.artist;buildWave(cur.title+cur.artist);
   $('rPts').textContent=who?'+'+pts:'0';
   $('rWho').textContent=who?(players.length>1?who.toUpperCase()+' GOT IT':'NICE EARS'):'NOBODY GOT IT';
   phase='done';
   renderAll();
   if(who){confetti();SFX.win();floatText('+'+pts,'#FFC92E',$('cover'))}else SFX.miss();
+  setTimeout(()=>{if(phase==='done')playReveal()},600);   // let the win/miss jingle land first
 }
-$('playFull').onclick=()=>{stopAudio();audio.currentTime=0;audio.play().then(()=>{document.documentElement.style.setProperty('--clip','30s');document.body.classList.add('playing')}).catch(()=>{})};
+// After the answer shows: play the full 30s preview (Deezer previews are 30s), with a bar counting down.
+const REVEAL_SECS=30;
+const WAVE_N=60;let waveOn=-1;
+// A waveform-looking bar: fixed per song (seeded from the title), smooth envelope plus jitter.
+function buildWave(seed){
+  let h=2166136261;for(const c of String(seed))h=Math.imul(h^c.charCodeAt(0),16777619);
+  const rnd=()=>{h=Math.imul(h^h>>>15,2246822507);h=Math.imul(h^h>>>13,3266489909);return((h^=h>>>16)>>>0)/4294967296};
+  const p1=rnd()*6,p2=rnd()*6;let out='';
+  for(let i=0;i<WAVE_N;i++){
+    const env=.55+.25*Math.sin(i/WAVE_N*Math.PI*2.2+p1)+.15*Math.sin(i/WAVE_N*Math.PI*7+p2);
+    const v=Math.max(.12,Math.min(1,env*(.55+.6*rnd())));
+    out+=`<i style="--h:${(v*100).toFixed(0)}%;--d:${(-rnd()*.5).toFixed(2)}s"></i>`;
+  }
+  $('rWave').innerHTML=out;waveOn=-1;
+}
+function drawRevealBar(el){
+  const on=Math.round(Math.min(1,el/REVEAL_SECS)*WAVE_N);
+  if(on!==waveOn){waveOn=on;[...$('rWave').children].forEach((b,i)=>{b.classList.toggle('on',i<on);b.classList.toggle('head',i===on-1&&on<WAVE_N)})}
+  const left=Math.max(0,Math.ceil(REVEAL_SECS-el));$('rTime').textContent='0:'+String(left).padStart(2,'0');
+}
+function playReveal(){
+  stopAudio();drawRevealBar(0);
+  const len=isFinite(audio.duration)&&audio.duration>0?audio.duration:30;
+  const from=Math.max(0,Math.min(startAt,len-REVEAL_SECS));
+  audio.currentTime=from;
+  const p=audio.play();
+  let s0=null;
+  const tick=()=>{
+    if(!audio.paused&&s0===null&&audio.currentTime>from)s0=from;
+    const el=s0===null?0:audio.currentTime-s0;
+    drawRevealBar(el);
+    if(REVEAL_SECS-el<.6)audio.volume=Math.max(0,(REVEAL_SECS-el)/.6);   // short fade out
+    if(el>=REVEAL_SECS||audio.ended){stopAudio();drawRevealBar(REVEAL_SECS);return}
+    raf=requestAnimationFrame(tick);
+  };
+  (p&&p.then?p:Promise.resolve()).then(()=>{
+    document.body.classList.add('playing');
+    raf=requestAnimationFrame(tick);timer=setTimeout(()=>{stopAudio();drawRevealBar(REVEAL_SECS)},REVEAL_SECS*1000+2000);
+  }).catch(()=>{});
+}
+$('playFull').onclick=playReveal;
 audio.addEventListener('ended',()=>document.body.classList.remove('playing'));
 $('nextSong').onclick=newRound;
 $('skipBtn').onclick=newRound;
