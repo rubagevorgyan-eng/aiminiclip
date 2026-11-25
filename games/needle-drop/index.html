@@ -8,8 +8,8 @@
 <meta name="theme-color" content="#FBF8F1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%23FF8A1F'/%3E%3Ctext x='8' y='12.5' font-family='Arial Black,Arial' font-weight='900' font-size='12' text-anchor='middle' fill='%231D1B22'%3Er%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Karla:wght@500;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800&family=JetBrains+Mono:wght@500;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/shell.css">
 <style>
 /*
 VOICE: the game itself: late night, crate digging, a little cocky
@@ -20,13 +20,13 @@ LAYOUT: 880x640 stage (550x400 x1.6) with two columns on desktop, stacked on pho
 */
 .stagebox:fullscreen{display:grid;place-items:center;width:100%;max-width:none;margin:0;border-radius:0}
 .stagebox:fullscreen #stage{transform-origin:center}
-.stagebox{width:max-content;max-width:100%;margin:0 auto 26px;padding:20px;border-radius:32px}
-#stage{border-radius:12px;box-shadow:inset 0 0 0 3px rgba(0,0,0,.35)}
+.stagebox{width:max-content;max-width:100%;margin:0 auto 26px;border-top:6px solid var(--ember);background:#000}
+#stage{border:1px solid var(--line);border-top:0}
 #stage{
-  --n0:#1b1230;--n1:#251a3f;--n2:#33264f;--nl:#0b0814;--cream:#fff4e0;--gold:#ffcc33;--goldD:#c48a00;--red:#ff4b3e;--redD:#b3261d;--mint:#3be3a6;--mintD:#17986b;--lav:#a99cc8;
+  --n0:#0d0f18;--n1:#151827;--n2:#1f2336;--nl:#000;--cream:#f1ede6;--gold:#ffc94a;--goldD:#b8861a;--red:#ff4d2e;--redD:#b8301a;--mint:#3fd39a;--mintD:#1f8a62;--lav:#8a8fa8;
   --px:"Silkscreen",monospace;--rd:Verdana,Geneva,Tahoma,sans-serif;--clip:1s;
   position:relative;width:880px;height:640px;overflow:hidden;color:var(--cream);font:13px/1.45 var(--rd);
-  background:radial-gradient(110% 80% at 50% 0%,#3a2563 0,var(--n0) 65%);user-select:none;-webkit-user-select:none}
+  background:var(--n0);user-select:none;-webkit-user-select:none}
 #zoomer{position:absolute;inset:0;transition:transform .15s}
 .hide{display:none!important}
 .screen{position:absolute;inset:0;padding:16px 18px;display:flex;flex-direction:column}
@@ -45,8 +45,9 @@ LAYOUT: 880x640 stage (550x400 x1.6) with two columns on desktop, stacked on pho
 
 /* splash + preloader */
 #splash{position:absolute;inset:0;z-index:30;background:#000;display:grid;place-items:center;cursor:pointer}
-.sting{font:400 84px/1 "Lilita One",sans-serif;color:#fff;text-shadow:5px 5px 0 #FF8A1F;animation:ring .9s cubic-bezier(.3,1.6,.5,1) both}
-.sting-sub{text-align:center;color:#8d84a6;font:700 12px Karla,sans-serif;letter-spacing:6px;margin-top:16px;opacity:0;animation:fade .3s .8s forwards}
+.sting{animation:ring .9s cubic-bezier(.3,1.6,.5,1) both}
+.sting .rlogo svg{height:120px;width:auto;display:block}
+.sting-sub{text-align:center;color:#868aa3;font:700 12px Archivo,sans-serif;letter-spacing:6px;margin-top:16px;opacity:0;animation:fade .3s .8s forwards}
 @keyframes ring{0%{transform:scale(.2) rotate(-12deg);opacity:0}45%{transform:scale(1.08) rotate(6deg);opacity:1}60%{transform:rotate(-5deg)}75%{transform:rotate(3deg)}90%{transform:rotate(-1deg)}100%{transform:none}}
 @keyframes icoIn{from{transform:scale(0) rotate(-90deg)}}
 @keyframes wipe{to{clip-path:inset(0 0 0 0)}}
@@ -197,19 +198,22 @@ body.playing .eq i{animation:eq .48s steps(4) infinite alternate}
 #ctx .sub{padding-left:32px}
 
 /* page below stage */
-.gt{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin:6px 0 18px}
-.gt h1{margin:0;font:400 44px/1 var(--display)}
-.gt .meta{margin:6px 0 0;color:var(--mute);font-size:15px;font-weight:700}
+.gt{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin:6px 0 16px}
+.gt h1{margin:0;font:400 clamp(44px,6vw,72px)/.9 var(--disp);letter-spacing:.5px;text-transform:uppercase}
+.gt .meta{margin:6px 0 0;color:var(--dim);font-size:15px}
 .gt .tools{display:flex;gap:8px;flex-wrap:wrap}
+.fav{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;box-shadow:inset 0 0 0 2px var(--line);background:transparent;color:var(--bone);font:700 14px var(--body);cursor:pointer}
+.fav .h{color:var(--dim)}.fav[aria-pressed=true] .h{color:var(--ember)}
 .below{display:grid;grid-template-columns:2fr 1fr;gap:20px}
-.below p{margin:0 0 10px}
+.below p{margin:0 0 10px;color:#c9c6d6}
 .keys{border-collapse:collapse;width:100%;font-size:15px;margin-top:6px}
 .keys td{padding:8px 6px;border-top:1px solid var(--line)}
 .keys td:first-child{font-weight:700;white-space:nowrap;width:1%;padding-right:18px}
-.best b{display:block;font:400 44px/1.1 var(--display);color:var(--tangerine)}
+.best{color:var(--dim)}
+.best b{display:block;font:400 54px/1 var(--disp);color:var(--ember)}
 
 @media(max-width:920px){
-  .stagebox{width:100%;padding:10px;border-radius:22px;margin:0 0 20px}
+  .stagebox{width:100%;margin:0 0 20px}
   .gt h1{font-size:34px}
   #stage{width:100%;height:auto;min-height:600px}
   #zoomer{position:relative;inset:auto}
@@ -226,24 +230,25 @@ body.playing .eq i{animation:eq .48s steps(4) infinite alternate}
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap">
-  <a class="logo" href="/">recess</a>
-  <nav class="nav"><a href="/">Games</a><a href="/#about">About</a></nav>
-</div></header>
+<header class="top">
+  <a class="logo" href="/" aria-label="Recess home"><span class="rlogo"></span></a>
+  <nav class="nav"><a class="on" href="/">Games</a><a href="/#board">Board</a><a href="/#prof">Profile</a></nav>
+  <a class="me" href="/#prof"><div><span>@ruben</span><small>Level 3</small></div><span class="orb">R</span></a>
+</header>
 
-<main class="wrap">
+<main class="page">
   <div class="gt">
     <div><h1>Needle Drop</h1><p class="meta">by Ruben &middot; Music &middot; 1 to 8 players, one screen</p></div>
-    <div class="tools"><button class="fav" id="favBtn" aria-pressed="false"><span class="h">&#9829;</span><span id="favTxt">Add to My Recess</span></button><button class="pill light small" id="fsBtn">Full screen</button><button class="pill light small" id="restartBtn">Restart</button></div>
+    <div class="tools"><button class="fav" id="favBtn" aria-pressed="false"><span class="h">&#9829;</span><span id="favTxt">Add to My Recess</span></button><button class="btn alt" id="fsBtn">Full screen</button><button class="btn alt" id="restartBtn">Restart</button></div>
   </div>
 
-  <div class="stagebox candy c-bondi">
+  <div class="stagebox">
   <div id="stage" tabindex="-1">
    <div id="zoomer">
 
     <div id="splash">
       <div id="sting">
-        <div class="sting">recess</div>
+        <div class="sting"><span class="rlogo"></span></div>
         <div class="sting-sub">PRESENTS</div>
       </div>
       <div class="pre hide" id="pre">
@@ -367,11 +372,12 @@ body.playing .eq i{animation:eq .48s steps(4) infinite alternate}
   </div>
 </main>
 
-<footer class="foot"><p class="az-h">Every game on Recess</p><nav class="az" id="allgames" aria-label="All games"></nav>&copy; <span id="yr"></span> Recess</footer>
+<footer class="foot"><h6>Every game on Recess</h6><div class="az" id="allgames"></div><p>&copy; <span id="yr"></span> Recess &middot; someone coming? <span class="kbd">`</span></p></footer>
 
 <div id="ctx" class="hide" role="menu"></div>
 <canvas id="fx" aria-hidden="true"></canvas>
 <audio id="audio" preload="auto"></audio>
+<script src="/assets/logo.js"></script>
 <script src="/assets/teacher.js"></script>
 <script src="/assets/recess.js"></script>
 <script>
