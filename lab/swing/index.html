@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recess - swing logo, 4 takes</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: four versions of one idea, the R that never gets off the swing
+IDEA: same swing, four eras of screen: 8-bit sprite, vector arcade, digital glitch, LED board
+PICTURE: each tile is the animated logo, plus a small icon version
+COLOUR and TYPE: near-black, bone, ember; each take adds only what its screen would have
+LAYOUT: 2x2 grid, label and icon under each
+*/
+:root{--bg:#07080d;--tile:#0e1017;--line:#1f2230;--ink:#f1ede6;--dim:#868aa3;--ember:#ff4d2e}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 Archivo,system-ui,sans-serif}
+main{max-width:1200px;margin:0 auto;padding:30px 20px 70px}
+h1{margin:0 0 4px;font:400 32px/1.1 'Archivo Black',sans-serif;letter-spacing:-1px}
+.sub{margin:0 0 24px;color:var(--dim)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{background:var(--tile);border:1px solid var(--line)}
+.stage{aspect-ratio:16/10;position:relative;overflow:hidden}
+.stage svg,.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.meta{display:flex;align-items:center;gap:14px;padding:12px 14px;border-top:1px solid var(--line)}
+.meta>div:first-child{flex:1}
+.meta b{font:700 15px Archivo,sans-serif}
+.meta span{display:block;color:var(--dim);font-size:13px}
+.ico{flex:none;width:56px;height:56px;border:1px solid var(--line);background:#000;position:relative;overflow:hidden}
+.ico svg,.ico canvas{position:absolute;inset:0;width:100%;height:100%}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<h1>The swing, four ways</h1>
+<p class="sub">Same idea: the R never gets off the swing. Each take puts it on a different kind of screen. The small square is the app icon.</p>
+<div class="grid">
+  <div class="card"><div class="stage"><svg id="A" viewBox="0 0 480 300"></svg></div><div class="meta"><div><b>A. 8-bit</b><span>Pixel letters and a pixel swing that moves in choppy sprite frames, like it's running on a cartridge.</span></div><div class="ico"><svg id="Ai" viewBox="0 0 60 60"></svg></div></div></div>
+  <div class="card"><div class="stage"><svg id="B" viewBox="0 0 480 300"></svg></div><div class="meta"><div><b>B. Vector arcade</b><span>Thin outline letters like old vector arcade screens, and the R leaves ghost trails as it swings.</span></div><div class="ico"><svg id="Bi" viewBox="0 0 60 60"></svg></div></div></div>
+  <div class="card"><div class="stage"><svg id="C" viewBox="0 0 480 300"></svg></div><div class="meta"><div><b>C. Glitch</b><span>Solid heavy letters. The faster the R moves, the more it splits into red and blue, like a screen that can't keep up.</span></div><div class="ico"><svg id="Ci" viewBox="0 0 60 60"></svg></div></div></div>
+  <div class="card"><div class="stage"><canvas id="D" width="960" height="600"></canvas></div><div class="meta"><div><b>D. LED board</b><span>The whole logo lit up on a dot-matrix board, the same one as the PA ticker. Every frame is redrawn dot by dot.</span></div><div class="ico"><canvas id="Di" width="120" height="120"></canvas></div></div></div>
+</div>
+</main>
+<script>
+{
+const NS='http://www.w3.org/2000/svg';
+const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const el=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e};
+const ang=(t,lag=0)=>calm?12:18*Math.sin(((t/1000)-lag)*Math.PI*2/2.4);
+const G={R:['1110','1001','1001','1110','1010','1001','1001'],E:['1111','1000','1000','1110','1000','1000','1111'],C:['0111','1000','1000','1000','1000','1000','0111'],S:['0111','1000','1000','0110','0001','0001','1110']};
+const glyph=(g,ch,x,y,s,fill)=>G[ch].forEach((row,ry)=>[...row].forEach((v,rx)=>{if(v==='1')el('rect',{x:x+rx*s,y:y+ry*s,width:s-1,height:s-1,fill},g)}));
+
+/* A: 8-bit */
+const buildA=(svg,small)=>{
+  const s=small?4:9, px=small?22:96, top=small?6:50, chain=small?22:112;
+  if(!small){
+    el('rect',{x:50,y:top-8,width:380,height:8,fill:'#3a3f55'},svg);
+    el('rect',{x:50,y:top-8,width:8,height:220,fill:'#3a3f55'},svg);el('rect',{x:422,y:top-8,width:8,height:220,fill:'#3a3f55'},svg);
+  }
+  const g=el('g',{},svg);
+  const pivot=[px+2*s,top];
+  for(let y=0;y<chain;y+=s){el('rect',{x:px,y:top+y,width:s/2,height:s-2,fill:'#8b90a8'},g);el('rect',{x:px+4*s-s/2,y:top+y,width:s/2,height:s-2,fill:'#8b90a8'},g)}
+  el('rect',{x:px-s,y:top+chain,width:6*s,height:s,fill:'#ff4d2e'},g);
+  glyph(g,'R',px,top+chain-7*s-2,s,'#ff4d2e');
+  if(!small){const x0=px+10*s;['E','C','E','S','S'].forEach((c,i)=>glyph(svg,c,x0+i*5*s,top+chain-6*s,s,'#f1ede6'))}
+  return {g,pivot};
+};
+const A=buildA(document.getElementById('A'),false),Ai=buildA(document.getElementById('Ai'),true);
+
+/* B: vector */
+const buildB=(svg,small)=>{
+  const sc=small?.2:1;
+  const wrap=el('g',{transform:small?'translate(-12 -2) scale(.31)':''},svg);
+  el('path',{d:'M70 40 L410 40 M90 40 L60 250 M390 40 L420 250',stroke:'#3a3f55','stroke-width':2,fill:'none'},small?el('g',{},wrap):wrap);
+  const ghosts=[];
+  for(let k=4;k>=0;k--){
+    const g=el('g',{opacity:k?0.12+0.1*(4-k)/4:1},wrap);
+    el('path',{d:'M110 40 L110 172 M168 40 L168 172',stroke:'#f1ede6','stroke-width':2,fill:'none'},g);
+    el('path',{d:'M100 172 L178 172',stroke:'#ff4d2e','stroke-width':4,fill:'none'},g);
+    const t=el('text',{x:139,y:166,'text-anchor':'middle','font-family':'Archivo Black','font-size':86,fill:'none',stroke:k?'#ff4d2e':'#ff4d2e','stroke-width':2.2},g);t.textContent='R';
+    ghosts.push({g,k});
+  }
+  if(!small){const t=el('text',{x:214,y:222,'font-family':'Archivo Black','font-size':60,fill:'none',stroke:'#f1ede6','stroke-width':2,'letter-spacing':-1},wrap);t.textContent='ECESS'}
+  return {ghosts,pivot:[139,40]};
+};
+const B=buildB(document.getElementById('B'),false),Bi=buildB(document.getElementById('Bi'),true);
+
+/* C: glitch */
+const buildC=(svg,small)=>{
+  const wrap=el('g',{transform:small?'translate(-14 -6) scale(.32)':''},svg);
+  el('path',{d:'M70 40 L410 40',stroke:'#2a2e40','stroke-width':6},wrap);
+  const mk=(fill,blend)=>{const g=el('g',{},wrap);if(blend)g.style.mixBlendMode='screen';
+    el('rect',{x:108,y:40,width:4,height:132,fill},g);el('rect',{x:166,y:40,width:4,height:132,fill},g);
+    el('rect',{x:98,y:170,width:82,height:8,fill:fill==='#f1ede6'?'#ff4d2e':fill},g);
+    const t=el('text',{x:139,y:164,'text-anchor':'middle','font-family':'Archivo Black','font-size':92,fill:fill==='#f1ede6'?'#ff4d2e':fill},g);t.textContent='R';return g};
+  const r=mk('#ff2d55',1),c=mk('#2de0ff',1),main=mk('#f1ede6',0);
+  if(!small){const t=el('text',{x:212,y:224,'font-family':'Archivo Black','font-size':64,fill:'#f1ede6','letter-spacing':-2},wrap);t.textContent='ECESS'}
+  return {r,c,main,pivot:[139,40]};
+};
+const C=buildC(document.getElementById('C'),false),Ci=buildC(document.getElementById('Ci'),true);
+
+/* D: LED */
+const mkOff=(w,hh)=>{const c=document.createElement('canvas');c.width=w;c.height=hh;return c};
+const offBig=mkOff(480,300),offSm=mkOff(200,200);
+const drawLED=(cv,t,small)=>{
+  const off=small?offSm:offBig,o=off.getContext('2d'),OW=off.width,OH=off.height;
+  const x=cv.getContext('2d'),W=cv.width,H=cv.height;
+  o.clearRect(0,0,OW,OH);o.fillStyle='#fff';o.strokeStyle='#fff';
+  o.save();
+  if(small)o.translate(100-139,6);
+  if(!small)o.fillRect(70,38,340,5);else o.fillRect(60,38,160,5);
+  o.save();o.translate(139,40);o.rotate(ang(t)*Math.PI/180);o.translate(-139,-40);
+  o.lineWidth=small?6:4;o.beginPath();o.moveTo(110,40);o.lineTo(110,172);o.moveTo(168,40);o.lineTo(168,172);o.stroke();
+  o.fillRect(98,170,82,small?12:9);o.font='92px "Archivo Black", Impact, sans-serif';o.textAlign='center';o.fillText('R',139,164);
+  o.restore();
+  if(!small){o.font='64px "Archivo Black", Impact, sans-serif';o.textAlign='left';o.fillText('ECESS',212,224)}
+  o.restore();
+  const img=o.getImageData(0,0,OW,OH).data;
+  const step=small?10:6;const sx=W/OW,sy=H/OH;
+  x.fillStyle='#050505';x.fillRect(0,0,W,H);
+  for(let yy=step/2;yy<OH;yy+=step)for(let xx=step/2;xx<OW;xx+=step){
+    const on=img[((yy|0)*OW+(xx|0))*4+3]>100;
+    x.fillStyle=on?'#ff9a2e':'#1c1206';
+    x.beginPath();x.arc(xx*sx,yy*sy,step*sx*.36,0,Math.PI*2);x.fill();
+  }
+};
+
+let lastA=-1;
+const frame=t=>{
+  const a=ang(t);
+  const stepA=Math.round(a/6)*6;
+  if(stepA!==lastA){lastA=stepA;[A,Ai].forEach(o=>o.g.setAttribute('transform',`rotate(${stepA} ${o.pivot[0]} ${o.pivot[1]})`))}
+  [B,Bi].forEach(o=>o.ghosts.forEach(({g,k})=>g.setAttribute('transform',`rotate(${ang(t,k*.06)} ${o.pivot[0]} ${o.pivot[1]})`)));
+  const v=Math.abs(ang(t)-ang(t-16)),sp=Math.min(1,v/2.6)*7;
+  [C,Ci].forEach(o=>{const tr=`rotate(${a} ${o.pivot[0]} ${o.pivot[1]})`;o.main.setAttribute('transform',tr);o.r.setAttribute('transform',tr+` translate(${-sp} 0)`);o.c.setAttribute('transform',tr+` translate(${sp} 0)`);o.r.setAttribute('opacity',sp>.6?.9:0);o.c.setAttribute('opacity',sp>.6?.9:0)});
+  drawLED(document.getElementById('D'),t,false);drawLED(document.getElementById('Di'),t,true);
+  if(!calm)requestAnimationFrame(frame);
+};
+requestAnimationFrame(frame);
+}
+</script>
+</body>
+</html>
