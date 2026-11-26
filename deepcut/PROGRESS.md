@@ -62,3 +62,8 @@
 - Fixed: text contrast below WCAG AA (Coal tag, faint text); settings popover used menu roles for checkboxes; sound button label changed with state; home had no h1; removed dead `SHARE_LEGEND`, the dev-only `window.__mine` hook and a stray lint comment.
 - Added: tests for saved-daily resume/corruption and per-tier scoring; favicon, title, description, Open Graph/Twitter metadata, social image; relative `base` for any static host; `vercel.json`; README.
 - Known limitations: see README.
+
+## Stage 11: full-screen mine layout + autocorrect (done)
+- The mine is now a full-screen animated background behind every screen (touring on menus, following the dig in play, dimmed behind results). Questions and results float over it in a card; HUD on top (round, minerals found), depth/zone readout, answer dock at the bottom with the countdown. Inspired by the layout of a reference recording; all art and styling are DEEPCUT's own.
+- "Did you mean…?" autocorrect for near-miss answers; Enter or tap to accept. Tested so it prefers a 1-letter slip over a longer title, rejects ambiguous and known-wrong answers.
+- 35 tests pass; production build checked on desktop, 375x812 and a keyboard-height 375x460 viewport; no console errors.

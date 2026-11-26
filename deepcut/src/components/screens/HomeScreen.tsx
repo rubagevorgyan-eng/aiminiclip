@@ -3,7 +3,6 @@ import { BRAND } from '../../config/game.ts';
 import { formatCountdown, useNow } from '../../hooks/useNow.ts';
 import { dailyNumber, msUntilNextDaily, utcDateKey } from '../../data/selection.ts';
 import { currentStreak, type Progress } from '../../storage/progress.ts';
-import { MineScene } from '../MineScene.tsx';
 import { Button } from '../ui/Button.tsx';
 import { SettingsMenu } from '../ui/SettingsMenu.tsx';
 import { SoundToggle } from '../ui/SoundToggle.tsx';
@@ -33,7 +32,7 @@ export function HomeScreen({ progress, onDaily, onUnlimited, onStats, onCollecti
       </header>
 
       <div className="home-grid">
-        <div className="home-main">
+        <div className="home-main float-card">
           <h1 className="sr-only">DEEPCUT</h1>
           <Wordmark />
           <p className="home-tagline">{BRAND.tagline}</p>
@@ -68,7 +67,6 @@ export function HomeScreen({ progress, onDaily, onUnlimited, onStats, onCollecti
           </nav>
         </div>
 
-        <MineScene depth={0} digs={0} tier={null} ambient />
       </div>
 
       <HowToPlay open={howto} onClose={() => setHowto(false)} />

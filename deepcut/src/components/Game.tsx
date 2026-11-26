@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { dailyNumber, dailyQuestions, msUntilNextDaily, questionById, unlimitedQuestions, utcDateKey } from '../data/selection.ts';
 import { playComplete } from '../audio/sfx.ts';
-import { zoneIndexForDepth } from '../config/game.ts';
-import { reduce, timeLeft, type GameState } from '../engine/machine.ts';
+import { rarityIndex, zoneIndexForDepth } from '../config/game.ts';
+import { depth, reduce, timeLeft, type GameState } from '../engine/machine.ts';
 import type { Question } from '../engine/types.ts';
 import { formatCountdown, useNow } from '../hooks/useNow.ts';
 import { useGame } from '../hooks/useGame.ts';
 import { clearActiveDaily, loadActiveDaily, saveActiveDaily } from '../storage/activeGame.ts';
 import { addDaily, addGame, addRecent, loadProgress, saveProgress, type Progress } from '../storage/progress.ts';
+import { MineScene } from './MineScene.tsx';
 import { CollectionScreen } from './screens/CollectionScreen.tsx';
 import { CountdownScreen } from './screens/CountdownScreen.tsx';
 import { FinalScreen } from './screens/FinalScreen.tsx';
@@ -97,6 +98,7 @@ export default function Game() {
     setPage('home');
   };
 
+  const screen = (() => {
   if (state.phase === 'HOME') {
     if (page === 'stats') return <StatsScreen progress={progress} onBack={() => setPage('home')} />;
     if (page === 'collection') return <CollectionScreen progress={progress} onBack={() => setPage('home')} />;
@@ -153,5 +155,22 @@ export default function Game() {
       onQuit={mode?.kind === 'daily' ? forfeit : home}
       daily={mode?.kind === 'daily'}
     />
+  );
+  })();
+
+  const playing = state.phase !== 'HOME';
+  const lastRecord = state.records[state.records.length - 1];
+  return (
+    <>
+      <MineScene
+        ambient={!playing}
+        hud={playing && state.phase !== 'FINAL_RESULTS' && state.phase !== 'COUNTDOWN'}
+        dim={state.phase === 'FINAL_RESULTS' || (state.phase === 'HOME' && page !== 'home')}
+        depth={playing ? depth(state) : 0}
+        digs={playing ? state.records.length : 0}
+        tier={lastRecord?.rarity ? rarityIndex(lastRecord.rarity) : null}
+      />
+      <div className={`stage${playing && state.phase !== 'FINAL_RESULTS' ? ' is-playing' : ' is-menu'}`}>{screen}</div>
+    </>
   );
 }

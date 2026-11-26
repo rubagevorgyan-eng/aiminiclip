@@ -31,6 +31,7 @@ export function buildWorld(): World {
 
 function generate(): World {
   const W = MINE.width, H = worldHeight(), S = MINE.seed;
+  const dens = W / 96; // decoration counts were tuned at 96px wide
   const canvas = document.createElement('canvas');
   canvas.width = W;
   canvas.height = H;
@@ -54,7 +55,7 @@ function generate(): World {
       const r = 12 + t * 14, g = 16 + t * 18, b = 26 + t * 22;
       const i = (y * W + x) * 4;
       px[i] = r; px[i + 1] = g; px[i + 2] = b; px[i + 3] = 255;
-      if (y < MINE.sky - 16 && hash2(x, y, S + 9) > 0.985) set(x, y, '#cfd6e6', 0.6);
+      if (y < MINE.sky - 16 && hash2(x, y, S + 9) > 0.99) set(x, y, '#cfd6e6', 0.3 + hash2(y, x, S + 10) * 0.5);
     }
   for (let x = 0; x < W; x++) {
     const hill = Math.round(MINE.sky - 6 - valueNoise(x, 0, 18, S + 3) * 12);
@@ -86,7 +87,7 @@ function generate(): World {
   const twinkles: Twinkle[] = [];
 
   // ---- surface roots
-  for (let r = 0; r < 10; r++) {
+  for (let r = 0; r < 10 * dens; r++) {
     let x = Math.floor(rand() * W), y = MINE.sky + 2;
     const len = 8 + rand() * 26;
     for (let i = 0; i < len; i++) {
@@ -100,7 +101,7 @@ function generate(): World {
   ZONES.forEach((_, z) => {
     const look = ZONE_LOOK[z];
     const [y0, y1] = zoneRange(z);
-    const clusters = 16 + z * 3;
+    const clusters = Math.round((16 + z * 3) * dens);
     for (let c = 0; c < clusters; c++) {
       const cx = Math.floor(rand() * W), cy = Math.floor(y0 + 4 + rand() * (y1 - y0 - 8));
       if (inShaft(cx)) continue;
@@ -116,7 +117,7 @@ function generate(): World {
   // ---- gold veins: glowing random walks
   {
     const [y0, y1] = zoneRange(3);
-    for (let v = 0; v < 9; v++) {
+    for (let v = 0; v < 9 * dens; v++) {
       let x = Math.floor(rand() * W), y = Math.floor(y0 + rand() * (y1 - y0));
       for (let i = 0; i < 40; i++) {
         if (!inShaft(x)) set(x, y, ZONE_LOOK[3].ore, 0.85);
@@ -129,7 +130,7 @@ function generate(): World {
   // ---- emerald crystal formations: upward shards
   {
     const [y0, y1] = zoneRange(4);
-    for (let c = 0; c < 20; c++) {
+    for (let c = 0; c < 20 * dens; c++) {
       const bx = Math.floor(rand() * W), by = Math.floor(y0 + 10 + rand() * (y1 - y0 - 12));
       if (inShaft(bx)) continue;
       const shards = 2 + Math.floor(rand() * 3);
@@ -148,7 +149,7 @@ function generate(): World {
   // ---- diamond abyss: luminous diamonds with a soft halo
   {
     const [y0, y1] = zoneRange(5);
-    for (let d = 0; d < 26; d++) {
+    for (let d = 0; d < 26 * dens; d++) {
       const x = Math.floor(rand() * W), y = Math.floor(y0 + rand() * (y1 - y0));
       if (inShaft(x)) continue;
       for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) set(x + dx, y + dy, '#67e8f9', 0.08);

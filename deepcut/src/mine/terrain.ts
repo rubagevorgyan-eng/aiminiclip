@@ -2,9 +2,9 @@ import { RARITY, ZONES, zoneIndexForDepth } from '../config/game.ts';
 
 /** World scale in low-res pixels. The scene is drawn at this resolution and scaled up (pixel art). */
 export const MINE = {
-  width: 96, // low-res px
+  width: 240, // low-res px (wide enough to fill a desktop screen; narrow screens see the middle)
   pxPerMeter: 2,
-  sky: 48, // px of sky above 0m
+  sky: 110, // px of sky above 0m (tall enough that the miner starts mid-screen)
   extraMeters: 24, // rock drawn below the max depth
   shaftHalf: 6, // shaft is 12px wide
   seed: 20251126,

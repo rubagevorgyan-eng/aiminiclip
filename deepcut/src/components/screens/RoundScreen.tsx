@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from 'react';
 import { GAME, RARITY, rarityOf, type RarityId } from '../../config/game.ts';
-import { depth, timeLeft, type GameState } from '../../engine/machine.ts';
+import { timeLeft, type GameState } from '../../engine/machine.ts';
+import { suggestAnswer } from '../../engine/match.ts';
 import { playFind, playMiss, playTick, playWrong } from '../../audio/sfx.ts';
 import { useCountUp } from '../../hooks/useCountUp.ts';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset.ts';
-import { MineScene } from '../MineScene.tsx';
 import { Button } from '../ui/Button.tsx';
 import { MineralIcon } from '../ui/MineralIcon.tsx';
 import { SettingsMenu } from '../ui/SettingsMenu.tsx';
@@ -66,21 +66,35 @@ export function RoundScreen({ state, now, onSubmit, onSkip, onQuit, daily }: Pro
     if (tickSec) playTick(tickSec);
   }, [tickSec]);
 
+  // "Did you mean…?" for the latest wrong guess. Enter (with the guess unchanged) or a tap accepts it.
+  const suggestion = useMemo(() => (lastWrong ? suggestAnswer(q, lastWrong) : null), [q, lastWrong]);
+  const acceptSuggestion = () => {
+    if (!suggestion) return;
+    onSubmit(suggestion.name);
+    input.current?.focus();
+  };
+
   const submit = (e: FormEvent) => {
     e.preventDefault();
+    if (suggestion && text === lastWrong) return acceptSuggestion();
     if (text.trim()) onSubmit(text);
     input.current?.focus();
   };
 
   return (
-    <section className={`screen round${keyboard ? ' is-kb' : ''}`}>
+    <section className={`round-stage${keyboard ? ' is-kb' : ''}`}>
+      <div className="timer" role="timer" aria-label={asking ? `${secs} seconds left` : undefined}>
+        <i
+          key={`${state.round}-${asking}`}
+          className={`${asking ? 'is-running' : ''}${warn ? ' is-warn' : ''}`}
+          style={{ animationDuration: `${qms}ms`, animationDelay: `-${offset}ms`, '--left': ms / qms } as CSSProperties}
+        />
+      </div>
+
       <header className="hud">
         <Wordmark size="sm" />
         <div className="hud-round">
-          <span className="eyebrow">
-            Round <b className="num">{state.round + 1}</b>/{total}
-          </span>
-          <ol className="pips" aria-label={`Round ${state.round + 1} of ${total}`}>
+          <ol className="pips" aria-label={`Question ${state.round + 1} of ${total}`}>
             {state.questions.map((_, i) => {
               const r = state.records[i];
               const color = r?.rarity ? rarityOf(r.rarity).color : undefined;
@@ -94,6 +108,12 @@ export function RoundScreen({ state, now, onSubmit, onSkip, onQuit, daily }: Pro
               );
             })}
           </ol>
+          <span className="eyebrow">Question <b className="num">{state.round + 1}</b> of {total}</span>
+          {found.length > 0 && (
+            <span className="hud-found" aria-label={`Found: ${found.map((r) => rarityOf(r).mineral).join(', ')}`}>
+              {found.map((r, i) => <MineralIcon key={i} rarity={r} size={14} />)}
+            </span>
+          )}
         </div>
         <div className="hud-tools">
           <SoundToggle />
@@ -105,78 +125,74 @@ export function RoundScreen({ state, now, onSubmit, onSkip, onQuit, daily }: Pro
         </div>
       </header>
 
-      <div className="timer" role="timer" aria-label={asking ? `${secs} seconds left` : undefined}>
-        <i
-          key={`${state.round}-${asking}`}
-          className={`${asking ? 'is-running' : ''}${warn ? ' is-warn' : ''}`}
-          style={{ animationDuration: `${qms}ms`, animationDelay: `-${offset}ms`, '--left': ms / qms } as CSSProperties}
-        />
-      </div>
-
-      <div className="round-body">
-        <MineScene depth={depth(state)} digs={state.records.length} tier={last?.rarity ? RARITY.findIndex((t) => t.id === last.rarity) : null}>
-          <span className="eyebrow">Found</span>
-          <span className="mine-found">
-            {found.length ? found.map((r, i) => <MineralIcon key={i} rarity={r} size={16} title={rarityOf(r).mineral} />) : <span className="dim">nothing yet</span>}
-          </span>
-        </MineScene>
-
-        <div className="panel round-panel">
-          <div key={state.round} className="round-q">
-            <div className="round-meta">
+      <div className="stage-card">
+        {asking ? (
+          <div key={state.round} className="qcard panel">
+            <div className="qcard-meta">
               <span className="eyebrow">{q.category}</span>
-              <span className={`round-secs num${warn ? ' is-warn' : ''}`}>{asking ? `${secs}s` : ''}</span>
+              <span className="eyebrow">Rarer answers dig deeper</span>
             </div>
             <h1 className="question">{q.text}</h1>
           </div>
-
-          {asking ? (
-            <div className="round-input">
-              <form className="answer" onSubmit={submit}>
-                <input
-                  ref={input}
-                  key={state.round}
-                  className={`field${shaking ? ' is-error' : ''}`}
-                  autoFocus
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  placeholder="Type your answer"
-                  aria-label="Your answer"
-                  aria-invalid={shaking || undefined}
-                  autoComplete="off"
-                  autoCapitalize="off"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  enterKeyHint="go"
-                />
-                <div className="answer-actions">
-                  <Button variant="primary" type="submit" silent>Dig</Button>
-                  <Button variant="secondary" onClick={onSkip} silent>Skip</Button>
-                </div>
-              </form>
-              <p className={`feedback${lastWrong ? ' feedback--error' : ''}`} aria-live="polite">
-                {lastWrong ? (
-                  <>
-                    <b>“{lastWrong}”</b> isn't on the list. Try another.
-                  </>
-                ) : (
-                  'Enter to dig. Wrong answers can be retried until time runs out.'
-                )}
-              </p>
+        ) : last?.outcome === 'correct' && last.rarity ? (
+          <RoundResult rarity={last.rarity} answer={last.answer!} />
+        ) : (
+          <div className="result result--miss panel" aria-live="assertive">
+            <div>
+              <p className="result-title">{last?.outcome === 'skipped' ? 'Skipped' : "Time's up"}</p>
+              <p className="dim">Nothing found this round.</p>
             </div>
-          ) : last?.outcome === 'correct' && last.rarity ? (
-            <RoundResult rarity={last.rarity} answer={last.answer!} />
-          ) : (
-            <div className="result result--miss" aria-live="assertive">
-              <div>
-                <p className="result-title">{last?.outcome === 'skipped' ? 'Skipped' : "Time's up"}</p>
-                <p className="dim">Nothing found this round.</p>
-              </div>
-              <p className="result-meta num">+0m</p>
-            </div>
-          )}
-        </div>
+            <p className="result-meta num">+0m</p>
+          </div>
+        )}
       </div>
+
+      <div className="stage-gap" aria-hidden="true" />
+
+      {asking && (
+        <div className="dock">
+          <p className={`feedback${lastWrong ? ' feedback--error' : ''}`} aria-live="polite">
+            {lastWrong ? (
+              suggestion ? (
+                <>
+                  <b>“{lastWrong}”</b> isn't on the list. Did you mean{' '}
+                  <button type="button" className="suggest" onClick={acceptSuggestion}>
+                    {suggestion.name}
+                  </button>
+                  ?
+                </>
+              ) : (
+                <>
+                  <b>“{lastWrong}”</b> isn't on the list. Try another.
+                </>
+              )
+            ) : (
+              'Type any correct answer. Wrong guesses can be retried.'
+            )}
+          </p>
+          <form className="answer" onSubmit={submit}>
+            <span className={`dock-secs num${warn ? ' is-warn' : ''}`} aria-hidden="true">{secs}</span>
+            <input
+              ref={input}
+              key={state.round}
+              className={`field${shaking ? ' is-error' : ''}`}
+              autoFocus
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Type your answer…"
+              aria-label="Your answer"
+              aria-invalid={shaking || undefined}
+              autoComplete="off"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+              enterKeyHint="go"
+            />
+            <Button variant="primary" type="submit" silent>Dig</Button>
+            <Button variant="secondary" onClick={onSkip} silent>Skip</Button>
+          </form>
+        </div>
+      )}
     </section>
   );
 }
@@ -188,7 +204,7 @@ function RoundResult({ rarity, answer }: { rarity: RarityId; answer: string }) {
   const pts = useCountUp(t.points, 450);
   const sparks = BURST[rarity] ?? 0;
   return (
-    <div className="result" data-tier={t.id} style={{ '--r': t.color } as CSSProperties} aria-live="assertive">
+    <div className="result panel" data-tier={t.id} style={{ '--r': t.color } as CSSProperties} aria-live="assertive">
       <span className="result-gem">
         <MineralIcon rarity={rarity} size={64} />
         {Array.from({ length: sparks }, (_, i) => (

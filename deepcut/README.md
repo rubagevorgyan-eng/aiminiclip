@@ -24,7 +24,7 @@ npm run preview    # serve dist/ at http://localhost:4174
 
 - **Vercel:** import the repo, set the project's Root Directory to `deepcut`. `vercel.json` sets the build (`npm run build`), output (`dist`) and long-lived caching for hashed assets.
 - **Netlify / Cloudflare Pages / GitHub Pages:** build command `npm run build`, publish directory `deepcut/dist`.
-- **Inside another static site:** copy the contents of `dist/` into a folder (e.g. `games/deep-cut/`).
+- **Recess site (this repo):** `npm run publish:site` builds and replaces `../games/deep-cut/` with the new build. Commit that folder; Netlify serves it at `/games/deep-cut/`.
 
 After deploying, change `og:image` and `twitter:image` in `index.html` to the absolute URL of `og-image.jpg` (some link previews ignore relative image URLs).
 

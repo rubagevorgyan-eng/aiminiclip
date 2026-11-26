@@ -144,3 +144,36 @@ export function matchDetail(q: Question, guess: string): Match | null {
 export function matchAnswer(q: Question, guess: string): Answer | null {
   return matchDetail(q, guess)?.answer ?? null;
 }
+
+/**
+ * "Did you mean…?" for a guess that was NOT accepted: a looser search than `matchDetail`, used only
+ * to offer a suggestion the player must confirm. Never used to score an answer by itself.
+ * Allows more typos (1 edit from 4 letters, 2 from 6, 3 from 10), a first-letter slip on longer
+ * words, and unambiguous prefixes ("tyranno" -> Tyrannosaurus rex). Ties or known-wrong answers: null.
+ */
+export function suggestAnswer(q: Question, guess: string): Answer | null {
+  if (matchDetail(q, guess)) return null;
+  const k = normalize(guess, q.ignore);
+  const c = compact(k);
+  const { keys, reject } = index(q);
+  if (c.length < 4 || reject.has(k) || reject.has(c)) return null;
+  const max = c.length < 6 ? 1 : c.length < 10 ? 2 : 3;
+  // Rank: closest spelling first (a 1-letter slip beats everything); unambiguous prefixes only
+  // when nothing is within 1 edit ("thorr" -> Thor, not Thor: Ragnarok; "ratatoui" -> Ratatouille).
+  let best = max + 1;
+  let found = new Set<Answer>();
+  const prefixes = new Set<Answer>();
+  for (const [key, a] of keys) {
+    if (!a || key.includes(' ') || digits(key) !== digits(c)) continue;
+    if (c.length >= 5 && key.length > c.length && key.startsWith(c)) prefixes.add(a);
+    const d = editDistance(c, key, max);
+    if (d > max || (key[0] !== c[0] && (d > 1 || c.length < 6))) continue;
+    if (d < best) {
+      best = d;
+      found = new Set([a]);
+    } else if (d === best) found.add(a);
+  }
+  if (best <= 1) return found.size === 1 ? [...found][0] : null;
+  if (prefixes.size) return prefixes.size === 1 ? [...prefixes][0] : null;
+  return best <= max && found.size === 1 ? [...found][0] : null;
+}

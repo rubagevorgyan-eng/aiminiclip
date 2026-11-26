@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { RARITY, ZONES } from '../config/game.ts';
 import { MineRenderer } from '../mine/renderer.ts';
 import { useSettings } from '../storage/settings.ts';
@@ -10,14 +10,19 @@ interface Props {
   digs: number;
   /** Rarity index (0..5) of the latest round, or null if it was missed. */
   tier: number | null;
-  /** Home backdrop: tour the mine on its own. */
+  /** Menus: tour the mine on its own instead of following a game. */
   ambient?: boolean;
-  /** Extra overlay content (top of the scene). */
-  children?: ReactNode;
+  /** Show the depth / zone readout (during play). */
+  hud?: boolean;
+  /** Darken the scene behind text-heavy screens (results, stats, collection). */
+  dim?: boolean;
 }
 
-/** The animated mine column. Animation runs on its own clock and never affects gameplay. */
-export function MineScene({ depth, digs, tier, ambient = false, children }: Props) {
+/**
+ * Full-screen animated mine behind every screen. It stays mounted for the whole session and runs on
+ * its own clock: the game only tells it where to dig, so animation never affects gameplay.
+ */
+export function MineScene({ depth, digs, tier, ambient = false, hud = false, dim = false }: Props) {
   const { reduceMotion } = useSettings();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const depthRef = useRef<HTMLSpanElement>(null);
@@ -53,7 +58,14 @@ export function MineScene({ depth, digs, tier, ambient = false, children }: Prop
   }, []);
 
   useEffect(() => renderer.current?.setForceReduced(reduceMotion), [reduceMotion]);
-  useEffect(() => renderer.current?.setAmbient(ambient), [ambient]);
+  useEffect(() => {
+    const r = renderer.current;
+    if (!r) return;
+    r.setAmbient(ambient);
+    if (!ambient) r.reset(depth); // a game starts at its own depth, not wherever the tour was
+    prevDigs.current = digs;
+    prevDepth.current = depth;
+  }, [ambient]);
 
   useEffect(() => {
     const r = renderer.current;
@@ -74,19 +86,19 @@ export function MineScene({ depth, digs, tier, ambient = false, children }: Prop
   }, [digs, depth, tier]);
 
   return (
-    <div className="mine">
+    <div className={`mine${ambient ? ' is-ambient' : ''}${hud ? ' has-hud' : ''}${dim ? ' is-dim' : ''}`}>
       <canvas ref={canvasRef} className="mine-canvas" aria-hidden="true" />
-      {children && <div className="mine-top">{children}</div>}
       {floats.map((f) => (
         <span key={f.id} className={`mine-float num${f.tier >= 4 ? ' is-big' : ''}`} style={{ '--r': RARITY[f.tier].color } as CSSProperties} aria-hidden="true">
           {f.text}
         </span>
       ))}
       <div className="mine-hud">
-        <span ref={zoneRef} className="mine-zone eyebrow" />
+        <span className="eyebrow">Depth</span>
         <span className="mine-depth num" aria-live="off">
           <span ref={depthRef}>0m</span>
         </span>
+        <span ref={zoneRef} className="mine-zone eyebrow" />
       </div>
       {!ambient && <span className="sr-only" aria-live="polite">Depth {depth} meters</span>}
     </div>

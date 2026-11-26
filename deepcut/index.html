@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,interactive-widget=resizes-content">
+  <script>
+    // Served from a folder (e.g. /games/deep-cut): relative asset paths need the trailing slash.
+    (function (l) { var p = l.pathname; if (!/\/$/.test(p) && !/\.[a-z0-9]+$/i.test(p)) l.replace(p + '/' + l.search + l.hash); })(location);
+  </script>
   <title>DEEPCUT · The deeper your knowledge, the deeper you go</title>
   <meta name="description" content="A daily trivia game where rare answers dig deeper. Seven open questions, 25 seconds each: name what nobody else would and mine down to the Diamond Abyss.">
   <meta name="theme-color" content="#0D0F12">

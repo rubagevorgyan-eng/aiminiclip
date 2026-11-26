@@ -22,6 +22,8 @@ export class MineRenderer {
   private bctx: CanvasRenderingContext2D;
   private ctx: CanvasRenderingContext2D;
   private viewH = 160;
+  private viewW: number = MINE.width;
+  private xOff = 0;
   private depth = 0; // displayed meters
   private tween: Tween | null = null;
   private swing: Swing | null = null;
@@ -103,10 +105,14 @@ export class MineRenderer {
   private resize() {
     const r = this.canvas.getBoundingClientRect();
     if (!r.width || !r.height) return;
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const dpr = Math.min(1.5, window.devicePixelRatio || 1); // pixel art: no need for full retina
     this.canvas.width = Math.round(r.width * dpr);
     this.canvas.height = Math.round(r.height * dpr);
-    this.viewH = Math.max(40, Math.round((MINE.width * r.height) / r.width));
+    // CSS px per world px: about 150 world rows tall, but always wide enough to fill the screen.
+    const k = Math.max(2, r.height / 150, r.width / MINE.width);
+    this.viewW = Math.min(MINE.width, Math.ceil(r.width / k));
+    this.viewH = Math.max(40, Math.ceil(r.height / k));
+    this.xOff = Math.floor((MINE.width - this.viewW) / 2); // narrow screens show the middle (the shaft)
     this.buf.height = this.viewH + 1; // one spare row for sub-pixel scrolling
   }
 
@@ -286,12 +292,12 @@ export class MineRenderer {
     b.globalAlpha = 1;
 
     // upscale to the display canvas
-    const c = this.ctx, cw = this.canvas.width, ch = this.canvas.height, k = cw / W, ky = ch / H;
+    const c = this.ctx, cw = this.canvas.width, ch = this.canvas.height, k = cw / this.viewW, ky = ch / H;
     c.imageSmoothingEnabled = false;
-    c.drawImage(this.buf, 0, 0, W, H + 1, 0, -frac * ky, cw, (H + 1) * ky);
+    c.drawImage(this.buf, this.xOff, 0, this.viewW, H + 1, 0, -frac * ky, cw, (H + 1) * ky);
 
     // lighting: darkness grows with depth, headlamp pool and beam around the miner
-    const lx = (mx + LAMP.x + 0.5) * k, ly = (my + LAMP.y + bob + 0.5 - frac) * ky;
+    const lx = (mx + LAMP.x + 0.5 - this.xOff) * k, ly = (my + LAMP.y + bob + 0.5 - frac) * ky;
     const dark = 0.28 + 0.5 * Math.min(1, this.depth / ZONES[ZONES.length - 1].to);
     const g = c.createRadialGradient(lx, ly, 6 * k, lx, ly, Math.max(cw, ch) * 0.75);
     g.addColorStop(0, 'rgba(6,7,9,0)');
