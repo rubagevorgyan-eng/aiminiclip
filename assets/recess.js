@@ -1,7 +1,8 @@
 /* shared bits for every page: game list, last played, my recess */
 window.Recess=(function(){
   var GAMES=[
-    {slug:'needle-drop',title:'Needle Drop',cat:'Music',color:'tangerine',blurb:'Name the song from half a second of it'}
+    {slug:'needle-drop',title:'Needle Drop',cat:'Music',color:'tangerine',blurb:'Name the song from half a second of it'},
+    {slug:'deep-cut',title:'Deep Cut',cat:'Words',color:'grape',blurb:'Name everything in a category. The rare answers are worth the most'}
   ];
   function get(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
   function put(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deep Cut - Recess</title>
+<meta name="description" content="One category, ninety seconds. Name everything you can. The answers nobody thinks of are worth the most. Free, in your browser.">
+<meta name="theme-color" content="#FBF8F1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%23FF8A1F'/%3E%3Cpath d='M8 3v7M5 8l3 4 3-4' stroke='%2307080d' stroke-width='2.2' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800&family=JetBrains+Mono:wght@500;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/shell.css">
+<style>
+/*
+VOICE: a dig crew on the clock: everyone gets the easy stuff, the good ones are buried
+IDEA: you're digging a shaft. Every answer takes you deeper; the rare ones are what's down there
+PICTURE: a pixel shovel, and a shaft of rock layers with a drill going down it
+COLOUR and TYPE: Recess night stage, soil tan = common, mint = uncommon, blue = rare, gold = deep cut. Silkscreen for game labels, Verdana for anything you read or type
+LAYOUT: dig area plus a narrow shaft on desktop; the shaft becomes a depth chip on phones
+*/
+.hide{display:none!important}
+
+/* page header, same as every game page */
+.gt{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin:6px 0 16px}
+.gt h1{margin:0;font:400 clamp(44px,6vw,72px)/.9 var(--disp);letter-spacing:.5px;text-transform:uppercase}
+.gt h1 em{font-style:normal;color:var(--gold)}
+.gt .meta{margin:6px 0 0;color:var(--dim);font-size:15px}
+.gt .tools{display:flex;gap:8px;flex-wrap:wrap}
+.fav{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;box-shadow:inset 0 0 0 2px var(--line);background:transparent;color:var(--bone);font:700 14px var(--body);cursor:pointer}
+.fav .h{color:var(--dim)}.fav[aria-pressed=true] .h{color:var(--ember)}
+
+/* stage */
+.stagebox{margin:0 0 26px;border-top:6px solid var(--ember);background:#000}
+.stagebox:fullscreen{overflow:auto;border-top:0}
+#stage{
+  --n0:#0d0f18;--n1:#151827;--n2:#1f2336;--nl:#000;--cream:#f1ede6;--gold:#ffc94a;--red:#ff4d2e;--mint:#3fd39a;--lav:#8a8fa8;--blue:#4fb3ff;--soil:#c9a878;
+  --px:"Silkscreen",monospace;--rd:Verdana,Geneva,Tahoma,sans-serif;
+  position:relative;min-height:640px;padding:16px 18px 18px;color:var(--cream);font:13px/1.45 var(--rd);background:var(--n0);border:1px solid var(--line);border-top:0;overflow:hidden}
+#stage input,#stage textarea{user-select:text}
+#stage.rumble{animation:rumble .35s steps(6)}
+@keyframes rumble{20%{transform:translate(-3px,1px)}40%{transform:translate(3px,-1px)}60%{transform:translate(-2px,2px)}80%{transform:translate(2px,0)}}
+
+/* game buttons */
+.gb{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:44px;padding:6px 10px;border:2px solid var(--nl);font:700 14px/1.1 var(--px);cursor:pointer;color:var(--nl);
+  box-shadow:inset -4px -4px 0 rgba(0,0,0,.22),inset 3px 3px 0 rgba(255,255,255,.28),0 4px 0 var(--nl);position:relative;transition:transform .05s}
+.gb:active:not(:disabled){transform:translateY(4px);box-shadow:inset -4px -4px 0 rgba(0,0,0,.22),inset 3px 3px 0 rgba(255,255,255,.28)}
+.gb:disabled{opacity:.35;cursor:not-allowed}
+.gb:focus-visible,.mini:focus-visible{outline:2px dashed var(--gold);outline-offset:4px}
+.gb small{font:400 11px var(--px);opacity:.75}
+.g-gold{background:var(--gold)}.g-red{background:var(--red);color:#fff}.g-mint{background:var(--mint)}.g-dim{background:var(--n2);color:var(--cream)}.g-blue{background:var(--blue)}
+.panel{background:var(--n1);border:2px solid var(--nl);box-shadow:inset -3px -3px 0 rgba(0,0,0,.35),inset 2px 2px 0 rgba(255,255,255,.05)}
+.lbl{font:700 11px/1 var(--px);color:var(--lav)}
+.pix{shape-rendering:crispEdges;display:block}
+.mini{background:var(--n2);border:2px solid var(--nl);color:var(--cream);font:700 11px var(--px);padding:7px 10px;cursor:pointer;min-height:34px}
+.chip{display:flex;align-items:center;gap:6px;background:var(--nl);border:2px solid var(--n2);padding:6px 9px;font:700 12px/1 var(--px)}
+.chip b{color:var(--gold);font-weight:700}
+.chip.hot b{color:var(--red)}
+#stage input[type=text],#stage textarea,#stage select{width:100%;font:16px var(--rd);color:var(--nl);background:var(--cream);border:2px solid var(--nl);border-radius:0;padding:10px 11px}
+#stage input[type=text]:focus,#stage textarea:focus,#stage select:focus{outline:2px solid var(--gold);outline-offset:0}
+
+/* title */
+.title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:606px}
+.shovel{width:92px;margin:0 auto 12px;animation:dig 1s steps(3) infinite alternate}
+@keyframes dig{to{transform:translate(-6px,6px) rotate(-8deg)}}
+.dclogo{margin:0;font:700 64px/.92 var(--px);color:var(--gold);text-shadow:4px 4px 0 var(--nl),-2px -2px 0 var(--nl),2px -2px 0 var(--nl),-2px 2px 0 var(--nl)}
+.dclogo span{display:block;color:var(--cream)}
+.blurb{max-width:46ch;margin:14px auto 18px;color:#d9cfe8}
+.modes{display:grid;gap:12px;width:100%;max-width:340px}
+.legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:22px}
+.tg{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;font:700 11px var(--px);color:var(--nl);background:var(--tc);border:2px solid var(--nl)}
+.t0{--tc:var(--soil)}.t1{--tc:var(--mint)}.t2{--tc:var(--blue)}.t3{--tc:var(--gold)}
+.sub{color:var(--lav);font-size:12px;margin:8px 0 0}
+
+/* dig screen */
+.hud{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.hud-l,.hud-r{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.dig{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:18px;align-items:start}
+.catcard{padding:16px 16px 14px;text-align:center}
+.catcard .lbl{margin-bottom:8px}
+.catcard h2{margin:0;font:700 clamp(22px,3vw,30px)/1.1 var(--px);color:var(--cream);overflow-wrap:anywhere}
+.catcard .tally{margin-top:10px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+.tally .tg b{font-weight:700}
+.entry{display:flex;gap:8px;margin:14px 0 0}
+.entry input{flex:1}
+.entry .gb{width:auto;flex:none;padding:6px 18px}
+.say{min-height:22px;margin:10px 0 0;text-align:center;font:700 13px var(--px);color:var(--lav)}
+.say.ok{color:var(--mint)}.say.bad{color:#ff9d93}.say.gem{color:var(--gold)}
+.found{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;min-height:60px;align-content:flex-start}
+.ans{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;font:700 12px var(--rd);color:var(--nl);background:var(--tc);border:2px solid var(--nl)}
+.ans i{font:700 10px var(--px);font-style:normal;opacity:.7}
+.ans.new{animation:pop .3s steps(4)}
+.ans.miss{background:transparent;color:#59607e;border:2px dashed #262a3f}
+.ans.miss.t3{color:#8b7433;border-color:#4a3d16}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.shake{animation:shake .3s steps(4)}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* the shaft */
+.shaft{position:relative;height:520px;border:2px solid var(--nl);overflow:hidden;
+  background:linear-gradient(#5a8a3a 0 4%,#6b4a2b 4% 22%,#8a5f37 22% 40%,#6e6a64 40% 60%,#4b4a52 60% 80%,#2b1f2e 80% 92%,#ff6a1f 92% 100%)}
+.shaft::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 10px,rgba(0,0,0,.12) 10px 12px),repeating-linear-gradient(0deg,transparent 0 14px,rgba(0,0,0,.14) 14px 16px)}
+.hole{position:absolute;left:50%;top:0;width:34px;margin-left:-17px;background:#07080d;border-left:2px solid var(--nl);border-right:2px solid var(--nl);transition:height .4s steps(6)}
+.drill{position:absolute;left:50%;width:34px;height:30px;margin-left:-17px;transition:top .4s steps(6)}
+.drill::before{content:"";position:absolute;left:5px;top:0;width:20px;height:12px;background:var(--gold);border:2px solid var(--nl)}
+.drill::after{content:"";position:absolute;left:4px;top:14px;border-left:13px solid transparent;border-right:13px solid transparent;border-top:16px solid #d8dbe8}
+.drill.spin::after{animation:bit .2s steps(2) infinite}
+@keyframes bit{50%{border-top-color:#8a8fa8}}
+.depth{position:absolute;left:0;right:0;bottom:6px;text-align:center;font:700 13px var(--px);color:#fff;text-shadow:2px 2px 0 var(--nl)}
+.zone{position:absolute;right:4px;font:400 9px var(--px);color:rgba(255,255,255,.55)}
+
+/* results */
+.res{max-width:760px;margin:0 auto;text-align:center}
+.res h2{margin:6px 0 0;font:700 34px/1.05 var(--px);color:var(--gold);text-shadow:3px 3px 0 var(--nl)}
+.res .big{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:16px 0}
+.res .big .chip{font-size:14px;padding:9px 12px}
+.res .row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:560px;margin:0 auto 18px}
+.board{text-align:left;margin-top:8px}
+.board h3{margin:16px 0 8px;font:700 13px var(--px);color:var(--tc)}
+.board .found{min-height:0;margin:0}
+
+/* party */
+.pset{max-width:460px;margin:0 auto;text-align:center}
+.pset textarea{min-height:120px;resize:vertical}
+.pset label{display:block;text-align:left;font:700 12px var(--px);margin:16px 0 6px}
+.crew{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px}
+.mate{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--n1);border:2px solid var(--n2);font:700 13px var(--rd)}
+.mate.now{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.mate.out{opacity:.35;text-decoration:line-through}
+.hats{display:inline-flex;gap:3px}
+.hats i{width:12px;height:8px;background:var(--gold);border:2px solid var(--nl);border-radius:6px 6px 0 0}
+.hats i.off{background:#262a3f}
+.gem{color:var(--gold);font:700 11px var(--px)}
+.turn{text-align:center;margin:6px 0 4px}
+.turn .lbl{margin-bottom:6px}
+.turn b{display:block;font:700 clamp(28px,4vw,42px)/1.05 var(--px);color:var(--gold);text-shadow:3px 3px 0 var(--nl);overflow-wrap:anywhere}
+.pplay{max-width:620px;margin:0 auto}
+.fuse{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px 0 0;color:var(--lav);font:700 12px var(--px)}
+.fuse .spark{width:12px;height:12px;background:var(--red);animation:spark .25s steps(2) infinite}
+@keyframes spark{50%{background:var(--gold);transform:scale(1.3)}}
+.cave{position:absolute;inset:0;z-index:10;display:grid;place-items:center;padding:20px;background:rgba(7,8,13,.92);text-align:center}
+.cave .in{max-width:520px;animation:pop .3s steps(4)}
+.cave h2{margin:0;font:700 46px/1 var(--px);color:var(--red);text-shadow:4px 4px 0 var(--nl)}
+.cave p{color:#d9cfe8;margin:12px 0 16px}
+.cave .gb{max-width:300px;margin:0 auto}
+.rocks{position:absolute;inset:0;pointer-events:none;z-index:11}
+
+@media(max-width:760px){
+  .dig{grid-template-columns:1fr}
+  .shaft{display:none}
+  .res .row{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .gt h1{font-size:40px}
+  #stage{padding:12px 10px;min-height:600px}
+  .title{min-height:576px}
+  .dclogo{font-size:48px}
+  .entry .gb{padding:6px 12px}
+}
+@media(prefers-reduced-motion:reduce){#stage,#stage *,#stage *::before,#stage *::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="/" aria-label="Recess home"><span class="rlogo"></span></a>
+  <nav class="nav"><a class="on" href="/">Games</a><a href="/#board">Board</a><a href="/#prof">Profile</a></nav>
+  <a class="me" href="/#prof"><div><span>@ruben</span><small>Level 3</small></div><span class="orb">R</span></a>
+</header>
+
+<main class="page">
+  <div class="gt">
+    <div><h1>Deep <em>Cut</em></h1><p class="meta">by Ruben &middot; Words &middot; solo, or a party on one screen</p></div>
+    <div class="tools"><button class="fav" id="favBtn" aria-pressed="false"><span class="h">&#9829;</span><span id="favTxt">Add to My Recess</span></button><button class="btn alt" id="fsBtn">Full screen</button><button class="btn alt" id="restartBtn">Restart</button></div>
+  </div>
+
+  <div class="stagebox" id="box">
+  <div id="stage">
+
+    <!-- title -->
+    <section class="title" id="sTitle">
+      <svg class="shovel pix" id="shovel" viewBox="0 0 12 12" aria-hidden="true"></svg>
+      <h2 class="dclogo">DEEP<span>CUT</span></h2>
+      <p class="blurb">One category. Ninety seconds. Name everything you can think of. Everyone gets the easy ones. The answers nobody thinks of are buried deeper and worth more.</p>
+      <div class="modes">
+        <button class="gb g-gold" id="dailyBtn">DAILY DIG</button>
+        <button class="gb g-mint" id="practiceBtn">PRACTICE</button>
+        <button class="gb g-red" id="partyBtn">PARTY <small>2-8 players</small></button>
+      </div>
+      <p class="sub" id="dailySub"></p>
+      <div class="legend">
+        <span class="tg t0">COMMON 1</span><span class="tg t1">UNCOMMON 2</span><span class="tg t2">RARE 3</span><span class="tg t3">DEEP CUT 5</span>
+      </div>
+      <p class="sub">A deep cut also adds 5 seconds to the clock.</p>
+    </section>
+
+    <!-- practice picker -->
+    <section class="hide" id="sPick">
+      <div class="pset">
+        <h2 class="dclogo" style="font-size:40px">PRACTICE</h2>
+        <p class="blurb">Pick a category, or let the ground decide.</p>
+        <label for="catSel">Category</label>
+        <select id="catSel"></select>
+        <div class="modes" style="margin:18px auto 0">
+          <button class="gb g-mint" id="pickGo">START DIGGING</button>
+          <button class="gb g-dim" id="pickBack">BACK</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- solo dig -->
+    <section class="hide" id="sDig">
+      <div class="hud">
+        <div class="hud-l"><span class="chip" id="modeChip">DAILY</span><span class="chip" id="timeChip">TIME <b id="time">90</b></span></div>
+        <div class="hud-r"><span class="chip">SCORE <b id="score">0</b></span><span class="chip" id="depthChip">DEPTH <b id="depthTxt">0m</b></span><button class="mini" id="muteBtn">SOUND ON</button><button class="mini" id="quitBtn">GIVE UP</button></div>
+      </div>
+      <div class="dig">
+        <div>
+          <div class="panel catcard">
+            <div class="lbl">NAME AS MANY AS YOU CAN</div>
+            <h2 id="catName"></h2>
+            <div class="tally" id="tally"></div>
+          </div>
+          <form class="entry" id="digForm" autocomplete="off">
+            <input type="text" id="digIn" aria-label="Your answer" placeholder="Type an answer, press Enter" autocapitalize="off" spellcheck="false">
+            <button class="gb g-gold" type="submit">DIG</button>
+          </form>
+          <p class="say" id="say" aria-live="polite"></p>
+          <div class="found" id="found"></div>
+        </div>
+        <div class="shaft" aria-hidden="true">
+          <span class="zone" style="top:6%">TOPSOIL</span><span class="zone" style="top:24%">CLAY</span><span class="zone" style="top:42%">ROCK</span><span class="zone" style="top:62%">BEDROCK</span><span class="zone" style="top:82%">DEEP</span><span class="zone" style="top:93%;color:#2b1f2e">CORE</span>
+          <div class="hole" id="hole"></div>
+          <div class="drill" id="drill"></div>
+          <div class="depth" id="depthBig">0m</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- solo results -->
+    <section class="hide" id="sRes">
+      <div class="res">
+        <div class="lbl" id="resLbl">TIME'S UP</div>
+        <h2 id="resCat"></h2>
+        <div class="big" id="resBig"></div>
+        <div class="row">
+          <button class="gb g-gold" id="resAgain">PLAY AGAIN</button>
+          <button class="gb g-mint" id="resCopy">COPY RESULT</button>
+          <button class="gb g-dim" id="resHome">MENU</button>
+        </div>
+        <p class="say" id="resSay"></p>
+        <div class="board" id="resBoard"></div>
+      </div>
+    </section>
+
+    <!-- party setup -->
+    <section class="hide" id="sPset">
+      <div class="pset">
+        <h2 class="dclogo" style="font-size:40px">PARTY</h2>
+        <p class="blurb">Pass one device around. On your turn, name something new in the category to pass it on. Somewhere a hidden fuse is burning. When the shaft caves in, whoever's holding the device loses a hard hat. Lose both and you're out.</p>
+        <label for="names">Players, one per line (2 to 8)</label>
+        <textarea id="names" spellcheck="false"></textarea>
+        <p class="say bad" id="psetSay"></p>
+        <div class="modes" style="margin:6px auto 0">
+          <button class="gb g-red" id="psetGo">START PARTY</button>
+          <button class="gb g-dim" id="psetBack">BACK</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- party play -->
+    <section class="hide" id="sParty">
+      <div class="hud">
+        <div class="hud-l"><span class="chip">ROUND <b id="pRound">1</b></span></div>
+        <div class="hud-r"><button class="mini" id="pMute">SOUND ON</button><button class="mini" id="pQuit">END PARTY</button></div>
+      </div>
+      <div class="crew" id="crew"></div>
+      <div class="pplay">
+        <div class="panel catcard">
+          <div class="lbl">CATEGORY</div>
+          <h2 id="pCat"></h2>
+        </div>
+        <div class="turn"><div class="lbl" id="pTurnLbl">HOLDING THE DEVICE</div><b id="pTurn"></b></div>
+        <div id="pReady" class="modes" style="margin:14px auto 0"><button class="gb g-red" id="pLight">LIGHT THE FUSE</button></div>
+        <div id="pLive" class="hide">
+          <form class="entry" id="pForm" autocomplete="off">
+            <input type="text" id="pIn" aria-label="Your answer" placeholder="Name one, then pass it on" autocapitalize="off" spellcheck="false">
+            <button class="gb g-gold" type="submit">PASS</button>
+          </form>
+          <p class="say" id="pSay" aria-live="polite"></p>
+          <div class="fuse"><span class="spark"></span>THE FUSE IS LIT. NOBODY KNOWS HOW LONG.</div>
+          <div class="found" id="pUsed"></div>
+        </div>
+      </div>
+      <div class="cave hide" id="cave"><div class="in">
+        <h2 id="caveH">CAVE-IN!</h2>
+        <p id="caveP"></p>
+        <div id="caveMiss" class="found" style="justify-content:center;min-height:0;margin-bottom:16px"></div>
+        <button class="gb g-gold" id="caveBtn">NEXT ROUND</button>
+      </div></div>
+    </section>
+
+  </div>
+  </div>
+</main>
+
+<footer class="foot"><h6>Every game on Recess</h6><div class="az" id="allgames"></div><p>&copy; <span id="yr"></span> Recess &middot; someone coming? <span class="kbd">`</span></p></footer>
+
+<script src="/assets/logo.js"></script>
+<script src="/assets/teacher.js"></script>
+<script src="/assets/recess.js"></script>
+<script>
+{
+const SLUG='deep-cut';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TIERS=[{k:'c',n:'Common',p:1},{k:'u',n:'Uncommon',p:2},{k:'r',n:'Rare',p:3},{k:'d',n:'Deep cut',p:5}];
+const SOLO_TIME=90,GEM_BONUS=5;
+
+/* Categories. Answers are split by ';', aliases by '/'. The first name is the one shown.
+   Tiers: c common, u uncommon, r rare, d deep cut. */
+const CATS=[
+{n:'US states',
+ c:'California;Texas;Florida;New York;Hawaii;Alaska;Washington;Ohio;Georgia;Michigan;Arizona;Colorado;Nevada;Illinois;Pennsylvania;New Jersey',
+ u:'Massachusetts;Oregon;Virginia;North Carolina;South Carolina;Tennessee;Louisiana;Kentucky;Alabama;Utah;Minnesota;Wisconsin;Indiana;Missouri;Maryland;Oklahoma;Kansas;Mississippi;Connecticut',
+ r:'Iowa;Nebraska;Arkansas;New Mexico;Idaho;Montana;Maine;Vermont;New Hampshire;West Virginia;Rhode Island',
+ d:'Delaware;Wyoming;North Dakota;South Dakota'},
+{n:'Countries in Africa',
+ c:'Egypt;Nigeria;South Africa;Kenya;Morocco;Ethiopia;Ghana;Madagascar',
+ u:"Algeria;Tunisia;Libya;Sudan;Somalia;Uganda;Tanzania;Rwanda;Senegal;Cameroon;Zimbabwe;Zambia;Angola;Mozambique;Republic of the Congo/Congo/Congo-Brazzaville;Democratic Republic of the Congo/DRC/DR Congo/Congo-Kinshasa/Zaire;Ivory Coast/Côte d'Ivoire;Namibia;Botswana;Mali",
+ r:'Niger;Chad;Liberia;Sierra Leone;Guinea;Burkina Faso;Benin;Togo;Gabon;Malawi;Eritrea;South Sudan;Mauritania;Central African Republic/CAR;Lesotho;Eswatini/Swaziland;Burundi;Gambia/The Gambia;Mauritius;Djibouti',
+ d:'Equatorial Guinea;Guinea-Bissau;Cape Verde/Cabo Verde;Comoros;São Tomé and Príncipe/Sao Tome;Seychelles'},
+{n:'Countries in Europe',
+ c:'France;Germany;Italy;Spain;United Kingdom/UK/Britain/Great Britain;Ireland;Portugal;Greece;Russia;Sweden;Norway;Netherlands/Holland;Switzerland;Poland',
+ u:'Belgium;Austria;Denmark;Finland;Ukraine;Iceland;Czech Republic/Czechia;Hungary;Romania;Turkey/Türkiye;Croatia;Serbia;Bulgaria',
+ r:'Slovakia;Slovenia;Belarus;Lithuania;Latvia;Estonia;Albania;Bosnia and Herzegovina/Bosnia;Montenegro;North Macedonia/Macedonia;Moldova;Luxembourg;Monaco;Vatican City/Vatican/Holy See;Malta;Cyprus',
+ d:'Andorra;Liechtenstein;San Marino;Kosovo'},
+{n:'Chemical elements',
+ c:'Hydrogen;Helium;Oxygen;Carbon;Nitrogen;Gold;Silver;Iron;Copper;Sodium;Calcium;Lead;Aluminium/Aluminum;Uranium;Neon;Chlorine;Zinc;Mercury;Potassium;Lithium;Platinum',
+ u:'Magnesium;Sulfur/Sulphur;Phosphorus;Silicon;Fluorine;Iodine;Nickel;Tin;Titanium;Plutonium;Argon;Cobalt;Chromium;Tungsten;Radon;Krypton;Xenon;Boron;Manganese;Radium;Arsenic;Bromine;Caesium/Cesium;Beryllium',
+ r:'Palladium;Cadmium;Bismuth;Antimony;Barium;Strontium;Selenium;Vanadium;Zirconium;Germanium;Gallium;Indium;Iridium;Osmium;Rhodium;Molybdenum;Thorium;Neodymium;Polonium;Francium;Americium;Einsteinium;Scandium;Tellurium;Rubidium;Cerium;Thallium;Tantalum',
+ d:'Lanthanum;Praseodymium;Promethium;Samarium;Europium;Gadolinium;Terbium;Dysprosium;Holmium;Erbium;Thulium;Ytterbium;Lutetium;Hafnium;Rhenium;Ruthenium;Technetium;Niobium;Yttrium;Astatine;Actinium;Protactinium;Neptunium;Curium;Berkelium;Californium;Fermium;Mendelevium;Nobelium;Lawrencium;Rutherfordium;Dubnium;Seaborgium;Bohrium;Hassium;Meitnerium;Darmstadtium;Roentgenium;Copernicium;Nihonium;Flerovium;Moscovium;Livermorium;Tennessine;Oganesson'},
+{n:'NBA teams',
+ c:'Lakers/Los Angeles Lakers/LA Lakers;Celtics/Boston Celtics;Bulls/Chicago Bulls;Warriors/Golden State Warriors/Golden State;Knicks/New York Knicks;Heat/Miami Heat;Spurs/San Antonio Spurs;Cavaliers/Cavs/Cleveland Cavaliers',
+ u:'Rockets/Houston Rockets;Mavericks/Mavs/Dallas Mavericks;Nets/Brooklyn Nets;76ers/Sixers/Philadelphia 76ers;Clippers/LA Clippers/Los Angeles Clippers;Suns/Phoenix Suns;Bucks/Milwaukee Bucks;Nuggets/Denver Nuggets;Thunder/Oklahoma City Thunder/OKC;Raptors/Toronto Raptors;Trail Blazers/Blazers/Portland Trail Blazers',
+ r:'Pistons/Detroit Pistons;Hawks/Atlanta Hawks;Jazz/Utah Jazz;Magic/Orlando Magic;Timberwolves/Wolves/Minnesota Timberwolves;Pacers/Indiana Pacers;Grizzlies/Memphis Grizzlies;Kings/Sacramento Kings',
+ d:'Hornets/Charlotte Hornets;Pelicans/New Orleans Pelicans;Wizards/Washington Wizards'},
+{n:'NFL teams',
+ c:'Cowboys/Dallas Cowboys;Patriots/New England Patriots/Pats;Packers/Green Bay Packers;Steelers/Pittsburgh Steelers;Chiefs/Kansas City Chiefs;Eagles/Philadelphia Eagles;49ers/San Francisco 49ers/Niners;Giants/New York Giants',
+ u:'Bears/Chicago Bears;Raiders/Las Vegas Raiders;Broncos/Denver Broncos;Seahawks/Seattle Seahawks;Dolphins/Miami Dolphins;Jets/New York Jets;Rams/Los Angeles Rams/LA Rams;Ravens/Baltimore Ravens;Bills/Buffalo Bills;Lions/Detroit Lions;Buccaneers/Bucs/Tampa Bay Buccaneers;Vikings/Minnesota Vikings',
+ r:'Saints/New Orleans Saints;Falcons/Atlanta Falcons;Chargers/Los Angeles Chargers/LA Chargers;Bengals/Cincinnati Bengals;Browns/Cleveland Browns;Colts/Indianapolis Colts;Cardinals/Arizona Cardinals;Commanders/Washington Commanders;Panthers/Carolina Panthers',
+ d:'Jaguars/Jacksonville Jaguars/Jags;Titans/Tennessee Titans;Texans/Houston Texans'},
+{n:'US presidents',
+ c:'George Washington/Washington;Abraham Lincoln/Lincoln/Abe Lincoln;Barack Obama/Obama;Donald Trump/Trump;Joe Biden/Biden;John F. Kennedy/JFK/Kennedy/John Kennedy;Thomas Jefferson/Jefferson;Franklin D. Roosevelt/FDR/Franklin Roosevelt/Franklin Delano Roosevelt;Theodore Roosevelt/Teddy Roosevelt;Ronald Reagan/Reagan;Bill Clinton/Clinton;George W. Bush/Dubya/Bush Jr;Richard Nixon/Nixon',
+ u:'George H. W. Bush/HW Bush/Bush Sr/George Bush Sr;Jimmy Carter/Carter;John Adams;Andrew Jackson/Jackson;Dwight D. Eisenhower/Eisenhower/Ike/Dwight Eisenhower;Harry S. Truman/Truman/Harry Truman;Lyndon B. Johnson/LBJ/Lyndon Johnson;Gerald Ford/Ford;James Madison/Madison;Ulysses S. Grant/Grant/Ulysses Grant;Woodrow Wilson/Wilson',
+ r:'James Monroe/Monroe;John Quincy Adams/JQA;Herbert Hoover/Hoover;Calvin Coolidge/Coolidge;William McKinley/McKinley;Andrew Johnson;William Howard Taft/Taft;James K. Polk/Polk/James Polk;Grover Cleveland/Cleveland;Martin Van Buren/Van Buren',
+ d:'William Henry Harrison;John Tyler/Tyler;Zachary Taylor/Taylor;Millard Fillmore/Fillmore;Franklin Pierce/Pierce;James Buchanan/Buchanan;Rutherford B. Hayes/Hayes/Rutherford Hayes;James A. Garfield/Garfield/James Garfield;Chester A. Arthur/Chester Arthur/Arthur;Benjamin Harrison;Warren G. Harding/Harding/Warren Harding'},
+{n:'Shakespeare plays',
+ c:"Romeo and Juliet;Hamlet;Macbeth;Othello;King Lear/Lear;A Midsummer Night's Dream/Midsummer Night's Dream/Midsummer;Julius Caesar",
+ u:'The Tempest;Much Ado About Nothing/Much Ado;Twelfth Night;The Merchant of Venice;The Taming of the Shrew;As You Like It;Richard III/Richard the Third/Richard 3;Antony and Cleopatra/Anthony and Cleopatra',
+ r:"Henry V/Henry the Fifth/Henry 5;The Comedy of Errors;The Winter's Tale;Richard II/Richard the Second/Richard 2;Henry IV, Part 1/Henry IV/Henry IV Part 1/Henry the Fourth/Henry 4;The Merry Wives of Windsor/Merry Wives;Coriolanus;Titus Andronicus;All's Well That Ends Well;Measure for Measure;King John",
+ d:"Henry IV, Part 2/Henry IV Part 2/Henry 4 Part 2;Henry VI, Part 1/Henry VI/Henry VI Part 1/Henry the Sixth/Henry 6;Henry VI, Part 2/Henry VI Part 2/Henry 6 Part 2;Henry VI, Part 3/Henry VI Part 3/Henry 6 Part 3;Henry VIII/Henry the Eighth/Henry 8/All Is True;Timon of Athens;Troilus and Cressida;Pericles;Cymbeline;The Two Gentlemen of Verona;Love's Labour's Lost/Love's Labor's Lost;The Two Noble Kinsmen"},
+{n:'Greek gods and titans',
+ c:'Zeus;Poseidon;Hades;Athena/Athene;Apollo;Aphrodite;Hermes;Ares',
+ u:'Hera;Artemis;Hephaestus/Hephaistos;Dionysus/Dionysos;Demeter;Persephone;Hestia;Eros;Nike;Gaia/Gaea',
+ r:'Helios;Selene;Eos;Pan;Hecate/Hekate;Nemesis;Hypnos;Thanatos;Tyche;Iris;Hebe;Nyx;Uranus/Ouranos;Cronus/Kronos;Rhea;Asclepius/Asklepios;Morpheus;Atlas;Prometheus',
+ d:'Eris;Erebus;Chaos;Pontus;Tartarus;Aether;Hemera;Phobos;Deimos;Harmonia;Eileithyia;Nereus;Triton;Amphitrite;Boreas;Zephyrus/Zephyr;Notus;Eurus;Aeolus;Ganymede;Plutus;Ananke;Momus;Metis;Themis;Mnemosyne;Leto;Oceanus;Tethys;Hyperion'},
+{n:'Ocean animals',
+ c:'Shark;Whale;Dolphin;Octopus;Jellyfish;Crab;Lobster;Starfish/Sea star;Seal;Sea turtle/Turtle;Squid;Clownfish;Shrimp;Tuna;Orca/Killer whale',
+ u:'Seahorse;Stingray/Ray;Manta ray/Manta;Eel;Sea lion;Walrus;Sea otter/Otter;Swordfish;Barracuda;Pufferfish/Blowfish/Puffer;Clam;Oyster;Coral;Sea urchin/Urchin;Narwhal;Blue whale;Humpback whale/Humpback;Great white shark/Great white;Hammerhead shark/Hammerhead;Penguin;Krill;Anchovy;Sardine;Salmon;Cod;Mackerel;Plankton;Sponge;Sea anemone/Anemone;Manatee',
+ r:'Beluga;Sea cucumber;Mussel;Scallop;Barnacle;Halibut;Flounder;Marlin;Sailfish;Moray eel/Moray;Anglerfish;Cuttlefish;Nautilus;Dugong;Whale shark;Sperm whale;Lionfish;Parrotfish;Grouper;Snapper;Herring;Albatross;Pelican;Hermit crab;Nudibranch/Sea slug;Sea snake;Tiger shark;Bull shark;Mako shark/Mako;Elephant seal;Leatherback turtle/Leatherback;Stonefish;Flying fish;Ocean sunfish/Sunfish/Mola;Goblin shark;Giant squid',
+ d:"Vampire squid;Blobfish;Coelacanth;Oarfish;Gulper eel;Frilled shark;Greenland shark;Sea pig;Dumbo octopus;Siphonophore;Portuguese man o' war/Man o' war/Portuguese man of war;Mantis shrimp;Sea butterfly;Pyrosome;Lamprey;Hagfish;Viperfish;Fangtooth;Barreleye;Cookiecutter shark;Wobbegong;Remora;Sea spider;Horseshoe crab;Giant isopod/Isopod;Yeti crab;Box jellyfish;Leafy sea dragon/Sea dragon;Triggerfish;Wrasse"},
+{n:'Fruits',
+ c:'Apple;Banana;Orange;Grape;Strawberry;Watermelon;Pineapple;Mango;Peach;Pear;Cherry;Lemon;Blueberry;Kiwi/Kiwifruit;Lime',
+ u:'Raspberry;Blackberry;Plum;Coconut;Pomegranate;Papaya;Cantaloupe;Honeydew;Grapefruit;Apricot;Avocado;Cranberry;Fig;Nectarine;Tangerine;Clementine;Passion fruit;Tomato;Date;Melon',
+ r:'Dragon fruit/Pitaya;Lychee/Litchi;Guava;Persimmon;Starfruit/Carambola;Jackfruit;Durian;Kumquat;Gooseberry;Mulberry;Elderberry;Boysenberry;Quince;Plantain;Tamarind;Blood orange;Olive;Mandarin;Yuzu;Acai;Blackcurrant/Currant/Redcurrant',
+ d:"Rambutan;Mangosteen;Longan;Feijoa;Loquat;Cherimoya/Custard apple;Soursop/Guanabana;Salak/Snake fruit;Jabuticaba;Ackee;Breadfruit;Pawpaw;Medlar;Cloudberry;Lingonberry;Huckleberry;Sapodilla;Miracle fruit/Miracle berry;Kiwano/Horned melon;Pomelo;Ugli fruit;Buddha's hand;Physalis/Ground cherry/Cape gooseberry;Marionberry;Cupuaçu"},
+{n:'Vegetables',
+ c:'Carrot;Potato;Broccoli;Lettuce;Onion;Corn;Cucumber;Spinach;Pea;Celery;Bell pepper/Pepper;Cabbage;Garlic',
+ u:'Cauliflower;Zucchini/Courgette;Eggplant/Aubergine;Asparagus;Mushroom;Kale;Sweet potato/Yam;Green bean/String bean;Radish;Beet/Beetroot;Pumpkin;Squash;Brussels sprout/Brussel sprout;Artichoke;Leek',
+ r:'Turnip;Parsnip;Okra;Bok choy/Pak choi;Arugula/Rocket;Swiss chard/Chard;Fennel;Shallot;Scallion/Green onion/Spring onion;Collard greens/Collards;Rutabaga/Swede;Jalapeño;Butternut squash;Watercress;Edamame;Endive;Snow pea/Snap pea/Sugar snap;Ginger;Radicchio',
+ d:'Kohlrabi;Celeriac;Jicama;Salsify;Romanesco;Daikon;Taro;Cassava/Yuca;Jerusalem artichoke/Sunchoke;Fiddlehead;Ramp;Lotus root;Burdock;Chayote;Bitter melon/Bitter gourd;Mizuna;Tatsoi;Sorrel;Purslane;Samphire;Cardoon;Malanga;Water chestnut'},
+{n:'Dog breeds',
+ c:'Labrador retriever/Labrador/Lab;Golden retriever;German shepherd;Poodle;Bulldog;Beagle;Chihuahua;Pug;Dachshund/Wiener dog/Sausage dog;Siberian husky/Husky;Rottweiler;Pit bull/Pitbull;Corgi/Welsh corgi;Boxer;Dalmatian',
+ u:'French bulldog/Frenchie;Shih tzu;Yorkshire terrier/Yorkie;Border collie;Great Dane;Doberman/Doberman pinscher;Pomeranian;Maltese;Greyhound;Saint Bernard/St Bernard;Australian shepherd/Aussie;Cocker spaniel;Chow chow;Shiba inu/Shiba;Bernese mountain dog/Bernese;Jack Russell terrier/Jack Russell;Bichon frise/Bichon;Collie/Rough collie;Mastiff;Basset hound',
+ r:'Akita;Samoyed;Bloodhound;Whippet;Newfoundland;Weimaraner;Vizsla;Schnauzer;Cavalier King Charles spaniel/Cavalier;Shetland sheepdog/Sheltie;Alaskan malamute/Malamute;Rhodesian ridgeback;Bull terrier;Afghan hound;Pekingese;Papillon;Havanese;Irish setter;Boston terrier;Staffordshire bull terrier/Staffy;Belgian malinois/Malinois;Great Pyrenees;Shar pei;Basenji;Springer spaniel',
+ d:'Xoloitzcuintli/Xolo;Puli;Komondor;Borzoi;Saluki;Affenpinscher;Lagotto Romagnolo;Bergamasco;Leonberger;Kooikerhondje;Otterhound;Norwegian lundehund/Lundehund;Azawakh;Chinook;Mudi;Sloughi;Dandie Dinmont terrier;Bedlington terrier;Brussels griffon;Tibetan mastiff;Catahoula;Keeshond;Schipperke;Peruvian Inca orchid;Cesky terrier'},
+{n:'Bones of the human body',
+ c:'Skull/Cranium;Femur/Thigh bone;Rib;Vertebra/Vertebrae/Spine/Backbone;Pelvis/Hip bone;Mandible/Jaw/Jawbone;Clavicle/Collarbone;Patella/Kneecap;Tibia/Shin bone;Humerus',
+ u:'Sternum/Breastbone;Scapula/Shoulder blade;Fibula;Radius;Ulna;Coccyx/Tailbone;Sacrum;Phalanges/Phalanx/Finger bones/Toe bones;Metacarpals/Metacarpal;Metatarsals/Metatarsal;Maxilla/Upper jaw',
+ r:'Carpals/Carpal/Wrist bones;Tarsals/Tarsal;Calcaneus/Heel bone;Talus/Ankle bone;Stapes/Stirrup;Incus/Anvil;Malleus/Hammer;Hyoid;Ilium;Ischium;Pubis;Atlas;Axis;Zygomatic bone/Zygomatic/Cheekbone;Nasal bone',
+ d:'Scaphoid;Lunate;Triquetrum;Pisiform;Trapezium;Trapezoid;Capitate;Hamate;Navicular;Cuboid;Cuneiform;Sphenoid;Ethmoid;Vomer;Lacrimal;Palatine;Occipital;Parietal;Temporal;Frontal;Sesamoid;Inferior nasal concha/Turbinate'},
+{n:'Programming languages',
+ c:'Python;JavaScript/JS;Java;C;C++/CPP;HTML;CSS;C#/C Sharp;SQL;PHP',
+ u:'Ruby;Swift;Go/Golang;Rust;Kotlin;TypeScript/TS;R;MATLAB;Perl;Scratch;Lua;Bash/Shell;Assembly/ASM;Visual Basic/VB;Dart',
+ r:'Haskell;Scala;Objective-C/ObjC;Fortran;COBOL;Lisp;Pascal;Julia;Elixir;Erlang;Clojure;F#/F Sharp;Groovy;Prolog;BASIC;Delphi;PowerShell;Zig;Solidity;Elm;OCaml',
+ d:'Smalltalk;Ada;APL;Forth;Scheme;Racket;Nim;Crystal;Haxe;Tcl;Simula;ALGOL;Eiffel;Idris;Coq/Rocq;Malbolge;Befunge;Logo;ABAP;Raku;D;Odin'},
+{n:'Musical instruments',
+ c:'Piano;Guitar;Drums/Drum;Violin;Trumpet;Flute;Saxophone/Sax;Bass guitar/Bass;Cello;Clarinet;Harp;Ukulele/Uke;Keyboard;Tambourine',
+ u:'Trombone;Tuba;French horn/Horn;Oboe;Bassoon;Harmonica;Accordion;Xylophone;Banjo;Viola;Double bass/Upright bass/Contrabass;Organ;Recorder;Triangle;Cymbal;Bagpipes;Mandolin;Synthesizer/Synth;Maracas;Glockenspiel;Bongos;Kazoo',
+ r:'Sitar;Marimba;Harpsichord;Timpani/Kettle drum;Piccolo;Vibraphone;Cowbell;Castanets;Didgeridoo;Lute;Steel drum/Steelpan;Tabla;Djembe;Cajon;Theremin;Ocarina;Lyre;Pan flute/Panpipes;Bugle;Cornet;Euphonium;Celesta;Melodica;Conga;Gong;Washboard;Keytar;Koto;Shamisen;Erhu',
+ d:'Hurdy-gurdy;Zither;Dulcimer;Balalaika;Bouzouki;Oud;Kalimba/Thumb piano/Mbira;Glass harmonica;Sousaphone;Flugelhorn;Contrabassoon;Cor anglais/English horn;Shakuhachi;Guzheng;Pipa;Duduk;Handpan/Hang drum;Waterphone;Ondes Martenot;Crumhorn;Sackbut;Serpent;Nyckelharpa;Charango;Bodhrán;Vuvuzela;Mellotron;Tubular bells;Clavichord'},
+{n:'Car brands',
+ c:'Toyota;Ford;Honda;BMW;Mercedes-Benz/Mercedes/Benz;Tesla;Chevrolet/Chevy;Ferrari;Lamborghini/Lambo;Nissan;Audi;Volkswagen/VW;Porsche;Jeep',
+ u:'Hyundai;Kia;Subaru;Mazda;Lexus;Dodge;Cadillac;Jaguar;Land Rover/Range Rover;Volvo;Bugatti;Rolls-Royce;Bentley;Maserati;Mitsubishi;GMC;Chrysler;Buick;Fiat;Mini;Acura;Infiniti;Lincoln;Aston Martin;McLaren;Ram',
+ r:'Peugeot;Renault;Citroën;Alfa Romeo;Genesis;Lotus;Pagani;Koenigsegg;Škoda;SEAT;Suzuki;Rivian;Lucid;Polestar;Hummer;Pontiac;Saturn;Saab;Smart;BYD;Opel;Isuzu;Scion;Plymouth;Oldsmobile;Mercury;Dacia;Tata',
+ d:'Rimac;Spyker;DeLorean;Studebaker;Packard;Hudson;Nash;AMC;Geely;Nio;Lada;Trabant;Zastava;Proton;Perodua;Holden;Vauxhall;Lancia;Morgan;TVR;Noble;Hispano-Suiza;Maybach;Cupra;Fisker;Hennessey;Lynk & Co;Wuling;Datsun;Daewoo'},
+{n:'Dinosaurs and other prehistoric reptiles',
+ c:'Tyrannosaurus rex/T. rex/Tyrannosaurus/T-rex;Triceratops;Velociraptor/Raptor;Stegosaurus;Brachiosaurus;Pterodactyl/Pterodactylus;Spinosaurus;Ankylosaurus',
+ u:'Diplodocus;Brontosaurus;Allosaurus;Parasaurolophus;Iguanodon;Pachycephalosaurus;Dilophosaurus;Apatosaurus;Carnotaurus;Gallimimus;Compsognathus;Archaeopteryx;Giganotosaurus;Argentinosaurus;Mosasaurus;Plesiosaurus;Pteranodon',
+ r:'Deinonychus;Oviraptor;Therizinosaurus;Baryonyx;Microraptor;Utahraptor;Edmontosaurus;Maiasaura;Protoceratops;Styracosaurus;Kentrosaurus;Troodon;Coelophysis;Ceratosaurus;Albertosaurus;Dreadnoughtus;Corythosaurus;Gigantoraptor;Megalosaurus;Herrerasaurus;Quetzalcoatlus;Ichthyosaurus',
+ d:'Amargasaurus;Nigersaurus;Pachyrhinosaurus;Psittacosaurus;Euoplocephalus;Ouranosaurus;Suchomimus;Mamenchisaurus;Lambeosaurus;Hadrosaurus;Plateosaurus;Eoraptor;Sinosauropteryx;Yutyrannus;Kosmoceratops;Carcharodontosaurus;Majungasaurus;Mapusaurus;Shunosaurus;Minmi;Leaellynasaura;Irritator;Borealopelta;Halszkaraptor;Zuul;Stygimoloch;Dracorex;Pentaceratops;Einiosaurus;Tarbosaurus'},
+{n:'Herbs and spices',
+ c:'Black pepper/Pepper;Cinnamon;Basil;Oregano;Garlic;Ginger;Paprika;Chili powder/Chili/Chilli;Mint;Parsley;Rosemary;Thyme;Cumin;Nutmeg',
+ u:'Turmeric;Cayenne;Coriander/Cilantro;Dill;Sage;Vanilla;Clove;Bay leaf/Bay;Curry powder/Curry;Saffron;Cardamom;Chives;Mustard seed/Mustard;Allspice;Lemongrass;Fennel;Sesame;Star anise;Anise/Aniseed',
+ r:"Tarragon;Marjoram;Fenugreek;Garam masala;Sumac;Caraway;Celery seed;Chervil;Lavender;Za'atar;Chinese five spice/Five spice;Herbes de Provence;Juniper;Mace;Horseradish;Wasabi;Ras el hanout;Sichuan pepper/Szechuan pepper;Pink peppercorn;Lovage;Epazote;Shiso/Perilla",
+ d:'Asafoetida/Hing;Grains of paradise;Long pepper;Nigella/Kalonji/Black seed;Ajwain/Carom;Galangal;Makrut lime leaf/Kaffir lime leaf/Lime leaf;Mahlab;Annatto/Achiote;Amchur/Mango powder;Filé powder/File;Berbere;Baharat;Hyssop;Savory;Borage;Angelica;Rue;Lemon verbena;Culantro;Shichimi togarashi/Togarashi/Shichimi;Dukkah'},
+{n:'Sports played with a ball',
+ c:'Soccer/Football/Association football;Basketball;Baseball;Tennis;Volleyball;Golf;American football/Gridiron;Rugby;Cricket;Bowling;Field hockey/Hockey;Table tennis/Ping pong',
+ u:'Softball;Handball;Dodgeball;Kickball;Water polo;Lacrosse;Squash;Racquetball;Pickleball;Polo;Pool/Billiards;Beach volleyball;Netball;Croquet',
+ r:'Snooker;Bocce/Boules/Pétanque;Rounders;Gaelic football;Hurling;Australian rules football/Aussie rules/AFL;Futsal;Padel;Sepak takraw;Jai alai/Pelota;Korfball;Lawn bowls/Bowls;T-ball/Tee-ball;Four square;Tetherball;Wiffle ball',
+ d:'Goalball;Bossaball;Hornussen;Camogie;Shinty;Fives;Real tennis/Court tennis;Pesäpallo;Stoolball;Bandy;Calcio storico;Chinlone;Underwater rugby;Footvolley;Teqball;Roque;Cycle ball/Cycleball'}
+];
+
+/* ---------- matching ---------- */
+function norm(s){
+  return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[’'`.]/g,'').replace(/&/g,' and ').replace(/[^a-z0-9+#]+/g,' ').trim().replace(/^(the|a) /,'');
+}
+function build(cat){
+  if(cat.A)return cat;
+  const A=[],map=new Map(),last=new Map();
+  TIERS.forEach((t,ti)=>{
+    (cat[t.k]||'').split(';').map(x=>x.trim()).filter(Boolean).forEach(item=>{
+      const names=item.split('/').map(x=>x.trim()).filter(Boolean),id=A.length;
+      A.push({d:names[0],t:ti});
+      names.forEach(n=>{const k=norm(n);if(!k)return;map.set(k,map.has(k)&&map.get(k)!==id?-1:id)});
+      names.forEach(n=>{const w=norm(n).split(' ');if(w.length>1){const lw=w[w.length-1];if(!last.has(lw))last.set(lw,new Set());last.get(lw).add(id)}});
+    });
+  });
+  cat.A=A;cat.map=map;cat.last=last;cat.total=A.reduce((s,a)=>s+TIERS[a.t].p,0);
+  return cat;
+}
+function lev(a,b,max){
+  if(Math.abs(a.length-b.length)>max)return max+1;
+  let prev=Array.from({length:b.length+1},(_,i)=>i);
+  for(let i=1;i<=a.length;i++){
+    const cur=[i];let lo=i;
+    for(let j=1;j<=b.length;j++){cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));if(cur[j]<lo)lo=cur[j]}
+    if(lo>max)return max+1;prev=cur;
+  }
+  return prev[b.length];
+}
+/* returns {id} | {id,close:true} | {amb:true} | null */
+function match(cat,raw){
+  const q=norm(raw);if(!q)return null;
+  const tries=[q];
+  if(q.length>3){if(q.endsWith('es'))tries.push(q.slice(0,-2));if(q.endsWith('s'))tries.push(q.slice(0,-1));else tries.push(q+'s')}
+  for(const t of tries)if(cat.map.has(t)){const id=cat.map.get(t);return id<0?{amb:true}:{id}}
+  if(cat.last.has(q)&&cat.last.get(q).size>1)return{amb:true};
+  if(q.length>=5){
+    const th=q.length>=9?2:1;let best=th+1,ids=new Set();
+    for(const [k,id] of cat.map){
+      if(id<0||k.length<4)continue;
+      const d=lev(q,k,th);
+      if(d<best){best=d;ids=new Set([id])}else if(d===best&&d<=th)ids.add(id);
+    }
+    if(best<=th){if(ids.size===1)return{id:[...ids][0],close:true};return{amb:true}}
+  }
+  return null;
+}
+
+/* ---------- storage ---------- */
+const get=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}};
+const put=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function dailyIndex(){const d=new Date();const n=Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5);return (n*7+3)%CATS.length}
+
+/* ---------- sound ---------- */
+let ac=null,muted=get('deepcut-muted',false);
+function tone(f,dur,type,when,vol){
+  if(muted)return;
+  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();}catch(e){return}
+  const t=ac.currentTime+(when||0),o=ac.createOscillator(),g=ac.createGain();
+  o.type=type||'square';o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(vol||.06,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g).connect(ac.destination);o.start(t);o.stop(t+dur);
+}
+const SFX={
+  hit:ti=>{const b=[330,392,494,659][ti];tone(b,.09);tone(b*1.5,.12,'square',.07)},
+  gem:()=>[523,659,784,1047,1319].forEach((f,i)=>tone(f,.14,'square',i*.07,.07)),
+  bad:()=>tone(110,.18,'sawtooth',0,.05),
+  dup:()=>tone(220,.08,'triangle'),
+  tick:()=>tone(880,.03,'square',0,.03),
+  boom:()=>{for(let i=0;i<8;i++)tone(80+Math.random()*60,.25,'sawtooth',i*.04,.07)},
+  end:()=>[392,330,262].forEach((f,i)=>tone(f,.18,'square',i*.12))
+};
+function drawMute(){['muteBtn','pMute'].forEach(i=>$(i).textContent=muted?'SOUND OFF':'SOUND ON')}
+['muteBtn','pMute'].forEach(i=>$(i).onclick=()=>{muted=!muted;put('deepcut-muted',muted);drawMute()});
+
+/* ---------- screens ---------- */
+const SCREENS=['sTitle','sPick','sDig','sRes','sPset','sParty'];
+function show(id){SCREENS.forEach(s=>$(s).classList.toggle('hide',s!==id))}
+function sayIn(el,msg,cls){el.textContent=msg;el.className='say'+(cls?' '+cls:'')}
+function shake(el){el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake')}
+
+/* pixel shovel */
+(function(){
+  const rows=['.........kkk','........kwwk','.......kwwk.','......kwwk..','.....kwwk...','..kkkwwk....','.kshhkk.....','kshhhsk.....','kshhssk.....','kshssk......','.kssk.......','..kk........'];
+  const pal={k:'#000',w:'#b07a3f',s:'#8a8fa8',h:'#d8dbe8'};let out='';
+  rows.forEach((r,y)=>[...r].forEach((c,x)=>{if(pal[c])out+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${pal[c]}"/>`}));
+  $('shovel').innerHTML=out;
+})();
+
+/* ---------- solo ---------- */
+let G=null,timer=null;
+function tierChip(ti,text){return `<span class="tg t${ti}">${text}</span>`}
+function ansChip(a,cls){return `<span class="ans t${a.t} ${cls||''}">${esc(a.d)}<i>+${TIERS[a.t].p}</i></span>`}
+
+function startSolo(mode,ci){
+  const cat=build(CATS[ci]);
+  G={mode,ci,cat,found:[],score:0,end:Date.now()+SOLO_TIME*1000,over:false,lastSec:null};
+  if(mode==='daily')put('deepcut-daily',{date:today(),ci,found:[],score:0,done:false});
+  $('modeChip').textContent=mode==='daily'?'DAILY':'PRACTICE';
+  $('catName').textContent=cat.n;
+  $('found').innerHTML='';sayIn($('say'),'Start typing. Spelling close enough counts.');
+  show('sDig');drawSolo();
+  clearInterval(timer);timer=setInterval(tickSolo,100);tickSolo();
+  $('digIn').value='';$('digIn').focus();
+  $('box').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function tickSolo(){
+  if(!G||G.over)return;
+  const left=Math.max(0,Math.ceil((G.end-Date.now())/1000));
+  $('time').textContent=left;
+  $('timeChip').classList.toggle('hot',left<=10);
+  if(left!==G.lastSec){if(left<=5&&left>0)SFX.tick();G.lastSec=left}
+  if(left<=0)finishSolo('TIME\'S UP');
+}
+function drawSolo(){
+  const cat=G.cat,counts=[0,0,0,0],have=[0,0,0,0];
+  cat.A.forEach(a=>counts[a.t]++);G.found.forEach(id=>have[cat.A[id].t]++);
+  $('tally').innerHTML=TIERS.map((t,i)=>tierChip(i,`${t.n.toUpperCase()} <b>${have[i]}/${counts[i]}</b>`)).join('');
+  $('score').textContent=G.score;
+  const depth=G.score*10;$('depthTxt').textContent=depth+'m';$('depthBig').textContent=depth+'m';
+  const f=Math.min(1,Math.sqrt(G.score/Math.max(1,cat.total)));
+  const H=$('hole').parentElement.clientHeight||520,y=Math.round(f*(H-60));
+  $('hole').style.height=(y+8)+'px';$('drill').style.top=y+'px';
+}
+$('digForm').onsubmit=e=>{
+  e.preventDefault();if(!G||G.over)return;
+  const v=$('digIn').value;$('digIn').value='';
+  if(!v.trim())return;
+  const m=match(G.cat,v);
+  if(!m){sayIn($('say'),`"${v.trim()}" isn't on the list.`,'bad');shake($('digIn'));SFX.bad();return}
+  if(m.amb){sayIn($('say'),`"${v.trim()}" could be more than one. Be more specific.`,'bad');SFX.dup();return}
+  if(G.found.includes(m.id)){sayIn($('say'),`Already dug up ${G.cat.A[m.id].d}.`);SFX.dup();return}
+  const a=G.cat.A[m.id],p=TIERS[a.t].p;
+  G.found.push(m.id);G.score+=p;
+  if(a.t===3){G.end+=GEM_BONUS*1000;sayIn($('say'),`DEEP CUT! ${a.d} +${p}, +${GEM_BONUS}s`,'gem');SFX.gem()}
+  else{sayIn($('say'),`${a.d}${m.close?' (close enough)':''} +${p}`,'ok');SFX.hit(a.t)}
+  $('found').insertAdjacentHTML('afterbegin',ansChip(a,'new'));
+  $('drill').classList.add('spin');setTimeout(()=>$('drill').classList.remove('spin'),450);
+  if(G.mode==='daily')put('deepcut-daily',{date:today(),ci:G.ci,found:G.found,score:G.score,done:false});
+  drawSolo();
+  if(G.found.length===G.cat.A.length)finishSolo('YOU DUG UP EVERYTHING');
+};
+$('quitBtn').onclick=()=>{if(G&&!G.over)finishSolo('YOU CALLED IT')};
+
+function finishSolo(why){
+  G.over=true;clearInterval(timer);SFX.end();
+  if(G.mode==='daily'){
+    put('deepcut-daily',{date:today(),ci:G.ci,found:G.found,score:G.score,done:true});
+  }
+  const best=get('deepcut-best',{}),k=G.cat.n,isBest=G.score>(best[k]||0);
+  if(isBest){best[k]=G.score;put('deepcut-best',best)}
+  showResults(why,isBest&&G.score>0);
+}
+function showResults(why,isBest){
+  const cat=G.cat,set=new Set(G.found),have=[0,0,0,0],counts=[0,0,0,0];
+  cat.A.forEach((a,i)=>{counts[a.t]++;if(set.has(i))have[a.t]++});
+  $('resLbl').textContent=why+(G.mode==='daily'?' · DAILY DIG':'');
+  $('resCat').textContent=cat.n;
+  $('resBig').innerHTML=`<span class="chip">SCORE <b>${G.score}</b></span><span class="chip">DEPTH <b>${G.score*10}m</b></span><span class="chip">FOUND <b>${G.found.length}/${cat.A.length}</b></span>`+
+    (have[3]?`<span class="chip">DEEP CUTS <b>${have[3]}</b></span>`:'');
+  sayIn($('resSay'),isBest?'New personal best for this category.':(G.mode==='daily'?'Come back tomorrow for a new dig.':''),isBest?'gem':'');
+  $('resAgain').textContent=G.mode==='daily'?'PRACTICE':'PLAY AGAIN';
+  $('resBoard').innerHTML=[3,2,1,0].map(ti=>{
+    const list=cat.A.map((a,i)=>({a,i})).filter(x=>x.a.t===ti);
+    return `<h3 class="t${ti}" style="--tc:var(${['--soil','--mint','--blue','--gold'][ti]})">${TIERS[ti].n.toUpperCase()} · ${have[ti]}/${counts[ti]} · ${TIERS[ti].p} PT${TIERS[ti].p>1?'S':''} EACH</h3><div class="found">`+
+      list.map(x=>ansChip(x.a,set.has(x.i)?'':'miss')).join('')+'</div>';
+  }).join('');
+  show('sRes');
+}
+$('resAgain').onclick=()=>{if(G.mode==='daily'){openPicker()}else startSolo('practice',G.ci)};
+$('resHome').onclick=()=>{drawTitle();show('sTitle')};
+$('resCopy').onclick=()=>{
+  const cat=G.cat,set=new Set(G.found),have=[0,0,0,0];
+  cat.A.forEach((a,i)=>{if(set.has(i))have[a.t]++});
+  const txt=`Deep Cut${G.mode==='daily'?' · '+today():''}\n${cat.n}\n${G.score} pts · ${G.score*10}m deep · ${G.found.length}/${cat.A.length} found\n`+
+    `common ${have[0]} · uncommon ${have[1]} · rare ${have[2]} · deep cuts ${have[3]}\n${location.origin}/games/${SLUG}/`;
+  const done=()=>sayIn($('resSay'),'Copied. Paste it anywhere.','ok');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,()=>prompt('Copy this:',txt));
+  else prompt('Copy this:',txt);
+};
+
+/* daily + practice entry */
+function dailyState(){const d=get('deepcut-daily',null);return d&&d.date===today()?d:null}
+function drawTitle(){
+  const d=dailyState();
+  if(d&&d.done){$('dailyBtn').innerHTML=`DAILY DIG <small>DONE · ${d.score} PTS</small>`;$('dailySub').textContent='You already dug today. Tap to see your result.'}
+  else{$('dailyBtn').textContent='DAILY DIG';$('dailySub').textContent='Same category for everyone today. One try.'}
+}
+$('dailyBtn').onclick=()=>{
+  const d=dailyState(),ci=dailyIndex();
+  if(d){ /* finished, or left mid-dig: either way that was the one try */
+    if(!d.done)put('deepcut-daily',Object.assign(d,{done:true}));
+    G={mode:'daily',ci:d.ci,cat:build(CATS[d.ci]),found:d.found||[],score:d.score||0,over:true};
+    showResults(d.done?'TODAY\'S DIG':'YOU LEFT THE DIG',false);return;
+  }
+  startSolo('daily',ci);
+};
+function openPicker(){
+  const sel=$('catSel');
+  if(!sel.options.length){
+    sel.innerHTML='<option value="-1">Random</option>'+CATS.map((c,i)=>`<option value="${i}">${esc(c.n)}</option>`).join('');
+  }
+  show('sPick');
+}
+$('practiceBtn').onclick=openPicker;
+$('pickBack').onclick=()=>{drawTitle();show('sTitle')};
+$('pickGo').onclick=()=>{
+  let ci=+$('catSel').value;
+  if(ci<0){const skip=dailyIndex();do{ci=Math.floor(Math.random()*CATS.length)}while(ci===skip&&CATS.length>1)}
+  startSolo('practice',ci);
+};
+
+/* ---------- party ---------- */
+let P=null,fuseT=null,rumbleT=null;
+$('partyBtn').onclick=()=>{$('names').value=get('deepcut-names',[]).join('\n');sayIn($('psetSay'),'','bad');show('sPset');$('names').focus()};
+$('psetBack').onclick=()=>{drawTitle();show('sTitle')};
+$('psetGo').onclick=()=>{
+  const names=$('names').value.split(/\n|,/).map(s=>s.trim()).filter(Boolean).slice(0,8);
+  const uniq=[...new Set(names.map(n=>n.toLowerCase()))];
+  if(names.length<2){sayIn($('psetSay'),'Add at least two players.','bad');return}
+  if(uniq.length!==names.length){sayIn($('psetSay'),'Give everyone a different name.','bad');return}
+  put('deepcut-names',names);
+  P={players:names.map(n=>({name:n,hats:2,gems:0})),turn:0,round:0,lastCi:-1,live:false};
+  newRound(0);show('sParty');
+  $('box').scrollIntoView({behavior:'smooth',block:'start'});
+};
+const alive=()=>P.players.filter(p=>p.hats>0);
+function nextAlive(i){const n=P.players.length;for(let k=1;k<=n;k++){const j=(i+k)%n;if(P.players[j].hats>0)return j}return i}
+function newRound(starter){
+  P.round++;let ci;do{ci=Math.floor(Math.random()*CATS.length)}while(ci===P.lastCi&&CATS.length>1);
+  P.lastCi=ci;P.cat=build(CATS[ci]);P.used=[];P.turn=P.players[starter].hats>0?starter:nextAlive(starter);P.live=false;
+  $('pRound').textContent=P.round;$('pCat').textContent=P.cat.n;$('pUsed').innerHTML='';
+  $('pReady').classList.remove('hide');$('pLive').classList.add('hide');$('cave').classList.add('hide');
+  $('pTurnLbl').textContent='GOES FIRST';drawParty();
+}
+function drawParty(){
+  $('crew').innerHTML=P.players.map((p,i)=>`<span class="mate${p.hats<=0?' out':''}${i===P.turn&&p.hats>0?' now':''}">${esc(p.name)}<span class="hats">${'<i></i>'.repeat(Math.max(0,p.hats))}${'<i class="off"></i>'.repeat(2-Math.max(0,p.hats))}</span>${p.gems?`<span class="gem">&#9670;${p.gems}</span>`:''}</span>`).join('');
+  $('pTurn').textContent=P.players[P.turn].name;
+}
+$('pLight').onclick=()=>{
+  P.live=true;$('pReady').classList.add('hide');$('pLive').classList.remove('hide');$('pTurnLbl').textContent='HOLDING THE DEVICE';
+  sayIn($('pSay'),'Name one and pass it on.');$('pIn').value='';$('pIn').focus();
+  const fuse=12000+Math.random()*23000;
+  clearTimeout(fuseT);fuseT=setTimeout(caveIn,fuse);
+  scheduleRumble();
+};
+function scheduleRumble(){
+  clearTimeout(rumbleT);
+  rumbleT=setTimeout(()=>{if(!P||!P.live)return;const s=$('stage');s.classList.remove('rumble');void s.offsetWidth;s.classList.add('rumble');tone(60+Math.random()*30,.3,'sawtooth',0,.04);scheduleRumble()},2000+Math.random()*4500);
+}
+$('pForm').onsubmit=e=>{
+  e.preventDefault();if(!P||!P.live)return;
+  const v=$('pIn').value;$('pIn').value='';if(!v.trim())return;
+  const m=match(P.cat,v);
+  if(!m){sayIn($('pSay'),`"${v.trim()}" isn't on the list. Keep going!`,'bad');shake($('pIn'));SFX.bad();return}
+  if(m.amb){sayIn($('pSay'),'Could be more than one. Be more specific!','bad');SFX.dup();return}
+  if(P.used.includes(m.id)){sayIn($('pSay'),`${P.cat.A[m.id].d} is already taken!`,'bad');shake($('pIn'));SFX.dup();return}
+  const a=P.cat.A[m.id],me=P.players[P.turn];P.used.push(m.id);
+  if(a.t===3){me.gems++;SFX.gem()}else SFX.hit(a.t);
+  $('pUsed').insertAdjacentHTML('afterbegin',`<span class="ans t${a.t} new">${esc(a.d)}<i>${esc(me.name)}</i></span>`);
+  P.turn=nextAlive(P.turn);
+  sayIn($('pSay'),`${me.name}: ${a.d}${a.t===3?' · DEEP CUT!':''} Pass to ${P.players[P.turn].name}!`,a.t===3?'gem':'ok');
+  if(P.used.length===P.cat.A.length){clearTimeout(fuseT);caveIn()}
+  drawParty();$('pIn').focus();
+};
+function caveIn(){
+  if(!P||!P.live)return;
+  P.live=false;clearTimeout(rumbleT);SFX.boom();
+  const loser=P.players[P.turn];loser.hats--;
+  const left=alive();
+  const miss=P.cat.A.map((a,i)=>({a,i})).filter(x=>x.a.t===3&&!P.used.includes(x.i)).sort(()=>Math.random()-.5).slice(0,4);
+  $('caveMiss').innerHTML=miss.length?miss.map(x=>ansChip(x.a)).join(''):'';
+  if(left.length<=1){
+    const w=left[0];
+    $('caveH').textContent='LAST ONE STANDING';
+    $('caveP').textContent=`The shaft came down on ${loser.name}. ${w?w.name+' wins the party!':''}${miss.length?' Deep cuts nobody found:':''}`;
+    $('caveBtn').textContent='NEW PARTY';P.over=true;
+  }else{
+    $('caveH').textContent='CAVE-IN!';
+    $('caveP').textContent=loser.hats>0?`${loser.name} was holding it and loses a hard hat.${miss.length?' Deep cuts nobody found:':''}`:`${loser.name} is out!${miss.length?' Deep cuts nobody found:':''}`;
+    $('caveBtn').textContent='NEXT ROUND';P.over=false;
+  }
+  drawParty();$('cave').classList.remove('hide');$('caveBtn').focus();
+}
+$('caveBtn').onclick=()=>{
+  if(P.over){P.players.forEach(p=>{p.hats=2;p.gems=0});P.round=0;newRound(0);return}
+  newRound(P.players.indexOf(P.players[P.turn]));
+};
+function endParty(){P&&(P.live=false);clearTimeout(fuseT);clearTimeout(rumbleT);P=null}
+$('pQuit').onclick=()=>{if(P&&P.live&&!confirm('End this party?'))return;endParty();drawTitle();show('sTitle')};
+
+/* ---------- page tools ---------- */
+$('restartBtn').onclick=()=>{
+  if((G&&!G.over)||(P&&P.live)){if(!confirm('Leave this game?'))return}
+  if(G&&!G.over&&G.mode==='daily')finishSolo('YOU LEFT THE DIG');
+  clearInterval(timer);G=null;endParty();drawTitle();show('sTitle');
+};
+$('fsBtn').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else if($('box').requestFullscreen)$('box').requestFullscreen().catch(()=>{})};
+{const fb=$('favBtn');const draw=()=>{const on=Recess.isFav(SLUG);fb.setAttribute('aria-pressed',String(on));$('favTxt').textContent=on?'In My Recess':'Add to My Recess'};draw();fb.onclick=()=>{Recess.toggleFav(SLUG);draw()}}
+addEventListener('resize',()=>{if(G&&!G.over)drawSolo()});
+
+$('yr').textContent=new Date().getFullYear();
+drawMute();drawTitle();
+Recess.played(SLUG);
+window.DeepCut={CATS,build,match,norm}; /* for checking answer lists from the console */
+}
+</script>
+</body>
+</html>
