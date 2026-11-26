@@ -194,7 +194,7 @@ function finish(won,r,quiet){
 }
 
 // saving
-function save(){if(mode==='daily')store.put('fl-daily',{day:dayNo(),guesses})}
+function save(){if(mode==='daily')store.put('fl-daily',{day:dayNo(),guesses,marks:guesses.map(g=>score(g,answer).map(r=>r[0]==='h'?'h':r[0]==='n'?'n':'m'))})}
 function record(won,r){
   const s=store.get('fl-stats',{played:0,wins:0,streak:0,best:0,dist:[0,0,0,0,0,0],last:null});
   const d=dayNo();if(s.last===d)return;
