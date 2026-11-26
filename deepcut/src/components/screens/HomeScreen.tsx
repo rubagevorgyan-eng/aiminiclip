@@ -4,8 +4,6 @@ import { formatCountdown, useNow } from '../../hooks/useNow.ts';
 import { dailyNumber, msUntilNextDaily, utcDateKey } from '../../data/selection.ts';
 import { currentStreak, type Progress } from '../../storage/progress.ts';
 import { Button } from '../ui/Button.tsx';
-import { SettingsMenu } from '../ui/SettingsMenu.tsx';
-import { SoundToggle } from '../ui/SoundToggle.tsx';
 import { Wordmark } from '../ui/Wordmark.tsx';
 import { HowToPlay } from './HowToPlay.tsx';
 
@@ -26,10 +24,6 @@ export function HomeScreen({ progress, onDaily, onUnlimited, onStats, onCollecti
 
   return (
     <section className="screen home">
-      <header className="home-top">
-        <SoundToggle />
-        <SettingsMenu />
-      </header>
 
       <div className="home-grid">
         <div className="home-main float-card">

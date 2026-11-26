@@ -9,6 +9,7 @@ import { useGame } from '../hooks/useGame.ts';
 import { browserKV } from '../storage/storage.ts';
 import { addDaily, addGame, addRecent, loadProgress, saveProgress, type Progress } from '../storage/progress.ts';
 import { MineScene } from './MineScene.tsx';
+import { SiteHeader } from './ui/SiteHeader.tsx';
 import { CollectionScreen } from './screens/CollectionScreen.tsx';
 import { CountdownScreen } from './screens/CountdownScreen.tsx';
 import { FinalScreen } from './screens/FinalScreen.tsx';
@@ -129,7 +130,6 @@ export default function Game() {
       now={now}
       onSubmit={submit}
       onSkip={skip}
-      onQuit={home}
     />
   );
   })();
@@ -146,6 +146,7 @@ export default function Game() {
         digs={playing ? state.records.length : 0}
         tier={lastRecord?.rarity ? rarityIndex(lastRecord.rarity) : null}
       />
+      <SiteHeader onQuit={playing && state.phase !== 'FINAL_RESULTS' ? home : undefined} />
       <div className={`stage${playing && state.phase !== 'FINAL_RESULTS' ? ' is-playing' : ' is-menu'}`}>{screen}</div>
     </>
   );

@@ -71,3 +71,6 @@
 ## Stage 12: leaving restarts (done)
 - Reloading the page or leaving to the Recess homepage now always returns to DEEPCUT's home screen; in-progress digs are no longer saved or resumed. Only finished digs are recorded; an unfinished Daily Dig can be restarted. "Abandon dig" returns home for both modes.
 - Removed the saved-game module (`activeGame.ts`) and the engine's LOAD / FORFEIT / catchUp with their tests; the legacy save key is cleared on load. 30 tests pass.
+
+## Stage 13: site header (done)
+- Transparent header on every screen: animated Recess logo (back to the site), sound, settings and an "Exit game" button to the Recess homepage. Round, home and results layouts sit below it; phone layout still fits without scrolling. 30 tests pass.

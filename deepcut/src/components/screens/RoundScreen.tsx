@@ -7,8 +7,6 @@ import { useCountUp } from '../../hooks/useCountUp.ts';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset.ts';
 import { Button } from '../ui/Button.tsx';
 import { MineralIcon } from '../ui/MineralIcon.tsx';
-import { SettingsMenu } from '../ui/SettingsMenu.tsx';
-import { SoundToggle } from '../ui/SoundToggle.tsx';
 import { Wordmark } from '../ui/Wordmark.tsx';
 
 interface Props {
@@ -16,10 +14,9 @@ interface Props {
   now: number;
   onSubmit: (text: string) => void;
   onSkip: () => void;
-  onQuit: () => void;
 }
 
-export function RoundScreen({ state, now, onSubmit, onSkip, onQuit }: Props) {
+export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
   const [text, setText] = useState('');
   const [shaking, setShaking] = useState(false);
   const input = useRef<HTMLInputElement>(null);
@@ -113,10 +110,7 @@ export function RoundScreen({ state, now, onSubmit, onSkip, onQuit }: Props) {
             </span>
           )}
         </div>
-        <div className="hud-tools">
-          <SoundToggle />
-          <SettingsMenu onQuit={onQuit} />
-        </div>
+        <span aria-hidden="true" />
       </header>
 
       <div className="stage-card">

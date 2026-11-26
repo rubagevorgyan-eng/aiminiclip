@@ -48,6 +48,8 @@ export const ZONES: readonly DepthZone[] = [
 export const BRAND = {
   name: 'DEEPCUT',
   tagline: 'The deeper your knowledge, the deeper you go.',
+  /** Where the Recess logo and "Exit game" lead (the Recess site home). */
+  siteUrl: '/',
 } as const;
 
 /** Zone index (0..5) for a depth in meters. */
