@@ -3,7 +3,7 @@ import { playClick } from '../../audio/sfx.ts';
 import { updateSettings, useSettings } from '../../storage/settings.ts';
 
 /** Header settings: reduce motion (persisted) and, during a dig, abandon it. */
-export function SettingsMenu({ onQuit, quitLabel = 'Abandon dig', quitHint = 'Back to the surface, no score' }: { onQuit?: () => void; quitLabel?: string; quitHint?: string }) {
+export function SettingsMenu({ onQuit }: { onQuit?: () => void }) {
   const [open, setOpen] = useState(false);
   const { reduceMotion, sound } = useSettings();
   const box = useRef<HTMLDivElement>(null);
@@ -46,8 +46,8 @@ export function SettingsMenu({ onQuit, quitLabel = 'Abandon dig', quitHint = 'Ba
           </label>
           {onQuit && (
             <button type="button" className="settings-row settings-quit" onClick={() => { setOpen(false); onQuit(); }}>
-              {quitLabel}
-              <small className="dim">{quitHint}</small>
+              Abandon dig
+              <small className="dim">Back to the main screen, nothing is recorded</small>
             </button>
           )}
         </div>

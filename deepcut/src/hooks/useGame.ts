@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useState } from 'react';
 import { GAME } from '../config/game.ts';
-import { catchUp, initialState, reduce, type GameState } from '../engine/machine.ts';
+import { initialState, reduce } from '../engine/machine.ts';
 import type { Question } from '../engine/types.ts';
 
 /** React glue for the engine: one interval while a timed phase is active, timestamps from Date.now(). */
@@ -27,13 +27,6 @@ export function useGame() {
   const submit = useCallback((text: string) => dispatch({ type: 'SUBMIT', text, now: Date.now() }), []);
   const skip = useCallback(() => dispatch({ type: 'SKIP', now: Date.now() }), []);
   const quit = useCallback(() => dispatch({ type: 'QUIT' }), []);
-  const forfeit = useCallback(() => dispatch({ type: 'FORFEIT' }), []);
-  /** Resume a saved game, applying deadlines that passed while it was closed. */
-  const load = useCallback((saved: GameState) => {
-    const t = Date.now();
-    setNow(t);
-    dispatch({ type: 'LOAD', state: catchUp(saved, t) });
-  }, []);
 
-  return { state, now, start, submit, skip, quit, forfeit, load };
+  return { state, now, start, submit, skip, quit };
 }

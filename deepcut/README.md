@@ -58,7 +58,7 @@ Questions live in `src/data/questions/<category>.json`, one array per category:
 ## Known limitations
 
 - Rarity is editorial judgment, not real player statistics. There is no backend, so no global leaderboards, accounts or cross-device sync.
-- Progress lives in one browser; clearing site data resets it. Daily "one attempt" is per browser, not per person.
+- Progress lives in one browser; clearing site data resets it. Only a finished Daily Dig is recorded, once per browser per day; leaving or reloading mid-dig restarts from the home screen, so an unfinished daily can be replayed.
 - Bounded answer lists are complete as of 2025; time-sensitive questions say "up to 2025" and will need refreshing.
 - On iPhone, keyboard handling relies on the Visual Viewport API; tested in browser emulation, not on a physical device.
 - Sounds are synthesized; their balance was verified by instrumentation, not by ear on many devices.

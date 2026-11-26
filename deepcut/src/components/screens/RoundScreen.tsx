@@ -17,11 +17,9 @@ interface Props {
   onSubmit: (text: string) => void;
   onSkip: () => void;
   onQuit: () => void;
-  /** Daily Dig: quitting ends today's attempt. */
-  daily?: boolean;
 }
 
-export function RoundScreen({ state, now, onSubmit, onSkip, onQuit, daily }: Props) {
+export function RoundScreen({ state, now, onSubmit, onSkip, onQuit }: Props) {
   const [text, setText] = useState('');
   const [shaking, setShaking] = useState(false);
   const input = useRef<HTMLInputElement>(null);
@@ -117,11 +115,7 @@ export function RoundScreen({ state, now, onSubmit, onSkip, onQuit, daily }: Pro
         </div>
         <div className="hud-tools">
           <SoundToggle />
-          <SettingsMenu
-            onQuit={onQuit}
-            quitLabel={daily ? 'End Daily Dig' : 'Abandon dig'}
-            quitHint={daily ? "Counts as today's attempt" : 'Back to the surface, no score'}
-          />
+          <SettingsMenu onQuit={onQuit} />
         </div>
       </header>
 

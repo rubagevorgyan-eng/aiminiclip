@@ -67,3 +67,7 @@
 - The mine is now a full-screen animated background behind every screen (touring on menus, following the dig in play, dimmed behind results). Questions and results float over it in a card; HUD on top (round, minerals found), depth/zone readout, answer dock at the bottom with the countdown. Inspired by the layout of a reference recording; all art and styling are DEEPCUT's own.
 - "Did you mean…?" autocorrect for near-miss answers; Enter or tap to accept. Tested so it prefers a 1-letter slip over a longer title, rejects ambiguous and known-wrong answers.
 - 35 tests pass; production build checked on desktop, 375x812 and a keyboard-height 375x460 viewport; no console errors.
+
+## Stage 12: leaving restarts (done)
+- Reloading the page or leaving to the Recess homepage now always returns to DEEPCUT's home screen; in-progress digs are no longer saved or resumed. Only finished digs are recorded; an unfinished Daily Dig can be restarted. "Abandon dig" returns home for both modes.
+- Removed the saved-game module (`activeGame.ts`) and the engine's LOAD / FORFEIT / catchUp with their tests; the legacy save key is cleared on load. 30 tests pass.

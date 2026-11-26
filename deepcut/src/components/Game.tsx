@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { dailyNumber, dailyQuestions, msUntilNextDaily, questionById, unlimitedQuestions, utcDateKey } from '../data/selection.ts';
 import { playComplete } from '../audio/sfx.ts';
 import { rarityIndex, zoneIndexForDepth } from '../config/game.ts';
-import { depth, reduce, timeLeft, type GameState } from '../engine/machine.ts';
+import { depth, timeLeft, type GameState } from '../engine/machine.ts';
 import type { Question } from '../engine/types.ts';
 import { formatCountdown, useNow } from '../hooks/useNow.ts';
 import { useGame } from '../hooks/useGame.ts';
-import { clearActiveDaily, loadActiveDaily, saveActiveDaily } from '../storage/activeGame.ts';
+import { browserKV } from '../storage/storage.ts';
 import { addDaily, addGame, addRecent, loadProgress, saveProgress, type Progress } from '../storage/progress.ts';
 import { MineScene } from './MineScene.tsx';
 import { CollectionScreen } from './screens/CollectionScreen.tsx';
@@ -23,7 +23,7 @@ type Page = 'home' | 'stats' | 'collection' | { daily: string };
 
 /** Screen routing, game modes and persistence. Game rules live in the engine. */
 export default function Game() {
-  const { state, now, start, submit, skip, quit, forfeit, load } = useGame();
+  const { state, now, start, submit, skip, quit } = useGame();
   const [progress, setProgress] = useState<Progress>(loadProgress);
   const [mode, setMode] = useState<Mode | null>(null);
   const [page, setPage] = useState<Page>('home');
@@ -38,26 +38,9 @@ export default function Game() {
     setProgress(next);
   };
 
-  // On open: resume today's Daily Dig, or close out an unfinished one from an earlier day.
-  useEffect(() => {
-    const active = loadActiveDaily();
-    if (!active) return;
-    const today = utcDateKey(Date.now());
-    if (active.date === today && active.state.phase !== 'FINAL_RESULTS' && active.state.phase !== 'HOME') {
-      setMode({ kind: 'daily', date: today });
-      load(active.state);
-      return;
-    }
-    const done = reduce(active.state, { type: 'FORFEIT' });
-    commit((p) => addDaily(p, active.date, { ids: done.questions.map((q) => q.id), records: done.records, score: done.score }));
-    clearActiveDaily();
-  }, [load]);
-
-  // Save the Daily Dig after every change so refresh/reopen resumes it with the same deadlines.
-  useEffect(() => {
-    if (mode?.kind !== 'daily') return;
-    if (state.phase === 'COUNTDOWN' || state.phase === 'QUESTION' || state.phase === 'ROUND_RESULT') saveActiveDaily(mode.date, state);
-  }, [state, mode]);
+  // A dig only lives in this page: leaving or reloading always starts fresh on the home screen.
+  // Clear the in-progress save older versions kept, so nothing tries to resume it.
+  useEffect(() => browserKV.removeItem('deepcut.activeDaily.v1'), []);
 
   // Record each finished game exactly once.
   useEffect(() => {
@@ -67,7 +50,6 @@ export default function Game() {
     setNewBest(state.score > 0 && state.score > loadProgress().bestDepth);
     if (mode.kind === 'daily') {
       commit((p) => addDaily(p, mode.date, { ids: state.questions.map((q) => q.id), records: state.records, score: state.score }));
-      clearActiveDaily();
     } else {
       commit((p) => addGame(p, state.records, state.score, mode.id));
     }
@@ -84,11 +66,6 @@ export default function Game() {
   const playDaily = () => {
     const today = utcDateKey(Date.now());
     if (loadProgress().daily.results[today]) return setPage({ daily: today });
-    const active = loadActiveDaily();
-    if (active?.date === today) {
-      setMode({ kind: 'daily', date: today });
-      return load(active.state);
-    }
     begin({ kind: 'daily', date: today }, dailyQuestions(today));
   };
   const playUnlimited = () => begin({ kind: 'unlimited', id: newId() }, unlimitedQuestions(loadProgress().recent));
@@ -152,8 +129,7 @@ export default function Game() {
       now={now}
       onSubmit={submit}
       onSkip={skip}
-      onQuit={mode?.kind === 'daily' ? forfeit : home}
-      daily={mode?.kind === 'daily'}
+      onQuit={home}
     />
   );
   })();

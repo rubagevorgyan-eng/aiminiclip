@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { GAME } from '../config/game.ts';
 import { QUESTIONS } from '../data/questions.ts';
 import { RARITY } from '../config/game.ts';
-import { catchUp, initialState, pointsFor, reduce, type GameEvent, type GameState } from './machine.ts';
+import { initialState, pointsFor, reduce, type GameEvent, type GameState } from './machine.ts';
 
 const run = (s: GameState, ...es: GameEvent[]) => es.reduce(reduce, s);
 const byId = (id: string) => QUESTIONS.find((q) => q.id === id)!;
@@ -91,37 +91,6 @@ test('one late tick cannot skip more than one phase', () => {
   const late = reduce(s, { type: 'TICK', now: t + QMS * 10 });
   assert.equal(late.phase, 'ROUND_RESULT');
   assert.equal(late.records.length, 1);
-});
-
-test('LOAD restores a saved game only from HOME', () => {
-  const { s } = started();
-  assert.equal(reduce(initialState, { type: 'LOAD', state: s }), s);
-  assert.equal(reduce(s, { type: 'LOAD', state: initialState }), s);
-});
-
-test('catchUp: reopening after the deadline times out that question and starts the next fresh', () => {
-  const { s, t } = started();
-  const later = t + 3 * 3_600_000;
-  const r = catchUp(s, later);
-  assert.equal(r.records.length, 1);
-  assert.equal(r.records[0].outcome, 'timeout');
-  assert.equal(r.phase, 'ROUND_RESULT');
-  const next = reduce(r, { type: 'TICK', now: later + GAME.roundResultMs });
-  assert.equal(next.phase, 'QUESTION');
-  assert.equal(next.phaseEndsAt, later + GAME.roundResultMs + QMS);
-  // Refresh before the deadline: nothing changes, the timer keeps its deadline.
-  assert.equal(catchUp(s, t + 5000), s);
-});
-
-test('FORFEIT fills remaining rounds as timeouts and ends the game', () => {
-  let { s, t } = started();
-  s = reduce(s, { type: 'SUBMIT', text: 'Earth', now: t + 10 });
-  const f = reduce(s, { type: 'FORFEIT' });
-  assert.equal(f.phase, 'FINAL_RESULTS');
-  assert.equal(f.records.length, 7);
-  assert.equal(f.records[0].outcome, 'correct');
-  assert.ok(f.records.slice(1).every((r) => r.outcome === 'timeout'));
-  assert.equal(f.score, s.score);
 });
 
 test('rarity scoring: each tier awards its configured points, 1 point = 1 meter', () => {

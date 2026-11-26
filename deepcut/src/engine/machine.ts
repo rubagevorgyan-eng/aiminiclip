@@ -35,11 +35,7 @@ export type GameEvent =
   | { type: 'TICK'; now: number }
   | { type: 'SUBMIT'; text: string; now: number }
   | { type: 'SKIP'; now: number }
-  | { type: 'QUIT' }
-  /** Restore a saved game (from HOME only). Follow with catchUp() for elapsed time. */
-  | { type: 'LOAD'; state: GameState }
-  /** End the game now; unplayed rounds count as timeouts (used when a Daily Dig is abandoned). */
-  | { type: 'FORFEIT' };
+  | { type: 'QUIT' };
 
 export const initialState: GameState = {
   phase: 'HOME',
@@ -77,14 +73,6 @@ export function reduce(s: GameState, e: GameEvent): GameState {
     }
     case 'QUIT':
       return s.phase === 'HOME' ? s : initialState;
-    case 'LOAD':
-      return s.phase === 'HOME' && e.state.questions.length === GAME.roundsPerGame ? e.state : s;
-    case 'FORFEIT': {
-      if (s.phase === 'HOME' || s.phase === 'FINAL_RESULTS') return s;
-      const from = s.phase === 'ROUND_RESULT' ? s.round + 1 : s.phase === 'COUNTDOWN' ? 0 : s.round;
-      const rest: RoundRecord[] = s.questions.slice(from).map((q) => ({ questionId: q.id, outcome: 'timeout', points: 0 }));
-      return { ...s, phase: 'FINAL_RESULTS', phaseEndsAt: null, records: [...s.records.slice(0, from), ...rest] };
-    }
     case 'TICK': {
       if (s.phaseEndsAt === null || e.now < s.phaseEndsAt) return s;
       if (s.phase === 'COUNTDOWN') return startQuestion(s, 0, e.now);
@@ -118,20 +106,6 @@ export function reduce(s: GameState, e: GameEvent): GameState {
       );
     }
   }
-}
-
-/**
- * Apply all deadlines that passed while the game was closed. A question whose deadline passed
- * times out; the next question then starts fresh at `now` (the player was not there to see it).
- */
-export function catchUp(s: GameState, now: number): GameState {
-  let cur = s;
-  for (let i = 0; i < 4 * GAME.roundsPerGame; i++) {
-    const next = reduce(cur, { type: 'TICK', now });
-    if (next === cur) break;
-    cur = next;
-  }
-  return cur;
 }
 
 /** Milliseconds left in the current timed phase (0 when not timed). */
