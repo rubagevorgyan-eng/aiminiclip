@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Deep Cut - Recess</title>
-<meta name="description" content="One category, ninety seconds. Name everything you can. The answers nobody thinks of are worth the most. Free, in your browser.">
+<title>DEEPCUT - Recess</title>
+<meta name="description" content="The deeper your knowledge, the deeper you go. Answer open questions, dig past the obvious answers and find the rarest gems. Free, in your browser.">
 <meta name="theme-color" content="#FBF8F1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%23FF8A1F'/%3E%3Cpath d='M8 3v7M5 8l3 4 3-4' stroke='%2307080d' stroke-width='2.2' fill='none'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,10 +12,10 @@
 <link rel="stylesheet" href="/assets/shell.css">
 <style>
 /*
-VOICE: a dig crew on the clock: everyone gets the easy stuff, the good ones are buried
-IDEA: you're digging a shaft. Every answer takes you deeper; the rare ones are what's down there
+VOICE: a mining crew on the clock: everyone hits coal, the good stuff is buried
+IDEA: you're sinking a mine shaft. Every right answer takes you deeper; rare answers are rarer minerals, and one answer per question is the mother lode
 PICTURE: a pixel shovel, and a shaft of rock layers with a drill going down it
-COLOUR and TYPE: Recess night stage, soil tan = common, mint = uncommon, blue = rare, gold = deep cut. Silkscreen for game labels, Verdana for anything you read or type
+COLOUR and TYPE: Recess night stage, coal grey, silver, gold, diamond blue, mother lode pink. Silkscreen for game labels, Verdana for anything you read or type
 LAYOUT: dig area plus a narrow shaft on desktop; the shaft becomes a depth chip on phones
 */
 .hide{display:none!important}
@@ -33,7 +33,7 @@ LAYOUT: dig area plus a narrow shaft on desktop; the shaft becomes a depth chip 
 .stagebox{margin:0 0 26px;border-top:6px solid var(--ember);background:#000}
 .stagebox:fullscreen{overflow:auto;border-top:0}
 #stage{
-  --n0:#0d0f18;--n1:#151827;--n2:#1f2336;--nl:#000;--cream:#f1ede6;--gold:#ffc94a;--red:#ff4d2e;--mint:#3fd39a;--lav:#8a8fa8;--blue:#4fb3ff;--soil:#c9a878;
+  --n0:#0d0f18;--n1:#151827;--n2:#1f2336;--nl:#000;--cream:#f1ede6;--gold:#ffc94a;--red:#ff4d2e;--mint:#3fd39a;--lav:#8a8fa8;--blue:#4fb3ff;--coal:#9aa0b4;--silv:#e2e6f0;--dia:#7fe3ff;--lode:#ff5fa2;
   --px:"Silkscreen",monospace;--rd:Verdana,Geneva,Tahoma,sans-serif;
   position:relative;min-height:640px;padding:16px 18px 18px;color:var(--cream);font:13px/1.45 var(--rd);background:var(--n0);border:1px solid var(--line);border-top:0;overflow:hidden}
 #stage input,#stage textarea{user-select:text}
@@ -68,7 +68,9 @@ LAYOUT: dig area plus a narrow shaft on desktop; the shaft becomes a depth chip 
 .modes{display:grid;gap:12px;width:100%;max-width:340px}
 .legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:22px}
 .tg{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;font:700 11px var(--px);color:var(--nl);background:var(--tc);border:2px solid var(--nl)}
-.t0{--tc:var(--soil)}.t1{--tc:var(--mint)}.t2{--tc:var(--blue)}.t3{--tc:var(--gold)}
+.t0{--tc:var(--coal)}.t1{--tc:var(--silv)}.t2{--tc:var(--gold)}.t3{--tc:var(--dia)}.t4{--tc:var(--lode)}
+.tg::before,.ans::before{content:"";flex:none;width:7px;height:7px;transform:rotate(45deg);background:rgba(255,255,255,.75);border:2px solid var(--nl)}
+.ans.miss::before{background:transparent;border-color:currentColor}
 .sub{color:var(--lav);font-size:12px;margin:8px 0 0}
 
 /* dig screen */
@@ -84,13 +86,18 @@ LAYOUT: dig area plus a narrow shaft on desktop; the shaft becomes a depth chip 
 .entry input{flex:1}
 .entry .gb{width:auto;flex:none;padding:6px 18px}
 .say{min-height:22px;margin:10px 0 0;text-align:center;font:700 13px var(--px);color:var(--lav)}
-.say.ok{color:var(--mint)}.say.bad{color:#ff9d93}.say.gem{color:var(--gold)}
+.say.ok{color:var(--mint)}.say.bad{color:#ff9d93}.say.gem{color:var(--dia)}.say.lode{color:var(--lode)}
 .found{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;min-height:60px;align-content:flex-start}
 .ans{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;font:700 12px var(--rd);color:var(--nl);background:var(--tc);border:2px solid var(--nl)}
 .ans i{font:700 10px var(--px);font-style:normal;opacity:.7}
 .ans.new{animation:pop .3s steps(4)}
 .ans.miss{background:transparent;color:#59607e;border:2px dashed #262a3f}
-.ans.miss.t3{color:#8b7433;border-color:#4a3d16}
+.ans.miss.t3{color:#3f7f8c;border-color:#1f4a52}.ans.miss.t4{color:#9a3d66;border-color:#5a1f3a}
+.lodeflash{position:absolute;inset:0;z-index:9;display:grid;place-items:center;pointer-events:none;text-align:center;background:radial-gradient(circle,rgba(255,95,162,.35),rgba(7,8,13,0) 60%);animation:lf 2.2s steps(10) forwards}
+.lodeflash b{display:block;font:700 54px/1 var(--px);color:var(--lode);text-shadow:4px 4px 0 var(--nl)}
+.lodeflash span{display:block;margin-top:8px;font:700 18px var(--px);color:var(--cream);text-shadow:2px 2px 0 var(--nl)}
+@keyframes lf{0%{opacity:0;transform:scale(.6)}15%{opacity:1;transform:scale(1.05)}25%{transform:none}80%{opacity:1}100%{opacity:0}}
+.tagline{margin:10px 0 0;font:700 13px var(--px);color:var(--dia)}
 @keyframes pop{from{transform:scale(.4);opacity:0}}
 .shake{animation:shake .3s steps(4)}
 @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
@@ -168,7 +175,7 @@ LAYOUT: dig area plus a narrow shaft on desktop; the shaft becomes a depth chip 
 
 <main class="page">
   <div class="gt">
-    <div><h1>Deep <em>Cut</em></h1><p class="meta">by Ruben &middot; Words &middot; solo, or a party on one screen</p></div>
+    <div><h1>DEEP<em>CUT</em></h1><p class="meta">by Ruben &middot; Trivia &middot; solo, or a party on one screen &middot; The deeper your knowledge, the deeper you go.</p></div>
     <div class="tools"><button class="fav" id="favBtn" aria-pressed="false"><span class="h">&#9829;</span><span id="favTxt">Add to My Recess</span></button><button class="btn alt" id="fsBtn">Full screen</button><button class="btn alt" id="restartBtn">Restart</button></div>
   </div>
 
@@ -179,7 +186,8 @@ LAYOUT: dig area plus a narrow shaft on desktop; the shaft becomes a depth chip 
     <section class="title" id="sTitle">
       <svg class="shovel pix" id="shovel" viewBox="0 0 12 12" aria-hidden="true"></svg>
       <h2 class="dclogo">DEEP<span>CUT</span></h2>
-      <p class="blurb">One category. Ninety seconds. Name everything you can think of. Everyone gets the easy ones. The answers nobody thinks of are buried deeper and worth more.</p>
+      <p class="tagline">THE DEEPER YOUR KNOWLEDGE, THE DEEPER YOU GO.</p>
+      <p class="blurb">Every question has dozens of right answers. The ones everybody says are coal. Dig past them for silver, gold and diamonds. Somewhere at the bottom of every question is the mother lode: the one answer almost nobody finds.</p>
       <div class="modes">
         <button class="gb g-gold" id="dailyBtn">DAILY DIG</button>
         <button class="gb g-mint" id="practiceBtn">PRACTICE</button>
@@ -187,17 +195,17 @@ LAYOUT: dig area plus a narrow shaft on desktop; the shaft becomes a depth chip 
       </div>
       <p class="sub" id="dailySub"></p>
       <div class="legend">
-        <span class="tg t0">COMMON 1</span><span class="tg t1">UNCOMMON 2</span><span class="tg t2">RARE 3</span><span class="tg t3">DEEP CUT 5</span>
+        <span class="tg t0">COAL 1</span><span class="tg t1">SILVER 2</span><span class="tg t2">GOLD 3</span><span class="tg t3">DIAMOND 5</span><span class="tg t4">MOTHER LODE 10</span>
       </div>
-      <p class="sub">A deep cut also adds 5 seconds to the clock.</p>
+      <p class="sub">Diamonds add 5 seconds to the clock. The mother lode adds 10.</p>
     </section>
 
     <!-- practice picker -->
     <section class="hide" id="sPick">
       <div class="pset">
         <h2 class="dclogo" style="font-size:40px">PRACTICE</h2>
-        <p class="blurb">Pick a category, or let the ground decide.</p>
-        <label for="catSel">Category</label>
+        <p class="blurb">Pick a question, or let the mine decide.</p>
+        <label for="catSel">Question</label>
         <select id="catSel"></select>
         <div class="modes" style="margin:18px auto 0">
           <button class="gb g-mint" id="pickGo">START DIGGING</button>
@@ -215,19 +223,19 @@ LAYOUT: dig area plus a narrow shaft on desktop; the shaft becomes a depth chip 
       <div class="dig">
         <div>
           <div class="panel catcard">
-            <div class="lbl">NAME AS MANY AS YOU CAN</div>
+            <div class="lbl">THE QUESTION · EVERY RIGHT ANSWER COUNTS</div>
             <h2 id="catName"></h2>
             <div class="tally" id="tally"></div>
           </div>
           <form class="entry" id="digForm" autocomplete="off">
-            <input type="text" id="digIn" aria-label="Your answer" placeholder="Type an answer, press Enter" autocapitalize="off" spellcheck="false">
+            <input type="text" id="digIn" aria-label="Your answer" placeholder="Type an answer, press Enter to dig" autocapitalize="off" spellcheck="false">
             <button class="gb g-gold" type="submit">DIG</button>
           </form>
           <p class="say" id="say" aria-live="polite"></p>
           <div class="found" id="found"></div>
         </div>
         <div class="shaft" aria-hidden="true">
-          <span class="zone" style="top:6%">TOPSOIL</span><span class="zone" style="top:24%">CLAY</span><span class="zone" style="top:42%">ROCK</span><span class="zone" style="top:62%">BEDROCK</span><span class="zone" style="top:82%">DEEP</span><span class="zone" style="top:93%;color:#2b1f2e">CORE</span>
+          <span class="zone" style="top:6%">SURFACE</span><span class="zone" style="top:24%">COAL SEAM</span><span class="zone" style="top:42%">SILVER VEIN</span><span class="zone" style="top:62%">GOLD VEIN</span><span class="zone" style="top:82%">DIAMONDS</span><span class="zone" style="top:93%;color:#2b1f2e">LODE</span>
           <div class="hole" id="hole"></div>
           <div class="drill" id="drill"></div>
           <div class="depth" id="depthBig">0m</div>
@@ -255,7 +263,7 @@ LAYOUT: dig area plus a narrow shaft on desktop; the shaft becomes a depth chip 
     <section class="hide" id="sPset">
       <div class="pset">
         <h2 class="dclogo" style="font-size:40px">PARTY</h2>
-        <p class="blurb">Pass one device around. On your turn, name something new in the category to pass it on. Somewhere a hidden fuse is burning. When the shaft caves in, whoever's holding the device loses a hard hat. Lose both and you're out.</p>
+        <p class="blurb">Pass one device around. On your turn, give a new right answer to the question to pass it on. Somewhere a hidden fuse is burning. When the shaft caves in, whoever's holding the device loses a hard hat. Lose both and you're out.</p>
         <label for="names">Players, one per line (2 to 8)</label>
         <textarea id="names" spellcheck="false"></textarea>
         <p class="say bad" id="psetSay"></p>
@@ -275,7 +283,7 @@ LAYOUT: dig area plus a narrow shaft on desktop; the shaft becomes a depth chip 
       <div class="crew" id="crew"></div>
       <div class="pplay">
         <div class="panel catcard">
-          <div class="lbl">CATEGORY</div>
+          <div class="lbl">THE QUESTION</div>
           <h2 id="pCat"></h2>
         </div>
         <div class="turn"><div class="lbl" id="pTurnLbl">HOLDING THE DEVICE</div><b id="pTurn"></b></div>
@@ -312,108 +320,109 @@ LAYOUT: dig area plus a narrow shaft on desktop; the shaft becomes a depth chip 
 const SLUG='deep-cut';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const TIERS=[{k:'c',n:'Common',p:1},{k:'u',n:'Uncommon',p:2},{k:'r',n:'Rare',p:3},{k:'d',n:'Deep cut',p:5}];
-const SOLO_TIME=90,GEM_BONUS=5;
+const TIERS=[{k:'c',n:'Coal',p:1},{k:'u',n:'Silver',p:2},{k:'r',n:'Gold',p:3},{k:'d',n:'Diamond',p:5},{k:'x',n:'Mother lode',p:10}];
+const NT=TIERS.length,LODE=4,zeros=()=>TIERS.map(()=>0);
+const SOLO_TIME=90,GEM_BONUS=5,LODE_BONUS=10;
 
 /* Categories. Answers are split by ';', aliases by '/'. The first name is the one shown.
-   Tiers: c common, u uncommon, r rare, d deep cut. */
+   Tiers: c coal, u silver, r gold, d diamond. q is the question; lode is the one rarest answer (mother lode). */
 const CATS=[
-{n:'US states',
+{n:'US states',q:'Name a US state.',lode:'Delaware',
  c:'California;Texas;Florida;New York;Hawaii;Alaska;Washington;Ohio;Georgia;Michigan;Arizona;Colorado;Nevada;Illinois;Pennsylvania;New Jersey',
  u:'Massachusetts;Oregon;Virginia;North Carolina;South Carolina;Tennessee;Louisiana;Kentucky;Alabama;Utah;Minnesota;Wisconsin;Indiana;Missouri;Maryland;Oklahoma;Kansas;Mississippi;Connecticut',
  r:'Iowa;Nebraska;Arkansas;New Mexico;Idaho;Montana;Maine;Vermont;New Hampshire;West Virginia;Rhode Island',
  d:'Delaware;Wyoming;North Dakota;South Dakota'},
-{n:'Countries in Africa',
+{n:'Countries in Africa',q:'Name a country in Africa.',lode:'São Tomé and Príncipe',
  c:'Egypt;Nigeria;South Africa;Kenya;Morocco;Ethiopia;Ghana;Madagascar',
  u:"Algeria;Tunisia;Libya;Sudan;Somalia;Uganda;Tanzania;Rwanda;Senegal;Cameroon;Zimbabwe;Zambia;Angola;Mozambique;Republic of the Congo/Congo/Congo-Brazzaville;Democratic Republic of the Congo/DRC/DR Congo/Congo-Kinshasa/Zaire;Ivory Coast/Côte d'Ivoire;Namibia;Botswana;Mali",
  r:'Niger;Chad;Liberia;Sierra Leone;Guinea;Burkina Faso;Benin;Togo;Gabon;Malawi;Eritrea;South Sudan;Mauritania;Central African Republic/CAR;Lesotho;Eswatini/Swaziland;Burundi;Gambia/The Gambia;Mauritius;Djibouti',
  d:'Equatorial Guinea;Guinea-Bissau;Cape Verde/Cabo Verde;Comoros;São Tomé and Príncipe/Sao Tome;Seychelles'},
-{n:'Countries in Europe',
+{n:'Countries in Europe',q:'Name a country in Europe.',lode:'Liechtenstein',
  c:'France;Germany;Italy;Spain;United Kingdom/UK/Britain/Great Britain;Ireland;Portugal;Greece;Russia;Sweden;Norway;Netherlands/Holland;Switzerland;Poland',
  u:'Belgium;Austria;Denmark;Finland;Ukraine;Iceland;Czech Republic/Czechia;Hungary;Romania;Turkey/Türkiye;Croatia;Serbia;Bulgaria',
  r:'Slovakia;Slovenia;Belarus;Lithuania;Latvia;Estonia;Albania;Bosnia and Herzegovina/Bosnia;Montenegro;North Macedonia/Macedonia;Moldova;Luxembourg;Monaco;Vatican City/Vatican/Holy See;Malta;Cyprus',
  d:'Andorra;Liechtenstein;San Marino;Kosovo'},
-{n:'Chemical elements',
+{n:'Chemical elements',q:'Name a chemical element.',lode:'Oganesson',
  c:'Hydrogen;Helium;Oxygen;Carbon;Nitrogen;Gold;Silver;Iron;Copper;Sodium;Calcium;Lead;Aluminium/Aluminum;Uranium;Neon;Chlorine;Zinc;Mercury;Potassium;Lithium;Platinum',
  u:'Magnesium;Sulfur/Sulphur;Phosphorus;Silicon;Fluorine;Iodine;Nickel;Tin;Titanium;Plutonium;Argon;Cobalt;Chromium;Tungsten;Radon;Krypton;Xenon;Boron;Manganese;Radium;Arsenic;Bromine;Caesium/Cesium;Beryllium',
  r:'Palladium;Cadmium;Bismuth;Antimony;Barium;Strontium;Selenium;Vanadium;Zirconium;Germanium;Gallium;Indium;Iridium;Osmium;Rhodium;Molybdenum;Thorium;Neodymium;Polonium;Francium;Americium;Einsteinium;Scandium;Tellurium;Rubidium;Cerium;Thallium;Tantalum',
  d:'Lanthanum;Praseodymium;Promethium;Samarium;Europium;Gadolinium;Terbium;Dysprosium;Holmium;Erbium;Thulium;Ytterbium;Lutetium;Hafnium;Rhenium;Ruthenium;Technetium;Niobium;Yttrium;Astatine;Actinium;Protactinium;Neptunium;Curium;Berkelium;Californium;Fermium;Mendelevium;Nobelium;Lawrencium;Rutherfordium;Dubnium;Seaborgium;Bohrium;Hassium;Meitnerium;Darmstadtium;Roentgenium;Copernicium;Nihonium;Flerovium;Moscovium;Livermorium;Tennessine;Oganesson'},
-{n:'NBA teams',
+{n:'NBA teams',q:'Name an NBA team.',lode:'Pelicans',
  c:'Lakers/Los Angeles Lakers/LA Lakers;Celtics/Boston Celtics;Bulls/Chicago Bulls;Warriors/Golden State Warriors/Golden State;Knicks/New York Knicks;Heat/Miami Heat;Spurs/San Antonio Spurs;Cavaliers/Cavs/Cleveland Cavaliers',
  u:'Rockets/Houston Rockets;Mavericks/Mavs/Dallas Mavericks;Nets/Brooklyn Nets;76ers/Sixers/Philadelphia 76ers;Clippers/LA Clippers/Los Angeles Clippers;Suns/Phoenix Suns;Bucks/Milwaukee Bucks;Nuggets/Denver Nuggets;Thunder/Oklahoma City Thunder/OKC;Raptors/Toronto Raptors;Trail Blazers/Blazers/Portland Trail Blazers',
  r:'Pistons/Detroit Pistons;Hawks/Atlanta Hawks;Jazz/Utah Jazz;Magic/Orlando Magic;Timberwolves/Wolves/Minnesota Timberwolves;Pacers/Indiana Pacers;Grizzlies/Memphis Grizzlies;Kings/Sacramento Kings',
  d:'Hornets/Charlotte Hornets;Pelicans/New Orleans Pelicans;Wizards/Washington Wizards'},
-{n:'NFL teams',
+{n:'NFL teams',q:'Name an NFL team.',lode:'Jaguars',
  c:'Cowboys/Dallas Cowboys;Patriots/New England Patriots/Pats;Packers/Green Bay Packers;Steelers/Pittsburgh Steelers;Chiefs/Kansas City Chiefs;Eagles/Philadelphia Eagles;49ers/San Francisco 49ers/Niners;Giants/New York Giants',
  u:'Bears/Chicago Bears;Raiders/Las Vegas Raiders;Broncos/Denver Broncos;Seahawks/Seattle Seahawks;Dolphins/Miami Dolphins;Jets/New York Jets;Rams/Los Angeles Rams/LA Rams;Ravens/Baltimore Ravens;Bills/Buffalo Bills;Lions/Detroit Lions;Buccaneers/Bucs/Tampa Bay Buccaneers;Vikings/Minnesota Vikings',
  r:'Saints/New Orleans Saints;Falcons/Atlanta Falcons;Chargers/Los Angeles Chargers/LA Chargers;Bengals/Cincinnati Bengals;Browns/Cleveland Browns;Colts/Indianapolis Colts;Cardinals/Arizona Cardinals;Commanders/Washington Commanders;Panthers/Carolina Panthers',
  d:'Jaguars/Jacksonville Jaguars/Jags;Titans/Tennessee Titans;Texans/Houston Texans'},
-{n:'US presidents',
+{n:'US presidents',q:'Name a US president.',lode:'Chester A. Arthur',
  c:'George Washington/Washington;Abraham Lincoln/Lincoln/Abe Lincoln;Barack Obama/Obama;Donald Trump/Trump;Joe Biden/Biden;John F. Kennedy/JFK/Kennedy/John Kennedy;Thomas Jefferson/Jefferson;Franklin D. Roosevelt/FDR/Franklin Roosevelt/Franklin Delano Roosevelt;Theodore Roosevelt/Teddy Roosevelt;Ronald Reagan/Reagan;Bill Clinton/Clinton;George W. Bush/Dubya/Bush Jr;Richard Nixon/Nixon',
  u:'George H. W. Bush/HW Bush/Bush Sr/George Bush Sr;Jimmy Carter/Carter;John Adams;Andrew Jackson/Jackson;Dwight D. Eisenhower/Eisenhower/Ike/Dwight Eisenhower;Harry S. Truman/Truman/Harry Truman;Lyndon B. Johnson/LBJ/Lyndon Johnson;Gerald Ford/Ford;James Madison/Madison;Ulysses S. Grant/Grant/Ulysses Grant;Woodrow Wilson/Wilson',
  r:'James Monroe/Monroe;John Quincy Adams/JQA;Herbert Hoover/Hoover;Calvin Coolidge/Coolidge;William McKinley/McKinley;Andrew Johnson;William Howard Taft/Taft;James K. Polk/Polk/James Polk;Grover Cleveland/Cleveland;Martin Van Buren/Van Buren',
  d:'William Henry Harrison;John Tyler/Tyler;Zachary Taylor/Taylor;Millard Fillmore/Fillmore;Franklin Pierce/Pierce;James Buchanan/Buchanan;Rutherford B. Hayes/Hayes/Rutherford Hayes;James A. Garfield/Garfield/James Garfield;Chester A. Arthur/Chester Arthur/Arthur;Benjamin Harrison;Warren G. Harding/Harding/Warren Harding'},
-{n:'Shakespeare plays',
+{n:'Shakespeare plays',q:'Name a play by Shakespeare.',lode:'The Two Noble Kinsmen',
  c:"Romeo and Juliet;Hamlet;Macbeth;Othello;King Lear/Lear;A Midsummer Night's Dream/Midsummer Night's Dream/Midsummer;Julius Caesar",
  u:'The Tempest;Much Ado About Nothing/Much Ado;Twelfth Night;The Merchant of Venice;The Taming of the Shrew;As You Like It;Richard III/Richard the Third/Richard 3;Antony and Cleopatra/Anthony and Cleopatra',
  r:"Henry V/Henry the Fifth/Henry 5;The Comedy of Errors;The Winter's Tale;Richard II/Richard the Second/Richard 2;Henry IV, Part 1/Henry IV/Henry IV Part 1/Henry the Fourth/Henry 4;The Merry Wives of Windsor/Merry Wives;Coriolanus;Titus Andronicus;All's Well That Ends Well;Measure for Measure;King John",
  d:"Henry IV, Part 2/Henry IV Part 2/Henry 4 Part 2;Henry VI, Part 1/Henry VI/Henry VI Part 1/Henry the Sixth/Henry 6;Henry VI, Part 2/Henry VI Part 2/Henry 6 Part 2;Henry VI, Part 3/Henry VI Part 3/Henry 6 Part 3;Henry VIII/Henry the Eighth/Henry 8/All Is True;Timon of Athens;Troilus and Cressida;Pericles;Cymbeline;The Two Gentlemen of Verona;Love's Labour's Lost/Love's Labor's Lost;The Two Noble Kinsmen"},
-{n:'Greek gods and titans',
+{n:'Greek gods and titans',q:'Name a Greek god, goddess or titan.',lode:'Ananke',
  c:'Zeus;Poseidon;Hades;Athena/Athene;Apollo;Aphrodite;Hermes;Ares',
  u:'Hera;Artemis;Hephaestus/Hephaistos;Dionysus/Dionysos;Demeter;Persephone;Hestia;Eros;Nike;Gaia/Gaea',
  r:'Helios;Selene;Eos;Pan;Hecate/Hekate;Nemesis;Hypnos;Thanatos;Tyche;Iris;Hebe;Nyx;Uranus/Ouranos;Cronus/Kronos;Rhea;Asclepius/Asklepios;Morpheus;Atlas;Prometheus',
  d:'Eris;Erebus;Chaos;Pontus;Tartarus;Aether;Hemera;Phobos;Deimos;Harmonia;Eileithyia;Nereus;Triton;Amphitrite;Boreas;Zephyrus/Zephyr;Notus;Eurus;Aeolus;Ganymede;Plutus;Ananke;Momus;Metis;Themis;Mnemosyne;Leto;Oceanus;Tethys;Hyperion'},
-{n:'Ocean animals',
+{n:'Ocean animals',q:'Name an animal that lives in the ocean.',lode:'Siphonophore',
  c:'Shark;Whale;Dolphin;Octopus;Jellyfish;Crab;Lobster;Starfish/Sea star;Seal;Sea turtle/Turtle;Squid;Clownfish;Shrimp;Tuna;Orca/Killer whale',
  u:'Seahorse;Stingray/Ray;Manta ray/Manta;Eel;Sea lion;Walrus;Sea otter/Otter;Swordfish;Barracuda;Pufferfish/Blowfish/Puffer;Clam;Oyster;Coral;Sea urchin/Urchin;Narwhal;Blue whale;Humpback whale/Humpback;Great white shark/Great white;Hammerhead shark/Hammerhead;Penguin;Krill;Anchovy;Sardine;Salmon;Cod;Mackerel;Plankton;Sponge;Sea anemone/Anemone;Manatee',
  r:'Beluga;Sea cucumber;Mussel;Scallop;Barnacle;Halibut;Flounder;Marlin;Sailfish;Moray eel/Moray;Anglerfish;Cuttlefish;Nautilus;Dugong;Whale shark;Sperm whale;Lionfish;Parrotfish;Grouper;Snapper;Herring;Albatross;Pelican;Hermit crab;Nudibranch/Sea slug;Sea snake;Tiger shark;Bull shark;Mako shark/Mako;Elephant seal;Leatherback turtle/Leatherback;Stonefish;Flying fish;Ocean sunfish/Sunfish/Mola;Goblin shark;Giant squid',
  d:"Vampire squid;Blobfish;Coelacanth;Oarfish;Gulper eel;Frilled shark;Greenland shark;Sea pig;Dumbo octopus;Siphonophore;Portuguese man o' war/Man o' war/Portuguese man of war;Mantis shrimp;Sea butterfly;Pyrosome;Lamprey;Hagfish;Viperfish;Fangtooth;Barreleye;Cookiecutter shark;Wobbegong;Remora;Sea spider;Horseshoe crab;Giant isopod/Isopod;Yeti crab;Box jellyfish;Leafy sea dragon/Sea dragon;Triggerfish;Wrasse"},
-{n:'Fruits',
+{n:'Fruits',q:'Name a fruit.',lode:'Jabuticaba',
  c:'Apple;Banana;Orange;Grape;Strawberry;Watermelon;Pineapple;Mango;Peach;Pear;Cherry;Lemon;Blueberry;Kiwi/Kiwifruit;Lime',
  u:'Raspberry;Blackberry;Plum;Coconut;Pomegranate;Papaya;Cantaloupe;Honeydew;Grapefruit;Apricot;Avocado;Cranberry;Fig;Nectarine;Tangerine;Clementine;Passion fruit;Tomato;Date;Melon',
  r:'Dragon fruit/Pitaya;Lychee/Litchi;Guava;Persimmon;Starfruit/Carambola;Jackfruit;Durian;Kumquat;Gooseberry;Mulberry;Elderberry;Boysenberry;Quince;Plantain;Tamarind;Blood orange;Olive;Mandarin;Yuzu;Acai;Blackcurrant/Currant/Redcurrant',
  d:"Rambutan;Mangosteen;Longan;Feijoa;Loquat;Cherimoya/Custard apple;Soursop/Guanabana;Salak/Snake fruit;Jabuticaba;Ackee;Breadfruit;Pawpaw;Medlar;Cloudberry;Lingonberry;Huckleberry;Sapodilla;Miracle fruit/Miracle berry;Kiwano/Horned melon;Pomelo;Ugli fruit;Buddha's hand;Physalis/Ground cherry/Cape gooseberry;Marionberry;Cupuaçu"},
-{n:'Vegetables',
+{n:'Vegetables',q:'Name a vegetable.',lode:'Salsify',
  c:'Carrot;Potato;Broccoli;Lettuce;Onion;Corn;Cucumber;Spinach;Pea;Celery;Bell pepper/Pepper;Cabbage;Garlic',
  u:'Cauliflower;Zucchini/Courgette;Eggplant/Aubergine;Asparagus;Mushroom;Kale;Sweet potato/Yam;Green bean/String bean;Radish;Beet/Beetroot;Pumpkin;Squash;Brussels sprout/Brussel sprout;Artichoke;Leek',
  r:'Turnip;Parsnip;Okra;Bok choy/Pak choi;Arugula/Rocket;Swiss chard/Chard;Fennel;Shallot;Scallion/Green onion/Spring onion;Collard greens/Collards;Rutabaga/Swede;Jalapeño;Butternut squash;Watercress;Edamame;Endive;Snow pea/Snap pea/Sugar snap;Ginger;Radicchio',
  d:'Kohlrabi;Celeriac;Jicama;Salsify;Romanesco;Daikon;Taro;Cassava/Yuca;Jerusalem artichoke/Sunchoke;Fiddlehead;Ramp;Lotus root;Burdock;Chayote;Bitter melon/Bitter gourd;Mizuna;Tatsoi;Sorrel;Purslane;Samphire;Cardoon;Malanga;Water chestnut'},
-{n:'Dog breeds',
+{n:'Dog breeds',q:'Name a dog breed.',lode:'Azawakh',
  c:'Labrador retriever/Labrador/Lab;Golden retriever;German shepherd;Poodle;Bulldog;Beagle;Chihuahua;Pug;Dachshund/Wiener dog/Sausage dog;Siberian husky/Husky;Rottweiler;Pit bull/Pitbull;Corgi/Welsh corgi;Boxer;Dalmatian',
  u:'French bulldog/Frenchie;Shih tzu;Yorkshire terrier/Yorkie;Border collie;Great Dane;Doberman/Doberman pinscher;Pomeranian;Maltese;Greyhound;Saint Bernard/St Bernard;Australian shepherd/Aussie;Cocker spaniel;Chow chow;Shiba inu/Shiba;Bernese mountain dog/Bernese;Jack Russell terrier/Jack Russell;Bichon frise/Bichon;Collie/Rough collie;Mastiff;Basset hound',
  r:'Akita;Samoyed;Bloodhound;Whippet;Newfoundland;Weimaraner;Vizsla;Schnauzer;Cavalier King Charles spaniel/Cavalier;Shetland sheepdog/Sheltie;Alaskan malamute/Malamute;Rhodesian ridgeback;Bull terrier;Afghan hound;Pekingese;Papillon;Havanese;Irish setter;Boston terrier;Staffordshire bull terrier/Staffy;Belgian malinois/Malinois;Great Pyrenees;Shar pei;Basenji;Springer spaniel',
  d:'Xoloitzcuintli/Xolo;Puli;Komondor;Borzoi;Saluki;Affenpinscher;Lagotto Romagnolo;Bergamasco;Leonberger;Kooikerhondje;Otterhound;Norwegian lundehund/Lundehund;Azawakh;Chinook;Mudi;Sloughi;Dandie Dinmont terrier;Bedlington terrier;Brussels griffon;Tibetan mastiff;Catahoula;Keeshond;Schipperke;Peruvian Inca orchid;Cesky terrier'},
-{n:'Bones of the human body',
+{n:'Bones of the human body',q:'Name a bone in the human body.',lode:'Pisiform',
  c:'Skull/Cranium;Femur/Thigh bone;Rib;Vertebra/Vertebrae/Spine/Backbone;Pelvis/Hip bone;Mandible/Jaw/Jawbone;Clavicle/Collarbone;Patella/Kneecap;Tibia/Shin bone;Humerus',
  u:'Sternum/Breastbone;Scapula/Shoulder blade;Fibula;Radius;Ulna;Coccyx/Tailbone;Sacrum;Phalanges/Phalanx/Finger bones/Toe bones;Metacarpals/Metacarpal;Metatarsals/Metatarsal;Maxilla/Upper jaw',
  r:'Carpals/Carpal/Wrist bones;Tarsals/Tarsal;Calcaneus/Heel bone;Talus/Ankle bone;Stapes/Stirrup;Incus/Anvil;Malleus/Hammer;Hyoid;Ilium;Ischium;Pubis;Atlas;Axis;Zygomatic bone/Zygomatic/Cheekbone;Nasal bone',
  d:'Scaphoid;Lunate;Triquetrum;Pisiform;Trapezium;Trapezoid;Capitate;Hamate;Navicular;Cuboid;Cuneiform;Sphenoid;Ethmoid;Vomer;Lacrimal;Palatine;Occipital;Parietal;Temporal;Frontal;Sesamoid;Inferior nasal concha/Turbinate'},
-{n:'Programming languages',
+{n:'Programming languages',q:'Name a programming language.',lode:'Befunge',
  c:'Python;JavaScript/JS;Java;C;C++/CPP;HTML;CSS;C#/C Sharp;SQL;PHP',
  u:'Ruby;Swift;Go/Golang;Rust;Kotlin;TypeScript/TS;R;MATLAB;Perl;Scratch;Lua;Bash/Shell;Assembly/ASM;Visual Basic/VB;Dart',
  r:'Haskell;Scala;Objective-C/ObjC;Fortran;COBOL;Lisp;Pascal;Julia;Elixir;Erlang;Clojure;F#/F Sharp;Groovy;Prolog;BASIC;Delphi;PowerShell;Zig;Solidity;Elm;OCaml',
  d:'Smalltalk;Ada;APL;Forth;Scheme;Racket;Nim;Crystal;Haxe;Tcl;Simula;ALGOL;Eiffel;Idris;Coq/Rocq;Malbolge;Befunge;Logo;ABAP;Raku;D;Odin'},
-{n:'Musical instruments',
+{n:'Musical instruments',q:'Name a musical instrument.',lode:'Nyckelharpa',
  c:'Piano;Guitar;Drums/Drum;Violin;Trumpet;Flute;Saxophone/Sax;Bass guitar/Bass;Cello;Clarinet;Harp;Ukulele/Uke;Keyboard;Tambourine',
  u:'Trombone;Tuba;French horn/Horn;Oboe;Bassoon;Harmonica;Accordion;Xylophone;Banjo;Viola;Double bass/Upright bass/Contrabass;Organ;Recorder;Triangle;Cymbal;Bagpipes;Mandolin;Synthesizer/Synth;Maracas;Glockenspiel;Bongos;Kazoo',
  r:'Sitar;Marimba;Harpsichord;Timpani/Kettle drum;Piccolo;Vibraphone;Cowbell;Castanets;Didgeridoo;Lute;Steel drum/Steelpan;Tabla;Djembe;Cajon;Theremin;Ocarina;Lyre;Pan flute/Panpipes;Bugle;Cornet;Euphonium;Celesta;Melodica;Conga;Gong;Washboard;Keytar;Koto;Shamisen;Erhu',
  d:'Hurdy-gurdy;Zither;Dulcimer;Balalaika;Bouzouki;Oud;Kalimba/Thumb piano/Mbira;Glass harmonica;Sousaphone;Flugelhorn;Contrabassoon;Cor anglais/English horn;Shakuhachi;Guzheng;Pipa;Duduk;Handpan/Hang drum;Waterphone;Ondes Martenot;Crumhorn;Sackbut;Serpent;Nyckelharpa;Charango;Bodhrán;Vuvuzela;Mellotron;Tubular bells;Clavichord'},
-{n:'Car brands',
+{n:'Car brands',q:'Name a car brand.',lode:'Hispano-Suiza',
  c:'Toyota;Ford;Honda;BMW;Mercedes-Benz/Mercedes/Benz;Tesla;Chevrolet/Chevy;Ferrari;Lamborghini/Lambo;Nissan;Audi;Volkswagen/VW;Porsche;Jeep',
  u:'Hyundai;Kia;Subaru;Mazda;Lexus;Dodge;Cadillac;Jaguar;Land Rover/Range Rover;Volvo;Bugatti;Rolls-Royce;Bentley;Maserati;Mitsubishi;GMC;Chrysler;Buick;Fiat;Mini;Acura;Infiniti;Lincoln;Aston Martin;McLaren;Ram',
  r:'Peugeot;Renault;Citroën;Alfa Romeo;Genesis;Lotus;Pagani;Koenigsegg;Škoda;SEAT;Suzuki;Rivian;Lucid;Polestar;Hummer;Pontiac;Saturn;Saab;Smart;BYD;Opel;Isuzu;Scion;Plymouth;Oldsmobile;Mercury;Dacia;Tata',
  d:'Rimac;Spyker;DeLorean;Studebaker;Packard;Hudson;Nash;AMC;Geely;Nio;Lada;Trabant;Zastava;Proton;Perodua;Holden;Vauxhall;Lancia;Morgan;TVR;Noble;Hispano-Suiza;Maybach;Cupra;Fisker;Hennessey;Lynk & Co;Wuling;Datsun;Daewoo'},
-{n:'Dinosaurs and other prehistoric reptiles',
+{n:'Dinosaurs and other prehistoric reptiles',q:'Name a dinosaur or prehistoric reptile.',lode:'Halszkaraptor',
  c:'Tyrannosaurus rex/T. rex/Tyrannosaurus/T-rex;Triceratops;Velociraptor/Raptor;Stegosaurus;Brachiosaurus;Pterodactyl/Pterodactylus;Spinosaurus;Ankylosaurus',
  u:'Diplodocus;Brontosaurus;Allosaurus;Parasaurolophus;Iguanodon;Pachycephalosaurus;Dilophosaurus;Apatosaurus;Carnotaurus;Gallimimus;Compsognathus;Archaeopteryx;Giganotosaurus;Argentinosaurus;Mosasaurus;Plesiosaurus;Pteranodon',
  r:'Deinonychus;Oviraptor;Therizinosaurus;Baryonyx;Microraptor;Utahraptor;Edmontosaurus;Maiasaura;Protoceratops;Styracosaurus;Kentrosaurus;Troodon;Coelophysis;Ceratosaurus;Albertosaurus;Dreadnoughtus;Corythosaurus;Gigantoraptor;Megalosaurus;Herrerasaurus;Quetzalcoatlus;Ichthyosaurus',
  d:'Amargasaurus;Nigersaurus;Pachyrhinosaurus;Psittacosaurus;Euoplocephalus;Ouranosaurus;Suchomimus;Mamenchisaurus;Lambeosaurus;Hadrosaurus;Plateosaurus;Eoraptor;Sinosauropteryx;Yutyrannus;Kosmoceratops;Carcharodontosaurus;Majungasaurus;Mapusaurus;Shunosaurus;Minmi;Leaellynasaura;Irritator;Borealopelta;Halszkaraptor;Zuul;Stygimoloch;Dracorex;Pentaceratops;Einiosaurus;Tarbosaurus'},
-{n:'Herbs and spices',
+{n:'Herbs and spices',q:'Name a herb or spice.',lode:'Grains of paradise',
  c:'Black pepper/Pepper;Cinnamon;Basil;Oregano;Garlic;Ginger;Paprika;Chili powder/Chili/Chilli;Mint;Parsley;Rosemary;Thyme;Cumin;Nutmeg',
  u:'Turmeric;Cayenne;Coriander/Cilantro;Dill;Sage;Vanilla;Clove;Bay leaf/Bay;Curry powder/Curry;Saffron;Cardamom;Chives;Mustard seed/Mustard;Allspice;Lemongrass;Fennel;Sesame;Star anise;Anise/Aniseed',
  r:"Tarragon;Marjoram;Fenugreek;Garam masala;Sumac;Caraway;Celery seed;Chervil;Lavender;Za'atar;Chinese five spice/Five spice;Herbes de Provence;Juniper;Mace;Horseradish;Wasabi;Ras el hanout;Sichuan pepper/Szechuan pepper;Pink peppercorn;Lovage;Epazote;Shiso/Perilla",
  d:'Asafoetida/Hing;Grains of paradise;Long pepper;Nigella/Kalonji/Black seed;Ajwain/Carom;Galangal;Makrut lime leaf/Kaffir lime leaf/Lime leaf;Mahlab;Annatto/Achiote;Amchur/Mango powder;Filé powder/File;Berbere;Baharat;Hyssop;Savory;Borage;Angelica;Rue;Lemon verbena;Culantro;Shichimi togarashi/Togarashi/Shichimi;Dukkah'},
-{n:'Sports played with a ball',
+{n:'Sports played with a ball',q:'Name a sport played with a ball.',lode:'Hornussen',
  c:'Soccer/Football/Association football;Basketball;Baseball;Tennis;Volleyball;Golf;American football/Gridiron;Rugby;Cricket;Bowling;Field hockey/Hockey;Table tennis/Ping pong',
  u:'Softball;Handball;Dodgeball;Kickball;Water polo;Lacrosse;Squash;Racquetball;Pickleball;Polo;Pool/Billiards;Beach volleyball;Netball;Croquet',
  r:'Snooker;Bocce/Boules/Pétanque;Rounders;Gaelic football;Hurling;Australian rules football/Aussie rules/AFL;Futsal;Padel;Sepak takraw;Jai alai/Pelota;Korfball;Lawn bowls/Bowls;T-ball/Tee-ball;Four square;Tetherball;Wiffle ball',
@@ -436,6 +445,7 @@ function build(cat){
       names.forEach(n=>{const w=norm(n).split(' ');if(w.length>1){const lw=w[w.length-1];if(!last.has(lw))last.set(lw,new Set());last.get(lw).add(id)}});
     });
   });
+  const L=A.find(a=>a.d===cat.lode);if(L)L.t=LODE;else console.warn('no lode for',cat.n);
   cat.A=A;cat.map=map;cat.last=last;cat.total=A.reduce((s,a)=>s+TIERS[a.t].p,0);
   return cat;
 }
@@ -512,6 +522,10 @@ function shake(el){el.classList.remove('shake');void el.offsetWidth;el.classList
 /* ---------- solo ---------- */
 let G=null,timer=null;
 function tierChip(ti,text){return `<span class="tg t${ti}">${text}</span>`}
+function lodeFlash(name){
+  const d=document.createElement('div');d.className='lodeflash';d.innerHTML=`<div><b>MOTHER LODE!</b><span>${esc(name)}</span></div>`;
+  $('stage').appendChild(d);setTimeout(()=>d.remove(),2300);
+}
 function ansChip(a,cls){return `<span class="ans t${a.t} ${cls||''}">${esc(a.d)}<i>+${TIERS[a.t].p}</i></span>`}
 
 function startSolo(mode,ci){
@@ -519,8 +533,8 @@ function startSolo(mode,ci){
   G={mode,ci,cat,found:[],score:0,end:Date.now()+SOLO_TIME*1000,over:false,lastSec:null};
   if(mode==='daily')put('deepcut-daily',{date:today(),ci,found:[],score:0,done:false});
   $('modeChip').textContent=mode==='daily'?'DAILY':'PRACTICE';
-  $('catName').textContent=cat.n;
-  $('found').innerHTML='';sayIn($('say'),'Start typing. Spelling close enough counts.');
+  $('catName').textContent=cat.q;
+  $('found').innerHTML='';sayIn($('say'),'Start digging. Close-enough spelling counts.');
   show('sDig');drawSolo();
   clearInterval(timer);timer=setInterval(tickSolo,100);tickSolo();
   $('digIn').value='';$('digIn').focus();
@@ -535,9 +549,9 @@ function tickSolo(){
   if(left<=0)finishSolo('TIME\'S UP');
 }
 function drawSolo(){
-  const cat=G.cat,counts=[0,0,0,0],have=[0,0,0,0];
+  const cat=G.cat,counts=zeros(),have=zeros();
   cat.A.forEach(a=>counts[a.t]++);G.found.forEach(id=>have[cat.A[id].t]++);
-  $('tally').innerHTML=TIERS.map((t,i)=>tierChip(i,`${t.n.toUpperCase()} <b>${have[i]}/${counts[i]}</b>`)).join('');
+  $('tally').innerHTML=TIERS.map((t,i)=>tierChip(i,i===LODE?`MOTHER LODE <b>${have[i]?'FOUND':'?'}</b>`:`${t.n.toUpperCase()} <b>${have[i]}/${counts[i]}</b>`)).join('');
   $('score').textContent=G.score;
   const depth=G.score*10;$('depthTxt').textContent=depth+'m';$('depthBig').textContent=depth+'m';
   const f=Math.min(1,Math.sqrt(G.score/Math.max(1,cat.total)));
@@ -554,7 +568,8 @@ $('digForm').onsubmit=e=>{
   if(G.found.includes(m.id)){sayIn($('say'),`Already dug up ${G.cat.A[m.id].d}.`);SFX.dup();return}
   const a=G.cat.A[m.id],p=TIERS[a.t].p;
   G.found.push(m.id);G.score+=p;
-  if(a.t===3){G.end+=GEM_BONUS*1000;sayIn($('say'),`DEEP CUT! ${a.d} +${p}, +${GEM_BONUS}s`,'gem');SFX.gem()}
+  if(a.t===LODE){G.end+=LODE_BONUS*1000;sayIn($('say'),`MOTHER LODE! ${a.d} +${p}, +${LODE_BONUS}s`,'lode');SFX.gem();setTimeout(SFX.gem,350);lodeFlash(a.d)}
+  else if(a.t===3){G.end+=GEM_BONUS*1000;sayIn($('say'),`DIAMOND! ${a.d} +${p}, +${GEM_BONUS}s`,'gem');SFX.gem()}
   else{sayIn($('say'),`${a.d}${m.close?' (close enough)':''} +${p}`,'ok');SFX.hit(a.t)}
   $('found').insertAdjacentHTML('afterbegin',ansChip(a,'new'));
   $('drill').classList.add('spin');setTimeout(()=>$('drill').classList.remove('spin'),450);
@@ -574,17 +589,17 @@ function finishSolo(why){
   showResults(why,isBest&&G.score>0);
 }
 function showResults(why,isBest){
-  const cat=G.cat,set=new Set(G.found),have=[0,0,0,0],counts=[0,0,0,0];
+  const cat=G.cat,set=new Set(G.found),have=zeros(),counts=zeros();
   cat.A.forEach((a,i)=>{counts[a.t]++;if(set.has(i))have[a.t]++});
   $('resLbl').textContent=why+(G.mode==='daily'?' · DAILY DIG':'');
-  $('resCat').textContent=cat.n;
+  $('resCat').textContent=cat.q;
   $('resBig').innerHTML=`<span class="chip">SCORE <b>${G.score}</b></span><span class="chip">DEPTH <b>${G.score*10}m</b></span><span class="chip">FOUND <b>${G.found.length}/${cat.A.length}</b></span>`+
-    (have[3]?`<span class="chip">DEEP CUTS <b>${have[3]}</b></span>`:'');
-  sayIn($('resSay'),isBest?'New personal best for this category.':(G.mode==='daily'?'Come back tomorrow for a new dig.':''),isBest?'gem':'');
+    (have[3]?`<span class="chip">DIAMONDS <b>${have[3]}</b></span>`:'')+(have[LODE]?`<span class="chip">MOTHER LODE <b>FOUND</b></span>`:'');
+  sayIn($('resSay'),isBest?'New personal best for this question.':(G.mode==='daily'?'Come back tomorrow for a new dig.':''),isBest?'gem':'');
   $('resAgain').textContent=G.mode==='daily'?'PRACTICE':'PLAY AGAIN';
-  $('resBoard').innerHTML=[3,2,1,0].map(ti=>{
+  $('resBoard').innerHTML=[4,3,2,1,0].map(ti=>{
     const list=cat.A.map((a,i)=>({a,i})).filter(x=>x.a.t===ti);
-    return `<h3 class="t${ti}" style="--tc:var(${['--soil','--mint','--blue','--gold'][ti]})">${TIERS[ti].n.toUpperCase()} · ${have[ti]}/${counts[ti]} · ${TIERS[ti].p} PT${TIERS[ti].p>1?'S':''} EACH</h3><div class="found">`+
+    return `<h3 class="t${ti}" style="--tc:var(${['--coal','--silv','--gold','--dia','--lode'][ti]})">${TIERS[ti].n.toUpperCase()} · ${have[ti]}/${counts[ti]} · ${TIERS[ti].p} PT${TIERS[ti].p>1?'S':''} EACH</h3><div class="found">`+
       list.map(x=>ansChip(x.a,set.has(x.i)?'':'miss')).join('')+'</div>';
   }).join('');
   show('sRes');
@@ -592,10 +607,10 @@ function showResults(why,isBest){
 $('resAgain').onclick=()=>{if(G.mode==='daily'){openPicker()}else startSolo('practice',G.ci)};
 $('resHome').onclick=()=>{drawTitle();show('sTitle')};
 $('resCopy').onclick=()=>{
-  const cat=G.cat,set=new Set(G.found),have=[0,0,0,0];
+  const cat=G.cat,set=new Set(G.found),have=zeros();
   cat.A.forEach((a,i)=>{if(set.has(i))have[a.t]++});
-  const txt=`Deep Cut${G.mode==='daily'?' · '+today():''}\n${cat.n}\n${G.score} pts · ${G.score*10}m deep · ${G.found.length}/${cat.A.length} found\n`+
-    `common ${have[0]} · uncommon ${have[1]} · rare ${have[2]} · deep cuts ${have[3]}\n${location.origin}/games/${SLUG}/`;
+  const txt=`DEEPCUT${G.mode==='daily'?' · '+today():''}\n${cat.q}\n${G.score} pts · ${G.score*10}m deep · ${G.found.length}/${cat.A.length} found\n`+
+    `coal ${have[0]} · silver ${have[1]} · gold ${have[2]} · diamonds ${have[3]}${have[LODE]?' · MOTHER LODE':''}\nThe deeper your knowledge, the deeper you go.\n${location.origin}/games/${SLUG}/`;
   const done=()=>sayIn($('resSay'),'Copied. Paste it anywhere.','ok');
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,()=>prompt('Copy this:',txt));
   else prompt('Copy this:',txt);
@@ -620,7 +635,7 @@ $('dailyBtn').onclick=()=>{
 function openPicker(){
   const sel=$('catSel');
   if(!sel.options.length){
-    sel.innerHTML='<option value="-1">Random</option>'+CATS.map((c,i)=>`<option value="${i}">${esc(c.n)}</option>`).join('');
+    sel.innerHTML='<option value="-1">Random</option>'+CATS.map((c,i)=>`<option value="${i}">${esc(c.q)}</option>`).join('');
   }
   show('sPick');
 }
@@ -651,7 +666,7 @@ function nextAlive(i){const n=P.players.length;for(let k=1;k<=n;k++){const j=(i+
 function newRound(starter){
   P.round++;let ci;do{ci=Math.floor(Math.random()*CATS.length)}while(ci===P.lastCi&&CATS.length>1);
   P.lastCi=ci;P.cat=build(CATS[ci]);P.used=[];P.turn=P.players[starter].hats>0?starter:nextAlive(starter);P.live=false;
-  $('pRound').textContent=P.round;$('pCat').textContent=P.cat.n;$('pUsed').innerHTML='';
+  $('pRound').textContent=P.round;$('pCat').textContent=P.cat.q;$('pUsed').innerHTML='';
   $('pReady').classList.remove('hide');$('pLive').classList.add('hide');$('cave').classList.add('hide');
   $('pTurnLbl').textContent='GOES FIRST';drawParty();
 }
@@ -678,10 +693,11 @@ $('pForm').onsubmit=e=>{
   if(m.amb){sayIn($('pSay'),'Could be more than one. Be more specific!','bad');SFX.dup();return}
   if(P.used.includes(m.id)){sayIn($('pSay'),`${P.cat.A[m.id].d} is already taken!`,'bad');shake($('pIn'));SFX.dup();return}
   const a=P.cat.A[m.id],me=P.players[P.turn];P.used.push(m.id);
-  if(a.t===3){me.gems++;SFX.gem()}else SFX.hit(a.t);
+  if(a.t>=3){me.gems++;SFX.gem()}else SFX.hit(a.t);
+  if(a.t===LODE)lodeFlash(a.d);
   $('pUsed').insertAdjacentHTML('afterbegin',`<span class="ans t${a.t} new">${esc(a.d)}<i>${esc(me.name)}</i></span>`);
   P.turn=nextAlive(P.turn);
-  sayIn($('pSay'),`${me.name}: ${a.d}${a.t===3?' · DEEP CUT!':''} Pass to ${P.players[P.turn].name}!`,a.t===3?'gem':'ok');
+  sayIn($('pSay'),`${me.name}: ${a.d}${a.t===LODE?' · MOTHER LODE!':a.t===3?' · DIAMOND!':''} Pass to ${P.players[P.turn].name}!`,a.t===LODE?'lode':a.t===3?'gem':'ok');
   if(P.used.length===P.cat.A.length){clearTimeout(fuseT);caveIn()}
   drawParty();$('pIn').focus();
 };
@@ -690,16 +706,16 @@ function caveIn(){
   P.live=false;clearTimeout(rumbleT);SFX.boom();
   const loser=P.players[P.turn];loser.hats--;
   const left=alive();
-  const miss=P.cat.A.map((a,i)=>({a,i})).filter(x=>x.a.t===3&&!P.used.includes(x.i)).sort(()=>Math.random()-.5).slice(0,4);
+  const miss=P.cat.A.map((a,i)=>({a,i})).filter(x=>x.a.t>=3&&!P.used.includes(x.i)).sort(()=>Math.random()-.5).slice(0,4);
   $('caveMiss').innerHTML=miss.length?miss.map(x=>ansChip(x.a)).join(''):'';
   if(left.length<=1){
     const w=left[0];
     $('caveH').textContent='LAST ONE STANDING';
-    $('caveP').textContent=`The shaft came down on ${loser.name}. ${w?w.name+' wins the party!':''}${miss.length?' Deep cuts nobody found:':''}`;
+    $('caveP').textContent=`The shaft came down on ${loser.name}. ${w?w.name+' wins the party!':''}${miss.length?' Gems nobody found:':''}`;
     $('caveBtn').textContent='NEW PARTY';P.over=true;
   }else{
     $('caveH').textContent='CAVE-IN!';
-    $('caveP').textContent=loser.hats>0?`${loser.name} was holding it and loses a hard hat.${miss.length?' Deep cuts nobody found:':''}`:`${loser.name} is out!${miss.length?' Deep cuts nobody found:':''}`;
+    $('caveP').textContent=loser.hats>0?`${loser.name} was holding it and loses a hard hat.${miss.length?' Gems nobody found:':''}`:`${loser.name} is out!${miss.length?' Gems nobody found:':''}`;
     $('caveBtn').textContent='NEXT ROUND';P.over=false;
   }
   drawParty();$('cave').classList.remove('hide');$('caveBtn').focus();
