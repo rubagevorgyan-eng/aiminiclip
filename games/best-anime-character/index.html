@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>$20 Best Anime Character - Recess</title>
+<meta name="description" content="Two players, $20 each, five slots. Bid on anime characters and build the strongest team.">
+<meta name="theme-color" content="#07080d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%23ffc94a'/%3E%3Ctext x='8' y='12.5' font-family='Arial' font-weight='900' font-size='11' text-anchor='middle' fill='%2307080d'%3E$%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/shell.css">
+<style>
+/*
+VOICE: a draft-night auction between two friends, with a host running the table
+IDEA: one screen, two wallets, one character on the block at a time
+COLOUR and TYPE: Recess night, gold for money and stars, green = gift, red = skip. Anton for big numbers, Archivo for reading
+*/
+:root{--green:#2fd17a;--greenD:#169652;--red:#ff3b3b;--redD:#b51f1f;--p0:#4fb3ff;--p1:#ff6fae}
+.hide{display:none!important}
+.gt{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.gt h1{margin:0;font:400 46px/1 var(--disp);letter-spacing:.5px}
+.gt h1 em{font-style:normal;color:var(--gold)}
+.meta{margin:6px 0 0;color:var(--dim)}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tools .btn{font-size:16px;min-height:38px;padding:0 14px}
+
+/* setup */
+.setup{max-width:640px;margin:10px auto 0;background:var(--panel);border:1px solid var(--line);padding:26px}
+.setup h2{margin:0 0 4px;font:400 28px var(--disp)}
+.setup p{color:var(--dim);margin:0 0 18px}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.names label{display:block;font:700 13px var(--body);margin-bottom:6px}
+.names input{width:100%;font:16px var(--body);padding:10px 12px;background:var(--bg);color:var(--bone);border:2px solid var(--line)}
+.names input:focus{outline:none;border-color:var(--gold)}
+.rules{margin:0 0 20px;padding:0 0 0 18px;color:var(--bone);line-height:1.6}
+.rules b{color:var(--gold)}
+.setup .btn{width:100%}
+
+/* board */
+.board{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+.pl{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--pc);padding:14px}
+.pl.lead{box-shadow:0 0 0 2px var(--pc)}
+.pl h3{margin:0;font:400 26px/1.1 var(--disp);color:var(--pc);overflow-wrap:anywhere}
+.stats{display:flex;gap:8px;margin:10px 0}
+.stat{flex:1;background:var(--bg);border:1px solid var(--line);padding:6px 8px}
+.stat small{display:block;color:var(--dim);font:700 11px var(--body);text-transform:uppercase;letter-spacing:.5px}
+.stat b{font:400 26px/1.1 var(--disp)}
+.stat .money{color:var(--gold)}
+.full{display:inline-block;margin-left:6px;padding:1px 6px;background:var(--red);color:#fff;font:700 11px var(--body);vertical-align:middle}
+.slots{display:grid;gap:5px;margin-bottom:10px}
+.slot{display:flex;align-items:center;gap:8px;min-height:44px;padding:5px 8px;background:var(--bg);border:1px dashed var(--line);font-size:13px}
+.slot.on{border-style:solid;border-color:var(--line)}
+.slot .ini{flex:none}
+.slot .nm{flex:1;line-height:1.2}
+.slot .nm small{display:block;color:var(--dim);font-size:11px}
+.slot .pr{font:700 12px var(--mono);color:var(--gold)}
+.slot .pr.gift{color:var(--green)}
+.slot.empty{color:var(--dim);justify-content:center}
+
+.ini{width:34px;height:34px;display:grid;place-items:center;font:400 15px var(--disp);color:#0a0a0a;background:var(--ac)}
+
+/* buttons */
+.b{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:0 12px;border:0;font:800 14px var(--body);cursor:pointer;color:#0a0a0a;background:var(--bone);transition:transform .05s,filter .15s}
+.b:hover:not(:disabled){filter:brightness(1.1)}
+.b:active:not(:disabled){transform:translateY(2px)}
+.b:disabled{opacity:.35;cursor:not-allowed}
+.b:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.b.gold{background:var(--gold)}
+.b.green{background:var(--green);color:#04210f;box-shadow:inset 0 -3px 0 var(--greenD)}
+.b.red{background:var(--red);color:#fff;box-shadow:inset 0 -3px 0 var(--redD)}
+.b.ghost{background:transparent;color:var(--bone);box-shadow:inset 0 0 0 2px var(--line)}
+.bids{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:6px}
+.bids .b{padding:0 4px}
+.bids .b.mine{background:var(--pc);color:#0a0a0a}
+.pskip{width:100%}
+.pips{display:inline-flex;gap:3px;margin-left:4px}
+.pips i{width:8px;height:8px;background:#fff;opacity:.9}
+.pips i.off{opacity:.25}
+.note{color:var(--dim);font-size:12px;margin:6px 0 0;min-height:16px}
+
+/* centre */
+.block{background:var(--panel);border:1px solid var(--line);padding:16px;text-align:center}
+.lot{font:700 12px var(--body);color:var(--dim);letter-spacing:1px;text-transform:uppercase;display:flex;justify-content:space-between}
+.lotcard{position:relative;margin:12px auto 0;max-width:360px;padding:20px 16px 16px;background:var(--bg);border:2px solid var(--tc);box-shadow:0 0 0 1px #000,0 0 26px -8px var(--tc)}
+.lotcard.god{animation:glow 2s ease-in-out infinite alternate}
+@keyframes glow{to{box-shadow:0 0 0 1px #000,0 0 44px -4px var(--tc)}}
+.lotcard .big{width:92px;height:92px;margin:0 auto 12px;display:grid;place-items:center;font:400 40px var(--disp);color:#0a0a0a;background:var(--ac)}
+.lotcard h2{margin:0;font:400 32px/1.05 var(--disp);overflow-wrap:anywhere}
+.lotcard .form{color:var(--dim);font-size:13px;margin-top:2px;min-height:18px}
+.lotcard .an{display:inline-block;margin-top:8px;padding:2px 8px;font:800 12px var(--body);color:#0a0a0a;background:var(--ac)}
+.stars{font-size:26px;letter-spacing:3px;margin-top:12px;line-height:1}
+.stars .on{color:var(--gold)}.stars .off{color:#2a2d40}
+.tier{margin-top:6px;font:400 20px var(--disp);color:var(--tc);letter-spacing:1px;text-transform:uppercase}
+.lotcard .pop{animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+.hb{margin:16px 0 12px;padding:10px;background:var(--bg);border:1px solid var(--line)}
+.hb small{display:block;color:var(--dim);font:700 11px var(--body);text-transform:uppercase;letter-spacing:.5px}
+.hb b{font:400 40px/1.1 var(--disp);color:var(--gold)}
+.hb span{display:block;font-weight:700;min-height:22px}
+.sell{width:100%;min-height:50px;font-size:17px}
+.host{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+.host h4{margin:0 0 8px;font:700 12px var(--body);color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.host .row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}
+.host .b{width:100%}
+.mskip{width:100%;min-height:46px}
+
+/* power */
+.power{margin:16px 0 0;background:var(--panel);border:1px solid var(--line);padding:14px 16px}
+.power .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font:700 14px var(--body)}
+.power .hd b{font:400 24px var(--disp)}
+.bar{display:flex;height:20px;margin:8px 0 6px;background:var(--bg);border:1px solid var(--line)}
+.bar i{display:block;height:100%;transition:width .4s}
+.verdict{text-align:center;font:400 22px var(--disp);letter-spacing:.5px}
+
+/* end */
+.over h2{margin:4px 0 2px;font:400 40px/1 var(--disp);color:var(--gold)}
+.over p{color:var(--dim);margin:0 0 12px}
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin:14px 0}
+.vs b{font:400 48px var(--disp)}
+.vs small{display:block;color:var(--dim);font-size:12px}
+
+/* list */
+.list{margin-top:16px;background:var(--panel);border:1px solid var(--line);padding:14px 16px}
+.list .hd{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.list h3{margin:0;font:400 24px var(--disp)}
+.seg{display:inline-flex;border:2px solid var(--line)}
+.seg button{border:0;background:transparent;color:var(--dim);font:700 13px var(--body);padding:7px 12px;cursor:pointer}
+.seg button.on{background:var(--bone);color:#0a0a0a}
+.th{margin:14px 0 6px;font:400 18px var(--disp);color:var(--tc);letter-spacing:.5px}
+.th:first-child{margin-top:0}
+.rows{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:5px}
+.r{display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--bg);border:1px solid var(--line);font-size:13px}
+.r .ini{width:28px;height:28px;font-size:12px}
+.r .nm{flex:1;line-height:1.2}
+.r .nm small{display:block;color:var(--dim);font-size:11px}
+.r .st{font:700 11px var(--mono);white-space:nowrap}
+.r.gone{opacity:.45}
+.r.now{border-color:var(--gold);box-shadow:inset 3px 0 0 var(--gold)}
+.r .k{font:700 11px var(--mono);color:var(--dim);width:22px;text-align:right}
+.tag{font:700 11px var(--body);padding:1px 6px;white-space:nowrap}
+.tag.p0{background:var(--p0);color:#0a0a0a}.tag.p1{background:var(--p1);color:#0a0a0a}
+.tag.sk{background:var(--red);color:#fff}.tag.now{background:var(--gold);color:#0a0a0a}
+.log{margin:10px 0 0;color:var(--dim);font-size:12px;max-height:5.2em;overflow:auto}
+
+@media(max-width:980px){
+  .board{grid-template-columns:1fr 1fr}
+  .centre{grid-column:1/-1;order:-1}
+}
+@media(max-width:600px){
+  .page{padding:16px 12px 0}
+  .gt h1{font-size:34px}
+  .board{grid-template-columns:1fr}
+  .names{grid-template-columns:1fr}
+  .host .row{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="/" aria-label="Recess home"><span class="rlogo"></span></a>
+  <nav class="nav"><a class="on" href="/">Games</a><a href="/#board">Board</a><a href="/#prof">Profile</a></nav>
+  <a class="me" href="/#prof"><div><span>@ruben</span><small>Level 3</small></div><span class="orb">R</span></a>
+</header>
+
+<main class="page">
+  <div class="gt">
+    <div><h1><em>$20</em> Best Anime Character</h1><p class="meta">Anime &middot; 2 players + a host &middot; one screen</p></div>
+    <div class="tools">
+      <button class="btn alt" id="undoBtn" disabled>Undo</button>
+      <button class="btn alt" id="listBtn">Character list</button>
+      <button class="btn alt" id="restartBtn">New game</button>
+    </div>
+  </div>
+
+  <section class="setup" id="setup">
+    <h2>Set the table</h2>
+    <p>Characters come up one at a time in a random order, from Weak Human all the way to God Level.</p>
+    <div class="names">
+      <div><label for="n0">Player 1</label><input id="n0" maxlength="18" placeholder="Player 1" autocomplete="off"></div>
+      <div><label for="n1">Player 2</label><input id="n1" maxlength="18" placeholder="Player 2" autocomplete="off"></div>
+    </div>
+    <ul class="rules">
+      <li>Each player starts with <b>$20</b>. The highest bid wins the character.</li>
+      <li>Once a player has <b>5 characters</b>, they can't bid anymore.</li>
+      <li>Each player gets <b>3 skips</b> to throw a character out before anyone bids on it.</li>
+      <li>The host gets <b>5 master skips</b> that work any time, and can <b>gift</b> a character to either player for free.</li>
+      <li>The team with the most stars (&#9733;) wins.</li>
+    </ul>
+    <button class="btn" id="startBtn">Start the auction</button>
+  </section>
+
+  <section id="game" class="hide">
+    <div class="board">
+      <div class="pl" id="pl0" style="--pc:var(--p0)"></div>
+      <div class="block centre" id="centre"></div>
+      <div class="pl" id="pl1" style="--pc:var(--p1)"></div>
+    </div>
+    <div class="power" id="power"></div>
+  </section>
+
+  <section class="list hide" id="list">
+    <div class="hd">
+      <h3>Character list</h3>
+      <div class="seg" role="group" aria-label="Sort">
+        <button id="sortTier" class="on">Strongest &rarr; weakest</button>
+        <button id="sortDraw">Random draw order</button>
+      </div>
+    </div>
+    <div id="listBody"></div>
+  </section>
+</main>
+
+<footer class="foot"><h6>Every game on Recess</h6><div class="az" id="allgames"></div><p>&copy; <span id="yr"></span> Recess</p></footer>
+
+<script src="/assets/logo.js"></script>
+<script src="/assets/recess.js"></script>
+<script>
+{
+/* Anime-only: every character and form below appears in the TV anime (or an anime film), not just the manga. */
+const ANIME={
+  hxh:{n:'Hunter x Hunter',c:'#7ed957'},
+  nar:{n:'Naruto',c:'#ff8a1f'},
+  ble:{n:'Bleach',c:'#ff5c7a'},
+  bc:{n:'Black Clover',c:'#2ac3a2'},
+  sl:{n:'Solo Leveling',c:'#6b8cff'},
+  sds:{n:'Seven Deadly Sins',c:'#e8c15a'},
+  jjk:{n:'Jujutsu Kaisen',c:'#b07bff'}
+};
+const TIERS=[null,
+  {n:'Weak Human',c:'#9a9eb5'},
+  {n:'Fighter',c:'#6fcf73'},
+  {n:'Elite',c:'#3fa8ff'},
+  {n:'Powerhouse',c:'#a46bff'},
+  {n:'Calamity',c:'#ff8a1f'},
+  {n:'Transcendent',c:'#ff3b3b'},
+  {n:'God Level',c:'#ffc94a'}
+];
+// [name, form, anime, stars]
+const RAW=[
+  // Hunter x Hunter (2011)
+  ['Meruem','Chimera Ant King','hxh',5],
+  ['Isaac Netero','Hunter Chairman','hxh',5],
+  ['Gon Freecss','Adult transformation','hxh',4],
+  ['Neferpitou','Royal Guard','hxh',4],
+  ['Menthuthuyoupi','Royal Guard','hxh',4],
+  ['Shaiapouf','Royal Guard','hxh',4],
+  ['Zeno Zoldyck','','hxh',4],
+  ['Silva Zoldyck','','hxh',4],
+  ['Chrollo Lucilfer','Phantom Troupe leader','hxh',4],
+  ['Hisoka Morow','','hxh',4],
+  ['Illumi Zoldyck','','hxh',3],
+  ['Killua Zoldyck','Godspeed','hxh',3],
+  ['Kurapika','Emperor Time','hxh',3],
+  ['Uvogin','Phantom Troupe','hxh',3],
+  ['Biscuit Krueger','','hxh',3],
+  ['Leorio Paradinight','','hxh',2],
+  ['Zushi','','hxh',2],
+  ['Tonpa','Rookie Crusher','hxh',1],
+  ['Mito Freecss','','hxh',1],
+  // Naruto / Shippuden
+  ['Kaguya Ōtsutsuki','Rabbit Goddess','nar',7],
+  ['Madara Uchiha','Ten-Tails Jinchūriki','nar',6],
+  ['Naruto Uzumaki','Six Paths Sage Mode','nar',6],
+  ['Sasuke Uchiha','Rinnegan','nar',6],
+  ['Hashirama Senju','First Hokage','nar',5],
+  ['Itachi Uchiha','Susanoo','nar',5],
+  ['Nagato','Pain','nar',5],
+  ['Minato Namikaze','Fourth Hokage','nar',5],
+  ['Might Guy','Eight Gates','nar',5],
+  ['Obito Uchiha','Masked Man','nar',5],
+  ['Kakashi Hatake','Sharingan','nar',4],
+  ['Jiraiya','Sage Mode','nar',4],
+  ['Tsunade','Fifth Hokage','nar',4],
+  ['Gaara','Kazekage','nar',4],
+  ['Rock Lee','','nar',3],
+  ['Shikamaru Nara','','nar',3],
+  ['Sakura Haruno','Part I','nar',2],
+  ['Konohamaru','Part I','nar',1],
+  ['Tazuna','Bridge builder','nar',1],
+  // Bleach (incl. Thousand-Year Blood War)
+  ['Yhwach','The Almighty','ble',7],
+  ['Sōsuke Aizen','Hōgyoku fusion','ble',6],
+  ['Ichigo Kurosaki','True Bankai','ble',6],
+  ['Ichibē Hyōsube','Royal Guard','ble',6],
+  ['Genryūsai Yamamoto','Bankai','ble',5],
+  ['Kenpachi Zaraki','Bankai','ble',5],
+  ['Ulquiorra Cifer','Segunda Etapa','ble',4],
+  ['Byakuya Kuchiki','Bankai','ble',4],
+  ['Kisuke Urahara','Bankai','ble',4],
+  ['Tōshirō Hitsugaya','Bankai','ble',4],
+  ['Grimmjow Jaegerjaquez','Resurrección','ble',4],
+  ['Renji Abarai','Bankai','ble',3],
+  ['Rukia Kuchiki','','ble',3],
+  ['Yasutora "Chad" Sado','','ble',3],
+  ['Orihime Inoue','','ble',2],
+  ['Don Kanonji','TV spiritualist','ble',1],
+  ['Keigo Asano','','ble',1],
+  // Black Clover (TV anime + Sword of the Wizard King)
+  ['Julius Novachrono','Wizard King','bc',5],
+  ['Conrad Leto','Sword of the Wizard King','bc',5],
+  ['Licht','Elf leader','bc',5],
+  ['Dante Zogratis','Body magic','bc',5],
+  ['Yami Sukehiro','Black Bulls captain','bc',4],
+  ['Mereoleona Vermillion','','bc',4],
+  ['Asta','Black Form','bc',4],
+  ['Yuno','Spirit of Zephyr','bc',4],
+  ['Noelle Silva','Valkyrie Dress','bc',4],
+  ['Zenon Zogratis','','bc',4],
+  ['Vanica Zogratis','','bc',4],
+  ['Luck Voltia','','bc',3],
+  ['Magna Swing','','bc',3],
+  ['Finral Roulacase','','bc',2],
+  ['Mimosa Vermillion','','bc',2],
+  ['Sister Lily','Hage church','bc',1],
+  // Solo Leveling (seasons 1 and 2)
+  ['Sung Jinwoo','Shadow Monarch','sl',5],
+  ['Beru','Ant King','sl',4],
+  ['Go Gunhee','Hunter Association chairman','sl',4],
+  ['Cha Hae-in','S-rank','sl',4],
+  ['Baek Yoonho','S-rank','sl',3],
+  ['Choi Jong-in','S-rank','sl',3],
+  ['Igris','Blood-Red Commander','sl',3],
+  ['Woo Jinchul','Surveillance team','sl',3],
+  ['Hwang Dongsuk','','sl',2],
+  ['Yoo Jinho','D-rank','sl',2],
+  ['Jinah Sung','','sl',1],
+  // The Seven Deadly Sins (+ Four Knights of the Apocalypse)
+  ['The Demon King','','sds',7],
+  ['The Supreme Deity','','sds',7],
+  ['Meliodas','Assault Mode','sds',6],
+  ['Escanor','The One','sds',6],
+  ['Mael','Sunshine','sds',6],
+  ['Zeldris','Commandments','sds',5],
+  ['Merlin','','sds',5],
+  ['Ban','','sds',5],
+  ['King','Fairy King awakened','sds',5],
+  ['Chandler','','sds',5],
+  ['Diane','','sds',4],
+  ['Gowther','','sds',4],
+  ['Hendrickson','','sds',4],
+  ['Gilthunder','','sds',3],
+  ['Howzer','','sds',3],
+  ['Percival','Four Knights','sds',3],
+  ['Hawk','Captain of leftovers','sds',1],
+  // Jujutsu Kaisen
+  ['Ryōmen Sukuna','King of Curses','jjk',6],
+  ['Satoru Gojo','Unlimited Void','jjk',6],
+  ['Yuta Okkotsu','Special Grade','jjk',5],
+  ['Kenjaku','','jjk',5],
+  ['Mahoraga','Divine General','jjk',5],
+  ['Toji Fushiguro','Sorcerer Killer','jjk',4],
+  ['Jogo','Disaster curse','jjk',4],
+  ['Mahito','','jjk',4],
+  ['Maki Zen\'in','Awakened','jjk',4],
+  ['Kinji Hakari','Jackpot','jjk',4],
+  ['Aoi Todo','','jjk',3],
+  ['Kento Nanami','','jjk',3],
+  ['Yuji Itadori','','jjk',3],
+  ['Megumi Fushiguro','','jjk',3],
+  ['Nobara Kugisaki','','jjk',2],
+  ['Mai Zen\'in','','jjk',2],
+  ['Kiyotaka Ijichi','Assistant manager','jjk',1]
+];
+const C=RAW.map((r,i)=>({id:i,n:r[0],f:r[1],a:r[2],s:r[3]}));
+
+const START_MONEY=20, MAX_ROSTER=5, PLAYER_SKIPS=3, MASTER_SKIPS=5, KEY='recess-anime-auction';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ini=n=>n.replace(/^The /,'').replace(/["']/g,'').split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const stars=s=>'<span class="on">'+'★'.repeat(s)+'</span><span class="off">'+'★'.repeat(7-s)+'</span>';
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+let S=null, history=[], sortMode='tier', popNext=false;
+
+function fresh(names){
+  const order=shuffle(C.map(c=>c.id));
+  return {
+    players:names.map(n=>({name:n,money:START_MONEY,roster:[],skips:PLAYER_SKIPS})),
+    master:MASTER_SKIPS, order, pos:0, bid:{amt:0,by:-1},
+    fate:{}, // id -> {p, price, gift} | {skip:'p0'|'p1'|'host'}
+    log:[], over:false
+  };
+}
+const cur=()=>S&&!S.over?S.order[S.pos]:null;
+const isFull=p=>S.players[p].roster.length>=MAX_ROSTER;
+const power=p=>S.players[p].roster.reduce((t,id)=>t+C[id].s,0);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function snap(){history.push(JSON.stringify(S));if(history.length>60)history.shift()}
+function say(t){S.log.unshift(t);S.log=S.log.slice(0,30)}
+
+function advance(){
+  S.bid={amt:0,by:-1};
+  S.pos++;
+  if(S.pos>=S.order.length||(isFull(0)&&isFull(1)))S.over=true;
+  popNext=true;
+}
+function act(fn){snap();fn();save();render()}
+
+function bid(p,amt){
+  const P=S.players[p];
+  if(isFull(p)||S.bid.by===p||amt>P.money||amt<=S.bid.amt)return;
+  act(()=>{S.bid={amt,by:p}});
+}
+function sell(){
+  if(S.bid.by<0)return;
+  act(()=>{const id=cur(),p=S.bid.by,P=S.players[p];P.money-=S.bid.amt;P.roster.push(id);
+    S.fate[id]={p,price:S.bid.amt};say(`${P.name} bought ${C[id].n} for $${S.bid.amt}`);advance()});
+}
+function gift(p){
+  if(isFull(p))return;
+  act(()=>{const id=cur(),P=S.players[p];P.roster.push(id);S.fate[id]={p,price:0,gift:true};
+    say(`Host gifted ${C[id].n} to ${P.name}`);advance()});
+}
+function pskip(p){
+  const P=S.players[p];if(P.skips<1||S.bid.by>=0)return;
+  act(()=>{const id=cur();P.skips--;S.fate[id]={skip:'p'+p};say(`${P.name} skipped ${C[id].n}`);advance()});
+}
+function mskip(){
+  if(S.master<1)return;
+  act(()=>{const id=cur();S.master--;S.fate[id]={skip:'host'};say(`Host master-skipped ${C[id].n}`);advance()});
+}
+
+function slotHTML(id){
+  const c=C[id],f=S.fate[id];
+  return `<div class="slot on"><span class="ini" style="--ac:${ANIME[c.a].c}">${ini(c.n)}</span>
+    <span class="nm">${esc(c.n)}<small>${stars(c.s)} &middot; ${ANIME[c.a].n}</small></span>
+    <span class="pr${f.gift?' gift':''}">${f.gift?'GIFT':'$'+f.price}</span></div>`;
+}
+function playerHTML(p){
+  const P=S.players[p],full=isFull(p),o=1-p,id=cur(),live=id!==null;
+  const base=S.bid.amt;
+  const can=a=>live&&!full&&S.bid.by!==p&&a<=P.money&&a>base;
+  const btn=(lab,a)=>`<button class="b${S.bid.by===p?' mine':' gold'}" data-bid="${p}" data-amt="${a}" ${can(a)?'':'disabled'}>${lab}</button>`;
+  let slots='';for(let i=0;i<MAX_ROSTER;i++)slots+=P.roster[i]!=null?slotHTML(P.roster[i]):'<div class="slot empty">empty slot</div>';
+  let note='';
+  if(!live)note='';
+  else if(full)note='Roster full. Can\'t bid.';
+  else if(S.bid.by===p)note='You\'re the high bidder.';
+  else if(P.money<=base)note='Not enough money to raise.';
+  const pips=Array.from({length:PLAYER_SKIPS},(_,i)=>`<i class="${i<P.skips?'':'off'}"></i>`).join('');
+  return `<h3>${esc(P.name)}${full?'<span class="full">FULL</span>':''}</h3>
+    <div class="stats">
+      <div class="stat"><small>Money</small><b class="money">$${P.money}</b></div>
+      <div class="stat"><small>Team</small><b>${P.roster.length}/${MAX_ROSTER}</b></div>
+      <div class="stat"><small>Power</small><b>${power(p)}★</b></div>
+    </div>
+    <div class="slots">${slots}</div>
+    ${live?`<div class="bids">${btn('+$1',base+1)}${btn('+$2',base+2)}${btn('+$5',base+5)}${btn('All $'+P.money,P.money)}</div>
+    <button class="b red pskip" data-pskip="${p}" ${P.skips>0&&S.bid.by<0?'':'disabled'}>Skip <span class="pips">${pips}</span> ${P.skips} left</button>
+    <p class="note">${note||(S.bid.by>=0&&P.skips>0?'Skips only work before bidding starts.':'')}</p>`:''}`;
+}
+function centreHTML(){
+  const id=cur();
+  if(id===null)return overHTML();
+  const c=C[id],t=TIERS[c.s],A=ANIME[c.a],b=S.bid;
+  const hb=b.by<0?`<small>No bids yet</small><b>$0</b><span>Opening bid is $1</span>`
+    :`<small>High bid</small><b>$${b.amt}</b><span style="color:var(--p${b.by})">${esc(S.players[b.by].name)}</span>`;
+  const gb=p=>`<button class="b green" data-gift="${p}" ${isFull(p)?'disabled':''}>Gift to ${esc(S.players[p].name)}</button>`;
+  return `<div class="lot"><span>On the block</span><span>#${S.pos+1} of ${S.order.length}</span></div>
+    <div class="lotcard${c.s===7?' god':''}" style="--tc:${t.c};--ac:${A.c}"><div class="${popNext?'pop':''}">
+      <div class="big">${ini(c.n)}</div>
+      <h2>${esc(c.n)}</h2><div class="form">${esc(c.f)}</div>
+      <span class="an">${A.n}</span>
+      <div class="stars" aria-label="${c.s} of 7 stars">${stars(c.s)}</div>
+      <div class="tier">${c.s}★ ${t.n}</div>
+    </div></div>
+    <div class="hb">${hb}</div>
+    <button class="b gold sell" id="sellBtn" ${b.by<0?'disabled':''}>${b.by<0?'Sold!':'Sold to '+esc(S.players[b.by].name)+' for $'+b.amt}</button>
+    <div class="host"><h4>Host controls</h4>
+      <div class="row">${gb(0)}${gb(1)}</div>
+      <button class="b red mskip" id="mskipBtn" ${S.master>0?'':'disabled'}>Master skip &middot; ${S.master} left</button>
+      <div class="log">${S.log.slice(0,4).map(esc).join('<br>')}</div>
+    </div>`;
+}
+function rank(){
+  const k=p=>[power(p),Math.max(0,...S.players[p].roster.map(id=>C[id].s)),S.players[p].money];
+  const a=k(0),b=k(1);for(let i=0;i<3;i++){if(a[i]>b[i])return 0;if(b[i]>a[i])return 1}return -1;
+}
+function overHTML(){
+  const w=rank(),P=S.players;
+  return `<div class="over"><div class="lot"><span>Auction over</span><span>${S.pos} drawn</span></div>
+    <h2>${w<0?'Dead even':esc(P[w].name)+' wins'}</h2>
+    <p>${w<0?'Same stars, same top card, same money left.':power(0)===power(1)?'Tied on stars, so the tiebreak decides: best single character, then money left.':'Strongest team by total stars.'}</p>
+    <div class="vs"><div><b style="color:var(--p0)">${power(0)}★</b><small>${esc(P[0].name)}</small></div><div>vs</div><div><b style="color:var(--p1)">${power(1)}★</b><small>${esc(P[1].name)}</small></div></div>
+    <button class="btn" id="againBtn" style="width:100%">Play again</button></div>`;
+}
+function powerHTML(){
+  const a=power(0),b=power(1),t=a+b,P=S.players;
+  const pa=t?a/t*100:50;
+  const w=S.over?rank():-1;
+  const v=a===b?(w>=0?`Tied on stars. ${esc(P[w].name)} wins the tiebreak`:S.over?'Dead even':'Dead even right now'):`${esc(P[a>b?0:1].name)} has the stronger team (+${Math.abs(a-b)}★)`;
+  return `<div class="hd"><span style="color:var(--p0)">${esc(P[0].name)} <b>${a}★</b></span><span>Who's stronger</span><span style="color:var(--p1)"><b>${b}★</b> ${esc(P[1].name)}</span></div>
+    <div class="bar"><i style="width:${pa}%;background:var(--p0)"></i><i style="width:${100-pa}%;background:var(--p1)"></i></div>
+    <div class="verdict">${v}</div>`;
+}
+function rowHTML(id,k){
+  const c=C[id],f=S&&S.fate[id];let tag='';
+  if(S&&cur()===id)tag='<span class="tag now">UP NOW</span>';
+  else if(f&&f.skip)tag=`<span class="tag sk">SKIPPED</span>`;
+  else if(f)tag=`<span class="tag p${f.p}">${esc(S.players[f.p].name)} ${f.gift?'(gift)':'$'+f.price}</span>`;
+  return `<div class="r${f?' gone':''}${S&&cur()===id?' now':''}">${k!=null?`<span class="k">${k}</span>`:''}<span class="ini" style="--ac:${ANIME[c.a].c}">${ini(c.n)}</span>
+    <span class="nm">${esc(c.n)}<small>${c.f?esc(c.f)+' &middot; ':''}${ANIME[c.a].n}</small></span>${tag||`<span class="st" style="color:${TIERS[c.s].c}">${c.s}★</span>`}</div>`;
+}
+function listHTML(){
+  if(sortMode==='draw'){
+    const order=S?S.order:shuffle(C.map(c=>c.id));
+    return `<div class="rows">${order.map((id,i)=>rowHTML(id,i+1)).join('')}</div>`;
+  }
+  let h='';
+  for(let s=7;s>=1;s--){
+    const ids=C.filter(c=>c.s===s).sort((a,b)=>a.a.localeCompare(b.a)||a.n.localeCompare(b.n)).map(c=>c.id);
+    h+=`<div class="th" style="--tc:${TIERS[s].c}">${stars(s)} &nbsp;${s}★ ${TIERS[s].n} &middot; ${ids.length}</div><div class="rows">${ids.map(id=>rowHTML(id)).join('')}</div>`;
+  }
+  return h;
+}
+
+function render(){
+  const playing=!!S;
+  $('setup').classList.toggle('hide',playing);
+  $('game').classList.toggle('hide',!playing);
+  $('undoBtn').disabled=!history.length;
+  if(playing){
+    $('pl0').innerHTML=playerHTML(0);$('pl1').innerHTML=playerHTML(1);
+    $('centre').innerHTML=centreHTML();$('power').innerHTML=powerHTML();
+    const lead=power(0)===power(1)?-1:power(0)>power(1)?0:1;
+    $('pl0').classList.toggle('lead',lead===0);$('pl1').classList.toggle('lead',lead===1);
+  }
+  if(!$('list').classList.contains('hide'))$('listBody').innerHTML=listHTML();
+  popNext=false;
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t||t.disabled)return;
+  if(t.dataset.bid!=null)bid(+t.dataset.bid,+t.dataset.amt);
+  else if(t.dataset.gift!=null)gift(+t.dataset.gift);
+  else if(t.dataset.pskip!=null)pskip(+t.dataset.pskip);
+  else if(t.id==='sellBtn')sell();
+  else if(t.id==='mskipBtn')mskip();
+  else if(t.id==='againBtn')start([S.players[0].name,S.players[1].name]);
+});
+function start(names){S=fresh(names);history=[];popNext=true;save();render();window.scrollTo({top:0,behavior:'smooth'})}
+$('startBtn').onclick=()=>start([$('n0').value.trim()||'Player 1',$('n1').value.trim()||'Player 2']);
+['n0','n1'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')$('startBtn').click()}));
+$('undoBtn').onclick=()=>{if(!history.length)return;S=JSON.parse(history.pop());save();render()};
+$('restartBtn').onclick=()=>{if(S&&!S.over&&!confirm('Start over? This game will be lost.'))return;
+  if(S){$('n0').value=S.players[0].name;$('n1').value=S.players[1].name}S=null;history=[];try{localStorage.removeItem(KEY)}catch(e){}render()};
+$('listBtn').onclick=()=>{const l=$('list');l.classList.toggle('hide');render();if(!l.classList.contains('hide'))l.scrollIntoView({behavior:'smooth'})};
+$('sortTier').onclick=()=>{sortMode='tier';$('sortTier').classList.add('on');$('sortDraw').classList.remove('on');render()};
+$('sortDraw').onclick=()=>{sortMode='draw';$('sortDraw').classList.add('on');$('sortTier').classList.remove('on');render()};
+
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.players&&s.order&&s.order.length===C.length)S=s}catch(e){}
+$('yr').textContent=new Date().getFullYear();
+if(window.Recess)Recess.played('best-anime-character');
+render();
+}
+</script>
+</body>
+</html>
