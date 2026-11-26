@@ -153,9 +153,6 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
 .g.lock .s{background:repeating-linear-gradient(135deg,#0f1119 0 8px,#0c0e15 8px 16px)}
 .g.lock .s b{font:400 44px var(--disp);color:#20243a}
 .g.lock h4{color:#3a3f5c}
-.g.ab .s{background:radial-gradient(circle at 50% 55%,#4a1f5e 0,#24123a 40%,#0d0818 78%)}
-.g.ab .s::before{content:"";position:absolute;inset:-30%;background:repeating-conic-gradient(from 3deg at 50% 55%,rgba(255,201,74,.2) 0 1.6deg,transparent 1.6deg 8deg);-webkit-mask:radial-gradient(circle at 50% 55%,transparent 16%,#000 55%);mask:radial-gradient(circle at 50% 55%,transparent 16%,#000 55%)}
-.g.ab .s svg{position:relative;z-index:1;width:40%;filter:drop-shadow(0 4px 0 #000)}
 
 .foot{margin-top:44px;border-top:1px solid var(--line);padding:26px 0 40px;text-align:center}
 .foot h6{margin:0 0 10px;font:700 14px var(--body);color:var(--dim)}
@@ -258,12 +255,54 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
         <div class="pins" id="pins"></div>
       </div>
     </section>
+    <!-- $20 Best Anime Character: its own section, self-contained (styles, markup, logo script) -->
+    <style>
+    .ab-sec{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);background:var(--panel);border:1px solid var(--line);border-top:6px solid var(--gold);overflow:hidden}
+    .ab-art{position:relative;min-height:260px;display:grid;place-items:center;overflow:hidden;text-decoration:none;background:radial-gradient(circle at 50% 55%,#4a1f5e 0,#24123a 40%,#0d0818 78%)}
+    .ab-art::before{content:"";position:absolute;inset:-30%;background:repeating-conic-gradient(from 3deg at 50% 55%,rgba(255,201,74,.2) 0 1.6deg,transparent 1.6deg 8deg);-webkit-mask:radial-gradient(circle at 50% 55%,transparent 16%,#000 55%);mask:radial-gradient(circle at 50% 55%,transparent 16%,#000 55%)}
+    .ab-art::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}
+    .ab-art svg{position:relative;z-index:1;width:min(46%,240px);shape-rendering:crispEdges;filter:drop-shadow(0 6px 0 #000);animation:abBob 1.4s steps(4) infinite alternate}
+    @keyframes abBob{to{transform:translateY(-8px)}}
+    .ab-art .tags{z-index:2}
+    .ab-cap{display:flex;flex-direction:column;justify-content:center;gap:12px;padding:22px 24px}
+    .ab-cap h2{margin:0;font:400 clamp(36px,4.4vw,56px)/.9 var(--disp);letter-spacing:.5px;text-transform:uppercase}
+    .ab-cap h2 em{font-style:normal;color:var(--gold)}
+    .ab-cap p{margin:0;color:var(--dim);max-width:46ch}
+    .ab-facts{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+    .ab-facts li{font:700 13px var(--body);padding:4px 8px;background:#0a0a0f;border:1px solid var(--line)}
+    .ab-facts b{color:var(--gold)}
+    @media(max-width:1100px){.ab-sec{grid-template-columns:1fr}.ab-art{min-height:200px}}
+    @media(prefers-reduced-motion:reduce){.ab-art svg{animation:none}}
+    </style>
+    <div class="sec" id="anime"><h3>Anime night</h3><span class="r">2 players, one screen</span></div>
+    <section class="ab-sec">
+      <a class="ab-art" href="/games/best-anime-character/" aria-label="Play $20 Best Anime Character">
+        <div class="tags"><span class="lv">New</span><span>Anime</span><span>2 players + a host</span></div>
+        <svg viewBox="0 0 20 16" data-battle aria-hidden="true"></svg>
+      </a>
+      <div class="ab-cap">
+        <h2><em>$20</em> Best Anime Character</h2>
+        <p>Two friends, twenty bucks each, five slots on the team. Characters from seven anime go up for auction one at a time, anywhere from a weak human to a god. Outbid, skip, and get gifts from the host. The strongest team wins.</p>
+        <ul class="ab-facts"><li><b>116</b> characters</li><li>Ranked <b>1&ndash;7★</b> with VS Battles tiers</li><li><b>3</b> skips each</li></ul>
+        <div class="cta"><a class="btn" href="/games/best-anime-character/">Play</a></div>
+      </div>
+    </section>
+    <script>
+    {/* pixel logo: a gold coin over two crossed swords */
+      const g=[...Array(16)].map(()=>Array(20).fill('.')),put=(x,y,c)=>{if(g[y]&&x>=0&&x<20)g[y][x]=c};
+      for(let i=0;i<14;i++){const c=i>10?'h':'s';put(1+i,1+i,c);put(18-i,1+i,c);if(i<11){put(2+i,1+i,'d');put(17-i,1+i,'d')}}
+      [[10,12],[12,10]].forEach(([a,b])=>{put(a,b+1,'g');put(a+2,b-1,'g');put(19-a,b+1,'g');put(17-a,b-1,'g')});
+      ['...aaaaaa...','.aabbbbbbaa.','.awbbbcbbba.','abbbbccccbba','abbbcbcbbbba','abbbbcccbbba','abbbbbcbcbba','abbbccccbbba','.abbbbcbbba.','.aabbbbbbaa.','...aaaaaa...'].forEach((r,y)=>[...r].forEach((ch,x)=>{if(ch!=='.')put(4+x,2+y,ch)}));
+      const col={a:'#000',b:'#ffc94a',c:'#b8861a',w:'#fff',s:'#e6e8f2',d:'#8a8fa8',h:'#7a4a22',g:'#ffc94a'};let o='';
+      g.forEach((r,y)=>r.forEach((ch,x)=>{if(col[ch])o+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${col[ch]}"/>`}));
+      document.querySelectorAll('[data-battle]').forEach(s=>s.innerHTML=o)}
+    </script>
     
 
     <div class="sec" id="lineup"><h3>The lineup</h3><span class="r">new one every other Friday</span></div>
     <section class="shelf">
       <a class="g" href="/games/needle-drop/"><div class="s"><span class="lv">346 playing</span><svg viewBox="0 0 24 24" data-rec aria-hidden="true"></svg></div><div class="t"><h4>Needle Drop</h4><div class="tg">Music. The charts or your own playlist.</div></div></a>
-      <a class="g ab" href="/games/best-anime-character/"><div class="s"><svg viewBox="0 0 20 16" data-battle aria-hidden="true"></svg></div><div class="t"><h4>$20 Best Anime Character</h4><div class="tg">Anime. Twenty bucks to draft the strongest team.</div></div></a>
+      <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tg">Soon</div></div></div>
       <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tg">Soon</div></div></div>
       <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tg">Soon</div></div></div>
       <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tg">Soon</div></div></div>
@@ -284,14 +323,6 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
   const P={o:'#0b0814',g1:'#2a2340',g2:'#1a1528',r:'#ff4b3e',rd:'#b3261d',y:'#ffcc33'};let out='';const c=11.5;
   for(let y=0;y<24;y++)for(let x=0;x<24;x++){const d=Math.hypot(x-c,y-c);if(d>12)continue;const a=Math.atan2(y-c,x-c);let f;if(d>11||d<1.3)f=P.o;else if(d<4.6)f=(a>0&&a<1.2)?P.y:(x<c?P.rd:P.r);else if(d<5.4)f=P.o;else f=(Math.floor(d*1.2)%2)?P.g1:P.g2;out+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${f}"/>`}
   document.querySelectorAll('[data-rec]').forEach(s=>s.innerHTML=out);
-  {/* $20 Best Anime Character: a gold coin over two crossed swords */
-  const g=[...Array(16)].map(()=>Array(20).fill('.')),put=(x,y,c)=>{if(g[y]&&x>=0&&x<20)g[y][x]=c};
-  for(let i=0;i<14;i++){const c=i>10?'h':'s';put(1+i,1+i,c);put(18-i,1+i,c);if(i<11){put(2+i,1+i,'d');put(17-i,1+i,'d')}}
-  [[10,12],[12,10]].forEach(([a,b])=>{put(a,b+1,'g');put(a+2,b-1,'g');put(19-a,b+1,'g');put(17-a,b-1,'g')});
-  ['...aaaaaa...','.aabbbbbbaa.','.awbbbcbbba.','abbbbccccbba','abbbcbcbbbba','abbbbcccbbba','abbbbbcbcbba','abbbccccbbba','.abbbbcbbba.','.aabbbbbbaa.','...aaaaaa...'].forEach((r,y)=>[...r].forEach((ch,x)=>{if(ch!=='.')put(4+x,2+y,ch)}));
-  const col={a:'#000',b:'#ffc94a',c:'#b8861a',w:'#fff',s:'#e6e8f2',d:'#8a8fa8',h:'#7a4a22',g:'#ffc94a'};let o='';
-  g.forEach((r,y)=>r.forEach((ch,x)=>{if(col[ch])o+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${col[ch]}"/>`}));
-  document.querySelectorAll('[data-battle]').forEach(s=>s.innerHTML=o)}
   let L='';for(let i=0;i<72;i++){const a=i/72*Math.PI*2+(i%3)*.02,w=(i%4===0)?1:.5;L+=`<path d="M${Math.cos(a)*14} ${Math.sin(a)*14} L${Math.cos(a+.012)*80} ${Math.sin(a+.012)*80} L${Math.cos(a-.012)*80} ${Math.sin(a-.012)*80}Z" fill="#fff" opacity="${w}"/>`}
   document.getElementById('lines').innerHTML=L;
   const pix=(rows,cols)=>{let o='';rows.forEach((r,y)=>[...r].forEach((ch,x)=>{if(cols[ch])o+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${cols[ch]}"/>`}));return `<svg viewBox="0 0 10 10" aria-hidden="true">${o}</svg>`};

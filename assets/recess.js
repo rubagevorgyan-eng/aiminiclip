@@ -1,8 +1,7 @@
 /* shared bits for every page: game list, last played, my recess */
 window.Recess=(function(){
   var GAMES=[
-    {slug:'needle-drop',title:'Needle Drop',cat:'Music',color:'tangerine',blurb:'Name the song from half a second of it'},
-    {slug:'best-anime-character',title:'$20 Best Anime Character',cat:'Anime',color:'tangerine',blurb:'Two players, $20 each: bid on anime characters and build the strongest team'}
+    {slug:'needle-drop',title:'Needle Drop',cat:'Music',color:'tangerine',blurb:'Name the song from half a second of it'}
   ];
   function get(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
   function put(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -16,6 +15,8 @@ window.Recess=(function(){
     if(!gs.length){var s=document.createElement('span');s.className='empty';s.textContent=empty;el.appendChild(s);return}
     gs.forEach(function(g){var a=link(g);a.className='mini c-'+g.color;el.appendChild(a)});
   }
+  // $20 Best Anime Character, added on its own line so other games' list edits don't collide with it
+  GAMES.push({slug:'best-anime-character',title:'$20 Best Anime Character',cat:'Anime',color:'tangerine',blurb:'Two players, $20 each: bid on anime characters and build the strongest team'});
   function footer(){
     var f=document.getElementById('allgames');if(!f)return;
     GAMES.slice().sort(function(a,b){return a.title.localeCompare(b.title)}).forEach(function(g){f.appendChild(link(g))});
