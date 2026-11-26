@@ -4,17 +4,21 @@ import { useSyncExternalStore } from 'react';
 export interface Settings {
   /** Force reduced motion even if the system setting is off. */
   reduceMotion: boolean;
-  /** Sound effects on/off. */
+  /** Sound effects on/off (mute). */
   sound: boolean;
+  /** Sound effects volume, 0..1. */
+  volume: number;
 }
 
 const KEY = 'deepcut.settings.v1';
-const DEFAULTS: Settings = { reduceMotion: false, sound: true };
+const DEFAULTS: Settings = { reduceMotion: false, sound: true, volume: 0.8 };
 const subs = new Set<() => void>();
 
 function load(): Settings {
   try {
-    return { ...DEFAULTS, ...JSON.parse(localStorage.getItem(KEY) ?? '{}') };
+    const s = { ...DEFAULTS, ...JSON.parse(localStorage.getItem(KEY) ?? '{}') };
+    s.volume = typeof s.volume === 'number' && s.volume >= 0 && s.volume <= 1 ? s.volume : DEFAULTS.volume;
+    return s;
   } catch {
     return { ...DEFAULTS };
   }

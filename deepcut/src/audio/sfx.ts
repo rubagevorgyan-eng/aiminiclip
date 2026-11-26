@@ -13,7 +13,8 @@ let noiseBuf: AudioBuffer | null = null;
 const STRIKE = 0.26;
 
 function audio(): AudioContext | null {
-  if (!getSettings().sound || typeof window === 'undefined') return null;
+  const { sound, volume } = getSettings();
+  if (!sound || volume <= 0 || typeof window === 'undefined') return null;
   const ua = (navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation;
   if (ua && !ua.hasBeenActive) return null; // never start audio before the player interacts
   try {
@@ -27,6 +28,8 @@ function audio(): AudioContext | null {
       master.connect(comp).connect(ctx.destination);
     }
     if (ctx.state === 'suspended') void ctx.resume();
+    // Player volume on a perceptual curve (squared) times the mix level.
+    master!.gain.setTargetAtTime(0.8 * volume * volume, ctx.currentTime, 0.01);
     return ctx;
   } catch {
     return null;

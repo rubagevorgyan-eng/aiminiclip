@@ -74,3 +74,6 @@
 
 ## Stage 13: site header (done)
 - Transparent header on every screen: animated Recess logo (back to the site), sound, settings and an "Exit game" button to the Recess homepage. Round, home and results layouts sit below it; phone layout still fits without scrolling. 30 tests pass.
+
+## Stage 14: volume control (done)
+- The sound button opens a volume bar on hover/focus (first tap on touchscreens); dragging or arrow keys set the volume with a preview tick, clicking the speaker mutes/unmutes, the icon shows muted/low/high. Volume persists; audio uses a perceptual curve. Phone header stays within the screen. 30 tests pass.

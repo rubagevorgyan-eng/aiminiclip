@@ -116,6 +116,27 @@
 .suggest { padding: 2px 4px; min-height: 28px; background: none; border: 0; border-bottom: 2px solid var(--accent); color: var(--accent); font-weight: 700; cursor: pointer; }
 .suggest:hover { color: var(--accent-hi); }
 
+/* sound: speaker + volume bar that slides out to the left on hover / focus */
+.volume { position: relative; display: flex; flex-direction: row-reverse; align-items: center; border-radius: var(--radius); transition: background var(--t-fast); }
+.volume:hover, .volume:focus-within, .volume.is-open { background: rgba(13, 15, 18, 0.85); box-shadow: inset 0 0 0 1px var(--line-hi); }
+.volume-bar { display: flex; align-items: center; gap: var(--s2); width: 0; opacity: 0; overflow: hidden; padding-left: 0;
+  transition: width var(--t-med) var(--ease), opacity var(--t-fast), padding var(--t-med) var(--ease); }
+.volume:hover .volume-bar, .volume:focus-within .volume-bar, .volume.is-open .volume-bar { width: 148px; opacity: 1; padding-left: var(--s3); }
+.volume-pct { width: 30px; font-size: var(--fs-xs); color: var(--text-dim); text-align: right; }
+.volume input[type='range'] { flex: 1; min-width: 0; height: 28px; margin: 0; background: transparent; cursor: pointer; appearance: none; -webkit-appearance: none; }
+.volume input[type='range']::-webkit-slider-runnable-track { height: 6px; background: linear-gradient(to right, var(--accent) var(--v), var(--surface-hi) var(--v)); border: 1px solid var(--line-hi); }
+.volume input[type='range']::-moz-range-track { height: 6px; background: linear-gradient(to right, var(--accent) var(--v), var(--surface-hi) var(--v)); border: 1px solid var(--line-hi); }
+.volume input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 16px; margin-top: -6px; background: var(--text); border: 2px solid #0d0f12; box-shadow: 0 0 0 1px var(--accent); }
+.volume input[type='range']::-moz-range-thumb { width: 12px; height: 16px; border-radius: 0; background: var(--text); border: 2px solid #0d0f12; box-shadow: 0 0 0 1px var(--accent); }
+.volume input[type='range']:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 640px) {
+  .volume:hover .volume-bar, .volume:focus-within .volume-bar, .volume.is-open .volume-bar { width: 112px; }
+  /* make room: the Recess logo steps aside while the volume bar is open */
+  .site-logo { position: absolute; left: var(--s3); transition: opacity var(--t-fast); } /* out of the flow so the open bar can use its space */
+  .site-tools { margin-left: auto; }
+  .site-header:has(.volume:hover, .volume:focus-within, .volume.is-open) .site-logo { opacity: 0; pointer-events: none; }
+}
+
 /* settings */
 .settings { position: relative; }
 .icon-btn { display: grid; place-items: center; width: 44px; height: 44px; background: rgba(13, 15, 18, 0.6); border: 1px solid transparent; border-radius: var(--radius); color: var(--text-dim); }
