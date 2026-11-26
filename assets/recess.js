@@ -2,7 +2,7 @@
 window.Recess=(function(){
   var GAMES=[
     {slug:'needle-drop',title:'Needle Drop',cat:'Music',color:'tangerine',blurb:'Name the song from half a second of it'},
-    {slug:'best-anime-character',title:'$20 Best Anime Character',cat:'Anime',color:'tangerine',blurb:'Bid $20 on anime characters and build the strongest team'}
+    {slug:'best-anime-character',title:'$20 Best Anime Character',cat:'Anime',color:'tangerine',blurb:'Two players, $20 each: bid on anime characters and build the strongest team'}
   ];
   function get(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
   function put(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
