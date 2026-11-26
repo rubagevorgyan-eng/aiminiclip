@@ -100,6 +100,21 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
 .sec h3{margin:0;font:400 30px/1 var(--disp);letter-spacing:1px;text-transform:uppercase}
 .sec .r{margin-left:auto;font:400 14px var(--body);color:var(--dim)}
 
+/* Deep Cut feature */
+.dcf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);text-decoration:none;background:var(--panel);border:1px solid var(--line);overflow:hidden;transition:border-color .15s}
+.dcf:hover{border-color:var(--ember)}
+.dcf .art{position:relative;min-height:240px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(#5a8a3a 0 7%,#6b4a2b 7% 30%,#8a5f37 30% 52%,#6e6a64 52% 74%,#3a3942 74% 92%,#ff6a1f 92%)}
+.dcf .art::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(0,0,0,.12) 14px 16px)}
+.dcf .art::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}
+.dcf .art svg{position:relative;z-index:1;width:34%;max-width:130px;shape-rendering:crispEdges;filter:drop-shadow(4px 4px 0 #000)}
+.dcf .art .tags{z-index:2}
+.dcf .txt{display:flex;flex-direction:column;justify-content:center;gap:12px;padding:22px 24px}
+.dcf h2{margin:0;font:400 clamp(44px,5vw,68px)/.88 var(--disp);letter-spacing:.5px;text-transform:uppercase}
+.dcf p{margin:0;color:var(--dim);max-width:46ch}
+.dcf .tiers{display:flex;flex-wrap:wrap;gap:6px}
+.dcf .tiers span{font:700 12px var(--body);padding:3px 8px;color:#0a0a0a}
+.dcf .btn{align-self:flex-start}
+@media(max-width:800px){.dcf{grid-template-columns:1fr}.dcf .art{min-height:180px}.dcf .btn{align-self:stretch}}
 .prow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:22px}
 .card{background:var(--panel);border:1px solid var(--line);overflow:hidden}
 .banner{height:110px;position:relative;transition:background .3s}
@@ -150,9 +165,6 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
 .g .t{padding:12px 14px}
 .g h4{margin:0;font:400 20px var(--disp);letter-spacing:1px;text-transform:uppercase}
 .g .tg{font:400 13px var(--body);color:var(--dim);margin-top:2px}
-.g .s.dc{background:linear-gradient(#5a8a3a 0 7%,#6b4a2b 7% 30%,#8a5f37 30% 52%,#6e6a64 52% 74%,#3a3942 74% 92%,#ff6a1f 92%)}
-.g .s.dc::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(0,0,0,.12) 14px 16px)}
-.g .s.dc svg{position:relative;z-index:1;filter:drop-shadow(3px 3px 0 #000)}
 .g.lock .s{background:repeating-linear-gradient(135deg,#0f1119 0 8px,#0c0e15 8px 16px)}
 .g.lock .s b{font:400 44px var(--disp);color:#20243a}
 .g.lock h4{color:#3a3f5c}
@@ -234,6 +246,17 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
       </aside>
     </section>
 
+    <div class="sec" id="deepcut"><h3>New: Deep Cut</h3><span class="r">a word game for one, or a whole room</span></div>
+    <a class="dcf" href="/games/deep-cut/">
+      <div class="art"><div class="tags"><span class="lv">New</span><span>Words</span><span>Solo or party</span></div><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="9" y="0" width="1" height="1" fill="#000"/><rect x="10" y="0" width="1" height="1" fill="#000"/><rect x="11" y="0" width="1" height="1" fill="#000"/><rect x="8" y="1" width="1" height="1" fill="#000"/><rect x="9" y="1" width="1" height="1" fill="#b07a3f"/><rect x="10" y="1" width="1" height="1" fill="#b07a3f"/><rect x="11" y="1" width="1" height="1" fill="#000"/><rect x="7" y="2" width="1" height="1" fill="#000"/><rect x="8" y="2" width="1" height="1" fill="#b07a3f"/><rect x="9" y="2" width="1" height="1" fill="#b07a3f"/><rect x="10" y="2" width="1" height="1" fill="#000"/><rect x="6" y="3" width="1" height="1" fill="#000"/><rect x="7" y="3" width="1" height="1" fill="#b07a3f"/><rect x="8" y="3" width="1" height="1" fill="#b07a3f"/><rect x="9" y="3" width="1" height="1" fill="#000"/><rect x="5" y="4" width="1" height="1" fill="#000"/><rect x="6" y="4" width="1" height="1" fill="#b07a3f"/><rect x="7" y="4" width="1" height="1" fill="#b07a3f"/><rect x="8" y="4" width="1" height="1" fill="#000"/><rect x="2" y="5" width="1" height="1" fill="#000"/><rect x="3" y="5" width="1" height="1" fill="#000"/><rect x="4" y="5" width="1" height="1" fill="#000"/><rect x="5" y="5" width="1" height="1" fill="#b07a3f"/><rect x="6" y="5" width="1" height="1" fill="#b07a3f"/><rect x="7" y="5" width="1" height="1" fill="#000"/><rect x="1" y="6" width="1" height="1" fill="#000"/><rect x="2" y="6" width="1" height="1" fill="#8a8fa8"/><rect x="3" y="6" width="1" height="1" fill="#d8dbe8"/><rect x="4" y="6" width="1" height="1" fill="#d8dbe8"/><rect x="5" y="6" width="1" height="1" fill="#000"/><rect x="6" y="6" width="1" height="1" fill="#000"/><rect x="0" y="7" width="1" height="1" fill="#000"/><rect x="1" y="7" width="1" height="1" fill="#8a8fa8"/><rect x="2" y="7" width="1" height="1" fill="#d8dbe8"/><rect x="3" y="7" width="1" height="1" fill="#d8dbe8"/><rect x="4" y="7" width="1" height="1" fill="#d8dbe8"/><rect x="5" y="7" width="1" height="1" fill="#8a8fa8"/><rect x="6" y="7" width="1" height="1" fill="#000"/><rect x="0" y="8" width="1" height="1" fill="#000"/><rect x="1" y="8" width="1" height="1" fill="#8a8fa8"/><rect x="2" y="8" width="1" height="1" fill="#d8dbe8"/><rect x="3" y="8" width="1" height="1" fill="#d8dbe8"/><rect x="4" y="8" width="1" height="1" fill="#8a8fa8"/><rect x="5" y="8" width="1" height="1" fill="#8a8fa8"/><rect x="6" y="8" width="1" height="1" fill="#000"/><rect x="0" y="9" width="1" height="1" fill="#000"/><rect x="1" y="9" width="1" height="1" fill="#8a8fa8"/><rect x="2" y="9" width="1" height="1" fill="#d8dbe8"/><rect x="3" y="9" width="1" height="1" fill="#8a8fa8"/><rect x="4" y="9" width="1" height="1" fill="#8a8fa8"/><rect x="5" y="9" width="1" height="1" fill="#000"/><rect x="1" y="10" width="1" height="1" fill="#000"/><rect x="2" y="10" width="1" height="1" fill="#8a8fa8"/><rect x="3" y="10" width="1" height="1" fill="#8a8fa8"/><rect x="4" y="10" width="1" height="1" fill="#000"/><rect x="2" y="11" width="1" height="1" fill="#000"/><rect x="3" y="11" width="1" height="1" fill="#000"/></svg></div>
+      <div class="txt">
+        <h2>Deep Cut</h2>
+        <p>One category, ninety seconds. Name everything you can think of. Everyone gets the easy ones, so the answers nobody thinks of are buried deeper and worth the most. Play the daily dig, practice any category, or pass the phone around in party mode before the shaft caves in.</p>
+        <div class="tiers"><span style="background:#c9a878">Common 1</span><span style="background:#3fd39a">Uncommon 2</span><span style="background:#4fb3ff">Rare 3</span><span style="background:#ffc94a">Deep cut 5</span></div>
+        <span class="btn">Play</span>
+      </div>
+    </a>
+
     <div class="sec" id="prof"><h3>Your profile</h3><span class="r">what yours could look like</span></div>
     <section class="prow">
       <div class="card">
@@ -263,7 +286,7 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
     <div class="sec" id="lineup"><h3>The lineup</h3><span class="r">new one every other Friday</span></div>
     <section class="shelf">
       <a class="g" href="/games/needle-drop/"><div class="s"><span class="lv">346 playing</span><svg viewBox="0 0 24 24" data-rec aria-hidden="true"></svg></div><div class="t"><h4>Needle Drop</h4><div class="tg">Music. The charts or your own playlist.</div></div></a>
-      <a class="g" href="/games/deep-cut/"><div class="s dc"><svg viewBox="0 0 12 12" aria-hidden="true" style="width:30%"><rect x="9" y="0" width="1" height="1" fill="#000"/><rect x="10" y="0" width="1" height="1" fill="#000"/><rect x="11" y="0" width="1" height="1" fill="#000"/><rect x="8" y="1" width="1" height="1" fill="#000"/><rect x="9" y="1" width="1" height="1" fill="#b07a3f"/><rect x="10" y="1" width="1" height="1" fill="#b07a3f"/><rect x="11" y="1" width="1" height="1" fill="#000"/><rect x="7" y="2" width="1" height="1" fill="#000"/><rect x="8" y="2" width="1" height="1" fill="#b07a3f"/><rect x="9" y="2" width="1" height="1" fill="#b07a3f"/><rect x="10" y="2" width="1" height="1" fill="#000"/><rect x="6" y="3" width="1" height="1" fill="#000"/><rect x="7" y="3" width="1" height="1" fill="#b07a3f"/><rect x="8" y="3" width="1" height="1" fill="#b07a3f"/><rect x="9" y="3" width="1" height="1" fill="#000"/><rect x="5" y="4" width="1" height="1" fill="#000"/><rect x="6" y="4" width="1" height="1" fill="#b07a3f"/><rect x="7" y="4" width="1" height="1" fill="#b07a3f"/><rect x="8" y="4" width="1" height="1" fill="#000"/><rect x="2" y="5" width="1" height="1" fill="#000"/><rect x="3" y="5" width="1" height="1" fill="#000"/><rect x="4" y="5" width="1" height="1" fill="#000"/><rect x="5" y="5" width="1" height="1" fill="#b07a3f"/><rect x="6" y="5" width="1" height="1" fill="#b07a3f"/><rect x="7" y="5" width="1" height="1" fill="#000"/><rect x="1" y="6" width="1" height="1" fill="#000"/><rect x="2" y="6" width="1" height="1" fill="#8a8fa8"/><rect x="3" y="6" width="1" height="1" fill="#d8dbe8"/><rect x="4" y="6" width="1" height="1" fill="#d8dbe8"/><rect x="5" y="6" width="1" height="1" fill="#000"/><rect x="6" y="6" width="1" height="1" fill="#000"/><rect x="0" y="7" width="1" height="1" fill="#000"/><rect x="1" y="7" width="1" height="1" fill="#8a8fa8"/><rect x="2" y="7" width="1" height="1" fill="#d8dbe8"/><rect x="3" y="7" width="1" height="1" fill="#d8dbe8"/><rect x="4" y="7" width="1" height="1" fill="#d8dbe8"/><rect x="5" y="7" width="1" height="1" fill="#8a8fa8"/><rect x="6" y="7" width="1" height="1" fill="#000"/><rect x="0" y="8" width="1" height="1" fill="#000"/><rect x="1" y="8" width="1" height="1" fill="#8a8fa8"/><rect x="2" y="8" width="1" height="1" fill="#d8dbe8"/><rect x="3" y="8" width="1" height="1" fill="#d8dbe8"/><rect x="4" y="8" width="1" height="1" fill="#8a8fa8"/><rect x="5" y="8" width="1" height="1" fill="#8a8fa8"/><rect x="6" y="8" width="1" height="1" fill="#000"/><rect x="0" y="9" width="1" height="1" fill="#000"/><rect x="1" y="9" width="1" height="1" fill="#8a8fa8"/><rect x="2" y="9" width="1" height="1" fill="#d8dbe8"/><rect x="3" y="9" width="1" height="1" fill="#8a8fa8"/><rect x="4" y="9" width="1" height="1" fill="#8a8fa8"/><rect x="5" y="9" width="1" height="1" fill="#000"/><rect x="1" y="10" width="1" height="1" fill="#000"/><rect x="2" y="10" width="1" height="1" fill="#8a8fa8"/><rect x="3" y="10" width="1" height="1" fill="#8a8fa8"/><rect x="4" y="10" width="1" height="1" fill="#000"/><rect x="2" y="11" width="1" height="1" fill="#000"/><rect x="3" y="11" width="1" height="1" fill="#000"/></svg></div><div class="t"><h4>Deep Cut</h4><div class="tg">Words. Name it all. The rare answers score big.</div></div></a>
+      <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tg">Soon</div></div></div>
       <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tg">Soon</div></div></div>
       <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tg">Soon</div></div></div>
       <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tg">Soon</div></div></div>

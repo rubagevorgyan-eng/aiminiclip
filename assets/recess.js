@@ -1,8 +1,7 @@
 /* shared bits for every page: game list, last played, my recess */
 window.Recess=(function(){
   var GAMES=[
-    {slug:'needle-drop',title:'Needle Drop',cat:'Music',color:'tangerine',blurb:'Name the song from half a second of it'},
-    {slug:'deep-cut',title:'Deep Cut',cat:'Words',color:'grape',blurb:'Name everything in a category. The rare answers are worth the most'}
+    {slug:'needle-drop',title:'Needle Drop',cat:'Music',color:'tangerine',blurb:'Name the song from half a second of it'}
   ];
   function get(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
   function put(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -20,6 +19,7 @@ window.Recess=(function(){
     var f=document.getElementById('allgames');if(!f)return;
     GAMES.slice().sort(function(a,b){return a.title.localeCompare(b.title)}).forEach(function(g){f.appendChild(link(g))});
   }
+  GAMES.push({slug:'deep-cut',title:'Deep Cut',cat:'Words',color:'grape',blurb:'Name everything in a category. The rare answers are worth the most'});
   document.addEventListener('DOMContentLoaded',footer);
   return {GAMES:GAMES,played:played,isFav:isFav,toggleFav:toggleFav,recent:function(){return get('recess-recent')},mine:function(){return get('recess-mine')},list:list};
 })();
