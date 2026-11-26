@@ -44,16 +44,16 @@
   var sub=stats.streak?'Streak: '+stats.streak+(stats.streak===1?' day':' days'):'Same word for everyone. Resets at midnight.';
   // mini board shows only hit/near/miss shapes, never letters, so it can't spoil anything
   var cells='';for(var r=0;r<6;r++)for(var c=0;c<5;c++)cells+='<i class="e"></i>';
-  var label=done?'Play practice':g.length?'Keep going':'Play today’s word';
+  var label=done?'Play Endless':g.length?'Keep going':'Play today’s word';
 
   root.innerHTML=
     '<div class="sec"><h3>Daily word</h3><span class="r">new word every midnight</span></div>'+
     '<a class="flh" href="/games/five-letters/" style="text-decoration:none">'+
       '<div class="art"><svg viewBox="0 0 24 24" aria-hidden="true">'+o+'</svg></div>'+
       '<div class="info">'+
-        '<div class="tags"><span class="new">New</span><span>Words</span><span>1 player</span><span>Daily</span></div>'+
+        '<div class="tags"><span class="new">New</span><span>Words</span><span>1 player</span><span>Daily</span><span>Online VS</span></div>'+
         '<h4>Five Letters</h4>'+
-        '<p>There’s one hidden five-letter word and you get six guesses. After each guess the tiles light up: mint means right letter, right spot; gold means it’s in the word somewhere. Everyone gets the same word each day, and Practice has more whenever you want them.</p>'+
+        '<p>There’s one hidden five-letter word and you get six guesses. After each guess the tiles light up: mint means right letter, right spot; gold means it’s in the word somewhere. Everyone gets the same word each day. Chase a high score in Endless, or host a VS lobby and race your friends through the same words.</p>'+
         '<div class="today"><div class="mini" id="flMini" aria-hidden="true">'+cells+'</div>'+
           '<div class="st">'+status+'<small>'+sub+'</small></div>'+
           '<span class="btn fl">'+label+'</span></div>'+

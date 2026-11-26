@@ -66,6 +66,33 @@ LAYOUT: one centered column: board, message line, keyboard; stats in a dialog
 .key:active{filter:brightness(1.25)}
 
 .hide{display:none!important}
+#game.lobby .board,#game.lobby .kb,#game.lobby .msg{display:none}
+.vs{max-width:420px;margin:0 auto 6px;display:grid;gap:14px}
+.vs h3{margin:0;font:400 26px/1 var(--disp);letter-spacing:1px;text-transform:uppercase}
+.vs p{margin:0;color:var(--dim);font-size:14px}
+.vs label{display:block;font:700 11px var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.vs input,.vs select{width:100%;min-height:44px;padding:0 12px;background:var(--bg);color:var(--bone);border:0;box-shadow:inset 0 0 0 2px var(--line);font:700 16px var(--body)}
+.vs input:focus,.vs select:focus{outline:none;box-shadow:inset 0 0 0 2px #3fd39a}
+.vs input.code{font:400 26px var(--disp);letter-spacing:6px;text-transform:uppercase;text-align:center}
+.vs .pair{display:flex;gap:8px}.vs .pair>*{flex:1}
+.vs .or{display:flex;align-items:center;gap:10px;color:var(--dim);font:700 11px var(--mono);letter-spacing:2px}
+.vs .or::before,.vs .or::after{content:"";flex:1;height:1px;background:var(--line)}
+.vs .btn.go{background:#3fd39a}.vs .btn.go:hover{background:var(--bone)}
+.vs .err{color:#ff9d93;font-weight:700;min-height:20px}
+.vcode{text-align:center;padding:14px;background:var(--bg);box-shadow:inset 0 0 0 2px var(--line)}
+.vcode b{display:block;font:400 54px/1 var(--disp);letter-spacing:12px;color:#3fd39a;margin-left:12px}
+.vcode span{font:700 11px var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+.plist,.vscore{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.plist li,.vscore li{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line);font:700 14px var(--body)}
+.plist li small,.vscore li small{color:var(--dim);font-weight:400}
+.plist .tag{margin-left:auto;font:700 10px var(--mono);letter-spacing:1px;color:#0a0a0a;background:var(--gold);padding:2px 6px}
+.vscore{max-width:420px;margin:0 auto 14px}
+.vscore li .rk{width:20px;font:400 20px var(--disp);color:var(--dim)}
+.vscore li .pts{margin-left:auto;font:400 22px var(--disp);letter-spacing:1px}
+.vscore li.you{box-shadow:inset 0 0 0 2px #3fd39a}
+.vscore li.first .rk{color:var(--gold)}
+.vscore .bar{display:flex;gap:2px}.vscore .bar i{width:8px;height:8px;background:#2a2d40}.vscore .bar i.ok{background:#3fd39a}.vscore .bar i.x{background:#ff4d2e}
+.vshead{max-width:420px;margin:0 auto 8px;display:flex;justify-content:space-between;font:700 11px var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
 .how{max-width:560px;margin:18px auto 0;color:var(--dim);font-size:14px}
 .how b{color:var(--bone)}
 .sw{display:inline-block;width:14px;height:14px;vertical-align:-2px;margin-right:4px}
@@ -92,25 +119,44 @@ dialog .row2{display:flex;gap:8px}.row2 .btn{flex:1}
 
 <main class="page">
   <div class="gt">
-    <div><h1>Five Letters</h1><p class="meta">Words &middot; 1 player &middot; daily word, practice, and an endless high-score mode</p></div>
+    <div><h1>Five Letters</h1><p class="meta">Words &middot; 1 player or online VS &middot; daily word, endless high scores, and lobbies with friends</p></div>
     <div class="tools"><button class="fav" id="favBtn" aria-pressed="false"><span class="h">&#9829;</span><span id="favTxt">Add to My Recess</span></button><button class="btn alt" id="statsBtn">Stats</button></div>
   </div>
 
   <section id="game" aria-label="Five Letters game">
     <div class="modes" role="group" aria-label="Mode">
-      <button id="mDaily" aria-pressed="true">Daily</button><button id="mFree" aria-pressed="false">Practice</button><button id="mEnd" aria-pressed="false">Endless</button>
+      <button id="mDaily" aria-pressed="true">Daily</button><button id="mEnd" aria-pressed="false">Endless</button><button id="mVs" aria-pressed="false">VS Mode</button>
     </div>
     <div class="endbar hide" id="endBar" aria-live="polite"><div class="sc"><b id="eScore">0</b><span>Score</span></div><div><b id="eWords">0</b><span>Words</span></div><div class="bs"><b id="eBest">0</b><span>Best</span></div></div>
+    <div class="vs hide" id="vsStart">
+      <div><h3>VS Mode</h3><p>Host a lobby, send friends the code, and race through the same words. Fewest guesses wins.</p></div>
+      <div><label for="vsName">Your name</label><input id="vsName" maxlength="16" autocomplete="off"></div>
+      <button class="btn go" id="vsHost">Host a lobby</button>
+      <div class="or">OR JOIN ONE</div>
+      <div class="pair"><input class="code" id="vsCode" maxlength="4" placeholder="CODE" autocomplete="off" aria-label="Lobby code"><button class="btn alt" id="vsJoin">Join</button></div>
+      <div class="err" id="vsErr" role="alert"></div>
+    </div>
+    <div class="vs hide" id="vsLobby">
+      <div class="vcode"><span>Lobby code</span><b id="vsShow">----</b></div>
+      <button class="btn alt" id="vsCopy">Copy invite link</button>
+      <div><label>Players</label><ul class="plist" id="vsPlayers"></ul></div>
+      <div id="vsHostCtl"><label for="vsRounds">Words per match</label><div class="pair"><select id="vsRounds"><option value="3">3 words</option><option value="5" selected>5 words</option><option value="10">10 words</option></select><button class="btn go" id="vsGo">Start match</button></div></div>
+      <p id="vsWait" class="hide">Waiting for the host to start&hellip;</p>
+      <button class="btn alt" id="vsLeave">Leave lobby</button>
+      <div class="err" id="vsErr2" role="alert"></div>
+    </div>
+    <div class="vshead hide" id="vsHead"><span id="vsWord">Word 1 of 5</span><span id="vsCodeTag"></span></div>
     <div class="board" id="board" aria-label="Guesses"></div>
     <div class="msg" id="msg" role="status" aria-live="polite"></div>
     <div class="kb" id="kb"></div>
+    <ul class="vscore hide" id="vsScore" aria-label="Scoreboard" style="margin-top:16px"></ul>
   </section>
 
   <p class="how"><b>How to play:</b> guess the hidden word in six tries. Type any real five-letter word and press Enter.
     <span class="sw" style="background:#3fd39a"></span>right letter, right spot.
     <span class="sw" style="background:#ffc94a"></span>in the word, wrong spot.
     <span class="sw" style="background:#2a2d40"></span>not in the word.
-    Daily is the same word for everyone; Practice gives you a fresh one any time. <b>Endless</b> keeps going until you miss: solve in fewer guesses for more points, and every word in a row adds a bonus.</p>
+    <b>Daily</b> is the same word for everyone. <b>Endless</b> keeps going until you miss: solve in fewer guesses for more points, and every word in a row adds a bonus. <b>VS Mode</b> is online: host a lobby, share the code, and everyone plays the same words. Each word is worth 600 points for 1 guess down to 100 for 6; most points wins.</p>
 </main>
 
 <footer class="foot"><h6>Every game on Recess</h6><div class="az" id="allgames"></div><p>&copy; <span id="yr"></span> Recess &middot; someone coming? <span class="kbd">`</span></p></footer>
@@ -139,7 +185,7 @@ const dayNo=()=>{const n=new Date();return Math.round((new Date(n.getFullYear(),
 const ORDER=(()=>{const a=ANSWERS.map((_,i)=>i);let s=20260101;const r=()=>(s=(s*1103515245+12345)%2147483648)/2147483648;for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a})();
 const dailyWord=d=>ANSWERS[ORDER[((d%ORDER.length)+ORDER.length)%ORDER.length]];
 
-let mode='daily', answer='', guesses=[], cur='', over=false, busy=false;
+let mode='daily', answer='', guesses=[], cur='', over=false, busy=false, gen=0;
 
 // board + keyboard
 $('board').innerHTML=Array.from({length:ROWS},()=>`<div class="row">${'<div class="tile"></div>'.repeat(LEN)}</div>`).join('');
@@ -149,6 +195,7 @@ $('kb').innerHTML=['qwertyuiop','asdfghjkl','+zxcvbnm-'].map(r=>`<div class="kr"
 $('kb').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b){b.blur();press(b.dataset.k)}});
 addEventListener('keydown',e=>{
   if(e.ctrlKey||e.metaKey||e.altKey||document.querySelector('dialog[open]')||document.getElementById('teacher'))return;
+  if(e.target&&/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(e.target.tagName)&&e.target.closest('.vs'))return;
   if(e.key==='Enter'||e.key==='Backspace'||/^[a-zA-Z]$/.test(e.key)){e.preventDefault();press(e.key==='Enter'||e.key==='Backspace'?e.key:e.key.toLowerCase())}
 });
 
@@ -174,7 +221,8 @@ function say(html,ms){const m=$('msg');m.innerHTML=html;if(ms){clearTimeout(say.
 function shake(){rows[guesses.length].classList.remove('shake');void rows[guesses.length].offsetWidth;rows[guesses.length].classList.add('shake')}
 
 function press(k){
-  if(over&&mode==='end'&&k==='Enter'&&endNext){endNext();return}
+  if(mode==='vs'&&!vs.active)return;
+  if(over&&(mode==='end'||mode==='vs')&&k==='Enter'&&endNext){endNext();return}
   if(over||busy)return;
   if(k==='Backspace'){cur=cur.slice(0,-1);drawRow(guesses.length,cur);return}
   if(k==='Enter'){
@@ -186,9 +234,10 @@ function press(k){
 }
 function submit(){
   const r=guesses.length,word=cur,res=score(word,answer);
-  guesses.push(word);cur='';busy=true;
+  guesses.push(word);cur='';busy=true;const g0=gen;
   drawRow(r,word,res,true);save();
   setTimeout(()=>{
+    if(g0!==gen)return;
     busy=false;paintKeys();
     if(word===answer)finish(true,r);
     else if(guesses.length===ROWS)finish(false);
@@ -199,9 +248,9 @@ function finish(won,r,quiet){
   over=true;
   if(won&&!quiet)[...rows[r].children].forEach((t,i)=>{t.classList.remove('flip');t.style.animationDelay=(i*.1)+'s';t.classList.add('win')});
   if(mode==='end'){endFinish(won,r,quiet);return}
-  say((won?`<span>${PRAISE[r]}!</span>`:`<span>The word was</span> <span class="ans">${answer.toUpperCase()}</span>`)+
-    (mode==='free'?' <button class="btn" id="again">New word</button>':' <button class="btn alt" id="seeStats">Stats</button>'));
-  if(mode==='free')$('again').onclick=newFree;else $('seeStats').onclick=openStats;
+  if(mode==='vs'){vsFinish(won,r);return}
+  say((won?`<span>${PRAISE[r]}!</span>`:`<span>The word was</span> <span class="ans">${answer.toUpperCase()}</span>`)+' <button class="btn alt" id="seeStats">Stats</button>');
+  $('seeStats').onclick=openStats;
   if(!quiet&&mode==='daily'){record(won,r);setTimeout(openStats,1400)}
   if(!quiet)Recess.played(SLUG);
 }
@@ -216,7 +265,7 @@ function record(won,r){
 }
 
 function reset(word,saved){
-  answer=word;guesses=[];cur='';over=false;busy=false;say('');
+  gen++;answer=word;guesses=[];cur='';over=false;busy=false;say('');
   rows.forEach((_,i)=>drawRow(i,''));paintKeys();
   (saved||[]).forEach((g,i)=>{guesses.push(g);drawRow(i,g,score(g,answer))});
   paintKeys();
@@ -224,7 +273,6 @@ function reset(word,saved){
   if(last===answer)finish(true,guesses.length-1,true);else if(guesses.length===ROWS)finish(false,0,true);
 }
 function startDaily(){const sv=store.get('fl-daily',null);reset(dailyWord(dayNo()),sv&&sv.day===dayNo()?sv.guesses:[])}
-function newFree(){reset(ANSWERS[Math.floor(Math.random()*ANSWERS.length)])}
 // endless: keep solving until you miss one
 let run=null,endNext=null;
 const fmt=n=>n.toLocaleString();
@@ -264,12 +312,200 @@ function endFinish(won,r,quiet){
   }
   if(!quiet)Recess.played(SLUG);
 }
-function setMode(m){mode=m;['mDaily','daily','mFree','free','mEnd','end'].reduce((a,x,i,arr)=>{if(i%2===0)$(x).setAttribute('aria-pressed',arr[i+1]===m);return a},0);
+function setMode(m){
+  if(mode==='vs'&&m!=='vs')vsLeave(true);
+  mode=m;[['mDaily','daily'],['mEnd','end'],['mVs','vs']].forEach(([id,x])=>$(id).setAttribute('aria-pressed',x===m));
   $('endBar').classList.toggle('hide',m!=='end');endNext=null;
-  m==='daily'?startDaily():m==='end'?startEndless():newFree()}
+  m==='daily'?startDaily():m==='end'?startEndless():vsOpen()}
 $('mDaily').onclick=()=>{$('mDaily').blur();setMode('daily')};
-$('mFree').onclick=()=>{$('mFree').blur();setMode('free')};
 $('mEnd').onclick=()=>{$('mEnd').blur();setMode('end')};
+$('mVs').onclick=()=>{$('mVs').blur();if(mode!=='vs')setMode('vs')};
+
+// ---------- VS Mode: online lobbies. Browsers connect directly through PeerJS; the host's tab runs the lobby.
+const PEER_SRC='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js',PFX='recess-five-letters-',CODE_CH='ABCDEFGHJKLMNPQRSTUVWXYZ',MAXP=8;
+const vs={peer:null,host:false,code:'',me:'',conns:new Map(),conn:null,players:{},list:[],words:[],n:0,idx:0,marks:[],score:0,active:false,playing:false,state:'off',match:0,shown:-1};
+const escH=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let peerLib=null;
+function loadPeer(){
+  if(window.Peer)return Promise.resolve();
+  if(!peerLib)peerLib=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src=PEER_SRC;sc.onload=ok;sc.onerror=()=>{peerLib=null;sc.remove();no(new Error('load'))};document.head.appendChild(sc)});
+  return peerLib;
+}
+$('vsName').value=store.get('fl-name','')||('Player'+Math.floor(Math.random()*90+10));
+function vsName(){const n=$('vsName').value.trim().slice(0,16)||'Player';store.put('fl-name',n);return n}
+const vsPts=m=>m?(ROWS+1-m)*100:0;
+
+function vsView(v){
+  $('game').classList.toggle('lobby',v==='start'||v==='lobby');
+  $('vsStart').classList.toggle('hide',v!=='start');
+  $('vsLobby').classList.toggle('hide',v!=='lobby');
+  $('vsHead').classList.toggle('hide',v!=='match');
+  $('vsScore').classList.toggle('hide',v!=='match');
+}
+function vsOpen(){
+  reset('');$('vsErr').textContent='';
+  if(vs.state==='off')vsView('start');else if(vs.state==='lobby'){vsView('lobby');vsLobbyDraw()}else{vsView('match');vsScoreDraw()}
+}
+function vsLeave(silent){
+  const p=vs.peer;
+  Object.assign(vs,{peer:null,host:false,code:'',me:'',conn:null,players:{},list:[],words:[],n:0,idx:0,marks:[],score:0,active:false,playing:false,state:'off',shown:-1});
+  vs.conns=new Map();endNext=null;
+  if(p)try{p.destroy()}catch(e){}
+  if(silent){vsView('none');$('game').classList.remove('lobby')}
+  else{reset('');vsView('start')}
+}
+const newCode=()=>Array.from({length:4},()=>CODE_CH[Math.floor(Math.random()*CODE_CH.length)]).join('');
+
+// hosting
+async function vsHostStart(){
+  $('vsErr').textContent='Opening a lobby…';
+  try{await loadPeer()}catch(e){$('vsErr').textContent='Could not reach the online service. Check your connection and try again.';return}
+  tryHost(vsName(),0);
+}
+function tryHost(name,n){
+  const code=newCode(),peer=new Peer(PFX+code);
+  peer.on('open',id=>{
+    if(mode!=='vs'){peer.destroy();return}
+    Object.assign(vs,{peer,host:true,code,me:id,state:'lobby',playing:false});
+    vs.players={[id]:{name,marks:[],score:0,done:false,host:true}};
+    peer.on('connection',hostConn);
+    $('vsErr').textContent='';vsView('lobby');vsBroadcast();
+  });
+  peer.on('error',e=>{
+    if(e.type==='unavailable-id'&&n<5){peer.destroy();tryHost(name,n+1);return}
+    if(vs.peer!==peer){peer.destroy();$('vsErr').textContent='Could not open a lobby ('+e.type+'). Try again.'}
+  });
+  peer.on('disconnected',()=>{if(vs.peer===peer&&!peer.destroyed)try{peer.reconnect()}catch(e){}});
+}
+function hostConn(c){
+  c.on('data',d=>{
+    if(!d||typeof d!=='object')return;
+    if(d.t==='hello'&&!vs.players[c.peer]){
+      if(Object.keys(vs.players).length>=MAXP){c.send({t:'full'});setTimeout(()=>c.close(),400);return}
+      vs.conns.set(c.peer,c);
+      vs.players[c.peer]={name:String(d.name||'Player').slice(0,16)||'Player',marks:[],score:0,done:false,late:vs.playing};
+      if(vs.playing)c.send({t:'start',match:vs.match,words:vs.words,late:true});
+      vsBroadcast();
+    }else if(d.t==='prog'&&vs.players[c.peer]&&vs.playing&&d.match===vs.match){
+      applyProg(vs.players[c.peer],d.marks);vsBroadcast();vsCheckEnd();
+    }
+  });
+  const gone=()=>{if(!vs.players[c.peer])return;vs.conns.delete(c.peer);delete vs.players[c.peer];vsBroadcast();vsCheckEnd()};
+  c.on('close',gone);c.on('error',gone);
+}
+function applyProg(p,marks){
+  p.marks=(Array.isArray(marks)?marks:[]).slice(0,vs.words.length).map(m=>Math.max(0,Math.min(ROWS,m|0)));
+  p.score=p.marks.reduce((a,m)=>a+vsPts(m),0);p.done=p.marks.length>=vs.words.length;
+}
+function vsSnapshot(){
+  return {t:'state',code:vs.code,playing:vs.playing,results:vs.state==='results',match:vs.match,n:vs.words.length,
+    players:Object.entries(vs.players).map(([id,p])=>({id,name:p.name,marks:p.marks,score:p.score,done:p.done,host:!!p.host,late:!!p.late}))};
+}
+function vsBroadcast(){const st=vsSnapshot();vs.conns.forEach(c=>{if(c.open)c.send(st)});vsApply(st)}
+function vsCheckEnd(){
+  if(!vs.host||!vs.playing)return;
+  const ps=Object.values(vs.players).filter(p=>!p.late);
+  if(ps.length&&ps.every(p=>p.done)){vs.playing=false;vs.state='results';vsBroadcast()}
+}
+function vsStartMatch(){
+  const n=+$('vsRounds').value||5,pool=ANSWERS.slice(),words=[];
+  while(words.length<n)words.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);
+  vs.match++;vs.words=words;vs.playing=true;vs.state='match';
+  Object.values(vs.players).forEach(p=>{p.marks=[];p.score=0;p.done=false;p.late=false});
+  const msg={t:'start',match:vs.match,words};vs.conns.forEach(c=>{if(c.open)c.send(msg)});
+  vsBegin(vs.match,words);vsBroadcast();
+}
+
+// joining
+async function vsJoinStart(){
+  const code=$('vsCode').value.trim().toUpperCase();
+  if(!/^[A-Z]{4}$/.test(code)){$('vsErr').textContent='Lobby codes are 4 letters.';return}
+  $('vsErr').textContent='Joining '+code+'…';
+  try{await loadPeer()}catch(e){$('vsErr').textContent='Could not reach the online service. Check your connection and try again.';return}
+  const name=vsName(),peer=new Peer();let opened=false;
+  const fail=msg=>{if(opened)return;opened=true;clearTimeout(to);try{peer.destroy()}catch(e){}if(mode==='vs'&&vs.state==='off')$('vsErr').textContent=msg};
+  const to=setTimeout(()=>fail('No lobby found with code '+code+'.'),10000);
+  peer.on('open',id=>{
+    const c=peer.connect(PFX+code,{reliable:true});
+    c.on('open',()=>{
+      if(opened||mode!=='vs'){peer.destroy();return}
+      opened=true;clearTimeout(to);
+      Object.assign(vs,{peer,conn:c,host:false,code,me:id,state:'lobby'});
+      c.send({t:'hello',name});$('vsErr').textContent='';vsView('lobby');vsLobbyDraw();
+    });
+    c.on('data',clientData);
+    c.on('close',()=>{if(vs.conn===c){vsLeave(false);$('vsErr').textContent='The host closed the lobby.'}});
+  });
+  peer.on('error',e=>{
+    if(vs.peer===peer){if(e.type==='network'||e.type==='server-error'){}return}
+    fail(e.type==='peer-unavailable'?'No lobby found with code '+code+'.':'Connection problem ('+e.type+'). Try again.');
+  });
+}
+function clientData(d){
+  if(!d||typeof d!=='object')return;
+  if(d.t==='state')vsApply(d);
+  else if(d.t==='start'&&Array.isArray(d.words)){if(!d.late)vsBegin(d.match,d.words.map(String));else{vs.match=d.match;vs.words=d.words.map(String)}}
+  else if(d.t==='full'){const c=vs.conn;vs.conn=null;vsLeave(false);$('vsErr').textContent='That lobby is full ('+MAXP+' players).';if(c)c.close()}
+}
+
+// shared view updates
+function vsApply(st){
+  vs.list=st.players;vs.n=st.n;vs.playing=st.playing;
+  if(!vs.host){vs.state=st.results?'results':st.playing?'match':(vs.active?'match':(vs.state==='results'?'results':'lobby'))}
+  if(mode!=='vs')return;
+  if(vs.state==='lobby'){vsView('lobby');vsLobbyDraw();return}
+  vsView('match');vsScoreDraw();
+  const me=st.players.find(p=>p.id===vs.me);
+  if(st.playing&&me&&me.late&&!vs.active)say('<span>A match is in progress. You’ll play in the next one.</span>');
+  if(st.results&&vs.shown!==st.match)vsResults(st);
+}
+function vsLobbyDraw(){
+  $('vsShow').textContent=vs.code||'----';
+  $('vsPlayers').innerHTML=(vs.list.length?vs.list:[{id:vs.me,name:vsName()}]).map(p=>`<li>${escH(p.name)}${p.id===vs.me?' <small>(you)</small>':''}${p.host?'<span class="tag">HOST</span>':''}</li>`).join('');
+  $('vsHostCtl').classList.toggle('hide',!vs.host);$('vsWait').classList.toggle('hide',vs.host);
+}
+function vsScoreDraw(){
+  const n=vs.n||vs.words.length,ps=vs.list.slice().sort((a,b)=>b.score-a.score||b.marks.length-a.marks.length);
+  $('vsScore').innerHTML=ps.map((p,i)=>`<li class="${p.id===vs.me?'you':''} ${i===0&&p.score>0?'first':''}"><span class="rk">${i+1}</span><span>${escH(p.name)}${p.id===vs.me?' <small>(you)</small>':''}${p.late?' <small>(next match)</small>':p.done?' <small>done</small>':''}<span class="bar">${Array.from({length:n},(_,k)=>`<i class="${k<p.marks.length?(p.marks[k]?'ok':'x'):''}"></i>`).join('')}</span></span><span class="pts">${fmt(p.score)}</span></li>`).join('');
+}
+function vsBegin(match,words){
+  Object.assign(vs,{match,words,n:words.length,idx:0,marks:[],score:0,active:true,state:'match'});
+  if(mode!=='vs')return;
+  vsView('match');vsNextWord();
+}
+function vsNextWord(){
+  endNext=null;reset(vs.words[vs.idx]);
+  $('vsWord').textContent=`Word ${vs.idx+1} of ${vs.words.length}`;$('vsCodeTag').textContent='Lobby '+vs.code;vsScoreDraw();
+}
+function vsFinish(won,r){
+  const used=won?r+1:0,pts=vsPts(used);
+  vs.marks.push(used);vs.score+=pts;vs.idx++;
+  const head=won?`<span>${PRAISE[r]}!</span> <span class="pts">+${fmt(pts)}</span>`:`<span>The word was</span> <span class="ans">${answer.toUpperCase()}</span>`;
+  if(vs.idx<vs.words.length){endNext=vsNextWord;say(head+' <button class="btn" id="vsNext">Next word</button>');$('vsNext').onclick=vsNextWord}
+  else{vs.active=false;endNext=null;say(head+` <span>You’re done with ${fmt(vs.score)}. Waiting for the others…</span>`)}
+  if(vs.host){applyProg(vs.players[vs.me],vs.marks);vsBroadcast();vsCheckEnd()}
+  else if(vs.conn&&vs.conn.open)vs.conn.send({t:'prog',match:vs.match,marks:vs.marks});
+  Recess.played(SLUG);
+}
+function vsResults(st){
+  vs.shown=st.match;vs.active=false;endNext=null;
+  const ps=st.players.filter(p=>!p.late).sort((a,b)=>b.score-a.score),top=ps[0];
+  const tie=ps.length>1&&ps[1].score===top.score;
+  const head=!top?'Match over':tie?'It’s a tie!':top.id===vs.me?'You win!':escH(top.name)+' wins!';
+  say(`<span>${head}</span> `+(vs.host?'<button class="btn" id="vsAgain">Play again</button>':'<span>Waiting for the host to start again…</span>')+' <button class="btn alt" id="vsOut">Leave</button>');
+  if(vs.host)$('vsAgain').onclick=vsStartMatch;
+  $('vsOut').onclick=()=>vsLeave(false);
+  $('vsWord').textContent='Final scores';
+}
+$('vsHost').onclick=vsHostStart;
+$('vsJoin').onclick=vsJoinStart;
+$('vsCode').addEventListener('keydown',e=>{if(e.key==='Enter')vsJoinStart()});
+$('vsCode').addEventListener('input',e=>{e.target.value=e.target.value.toUpperCase().replace(/[^A-Z]/g,'')});
+$('vsGo').onclick=vsStartMatch;
+$('vsLeave').onclick=()=>vsLeave(false);
+$('vsCopy').onclick=()=>{const url=location.origin+location.pathname+'?vs='+vs.code;
+  (navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(()=>{$('vsCopy').textContent='Link copied!';setTimeout(()=>$('vsCopy').textContent='Copy invite link',1500)}).catch(()=>prompt('Send this link to your friends:',url))};
+
 
 // stats + share
 function openStats(){
@@ -293,7 +529,7 @@ $('shareBtn').onclick=()=>{
 
 {const fb=$('favBtn');const draw=()=>{const on=Recess.isFav(SLUG);fb.setAttribute('aria-pressed',String(on));$('favTxt').textContent=on?'In My Recess':'Add to My Recess'};draw();fb.onclick=()=>{Recess.toggleFav(SLUG);draw()}}
 $('yr').textContent=new Date().getFullYear();
-setMode('daily');
+{const j=new URLSearchParams(location.search).get('vs');if(j){$('vsCode').value=j.toUpperCase().slice(0,4);setMode('vs')}else setMode('daily')}
 }
 </script>
 </body>
