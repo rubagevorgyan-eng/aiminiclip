@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Five Letters - Recess</title>
+<meta name="description" content="Guess the hidden five-letter word in six tries. Free, in your browser.">
+<meta name="theme-color" content="#07080d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%233fd39a'/%3E%3Ctext x='8' y='12.5' font-family='Arial Black,Arial' font-weight='900' font-size='12' text-anchor='middle' fill='%2307080d'%3Er%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/shell.css">
+<style>
+/*
+VOICE: a word nerd at the back of study hall, quietly smug
+IDEA: one hidden five-letter word, six tries, the tiles tell you how close you are
+COLOUR and TYPE: site night palette; mint = right spot, gold = in the word, slate = not in it. Anton for tiles, Archivo for reading
+LAYOUT: one centered column: board, message line, keyboard; stats in a dialog
+*/
+.gt{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin:6px 0 16px}
+.gt h1{margin:0;font:400 clamp(44px,6vw,72px)/.9 var(--disp);letter-spacing:.5px;text-transform:uppercase}
+.gt .meta{margin:6px 0 0;color:var(--dim);font-size:15px}
+.gt .tools{display:flex;gap:8px;flex-wrap:wrap}
+.fav{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;box-shadow:inset 0 0 0 2px var(--line);background:transparent;color:var(--bone);font:700 14px var(--body);cursor:pointer}
+.fav .h{color:var(--dim)}.fav[aria-pressed=true] .h{color:var(--ember)}
+
+#game{--hit:#3fd39a;--near:#ffc94a;--miss:#2a2d40;--tile:clamp(48px,13vw,62px);
+  max-width:560px;margin:0 auto;border-top:6px solid #3fd39a;background:var(--bg2);border-left:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 14px 20px}
+.modes{display:flex;justify-content:center;gap:6px;margin-bottom:16px}
+.modes button{min-height:36px;padding:0 14px;border:0;background:transparent;color:var(--dim);font:700 13px var(--body);cursor:pointer;box-shadow:inset 0 0 0 2px var(--line)}
+.modes button[aria-pressed=true]{background:var(--bone);color:#0a0a0a;box-shadow:none}
+.modes button:focus-visible,.key:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.board{display:grid;grid-template-rows:repeat(6,var(--tile));gap:6px;justify-content:center}
+.row{display:grid;grid-template-columns:repeat(5,var(--tile));gap:6px}
+.row.shake{animation:shake .45s}
+.tile{display:grid;place-items:center;border:2px solid var(--line);font:400 calc(var(--tile)*.55)/1 var(--disp);text-transform:uppercase;color:var(--bone);background:transparent}
+.tile.full{border-color:#4a4e66;animation:pop .1s}
+.tile.hit,.tile.near,.tile.miss{border-color:transparent;color:#0a0a0a}
+.tile.hit{background:var(--hit)}.tile.near{background:var(--near)}.tile.miss{background:var(--miss);color:var(--bone)}
+.tile.flip{animation:flip .5s ease both}
+.tile.win{animation:hop .5s ease both}
+@keyframes pop{50%{transform:scale(1.1)}}
+@keyframes flip{0%{transform:rotateX(0)}50%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
+@keyframes hop{40%{transform:translateY(-14px)}70%{transform:translateY(3px)}}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+
+.msg{min-height:44px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px 0;text-align:center;font:700 15px var(--body)}
+.msg .ans{font:400 24px var(--disp);letter-spacing:2px;color:var(--gold)}
+.msg .btn{min-height:38px;font-size:17px;padding:0 14px}
+
+.kb{display:flex;flex-direction:column;gap:7px;user-select:none;-webkit-user-select:none}
+.kb .kr{display:flex;justify-content:center;gap:5px}
+.key{flex:1;max-width:46px;height:54px;border:0;border-radius:4px;background:#3a3e55;color:var(--bone);font:800 16px var(--body);text-transform:uppercase;cursor:pointer;touch-action:manipulation;transition:background .2s}
+.key.wide{max-width:72px;flex:1.5;font-size:12px}
+.key.hit{background:var(--hit);color:#0a0a0a}.key.near{background:var(--near);color:#0a0a0a}.key.miss{background:#191b28;color:#5d6178}
+.key:active{filter:brightness(1.25)}
+
+.how{max-width:560px;margin:18px auto 0;color:var(--dim);font-size:14px}
+.how b{color:var(--bone)}
+.sw{display:inline-block;width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+
+dialog{max-width:380px;width:calc(100% - 28px);background:var(--panel);color:var(--bone);border:1px solid var(--line);border-top:6px solid #3fd39a;padding:22px}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog h2{margin:0 0 14px;font:400 28px/1 var(--disp);letter-spacing:1px;text-transform:uppercase}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;margin-bottom:18px}
+.nums b{display:block;font:400 32px/1 var(--disp)}.nums span{font-size:11px;color:var(--dim)}
+.dist{display:grid;gap:4px;margin-bottom:18px}
+.dist div{display:flex;align-items:center;gap:8px;font:700 13px var(--mono)}
+.dist i{display:block;min-width:24px;padding:2px 6px;background:var(--miss,#2a2d40);font-style:normal;text-align:right}
+.dist i.now{background:#3fd39a;color:#0a0a0a}
+dialog .row2{display:flex;gap:8px}.row2 .btn{flex:1}
+@media(max-width:420px){.key{height:50px;font-size:14px}.kb .kr{gap:4px}#game{padding:14px 6px 16px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="/" aria-label="Recess home"><span class="rlogo"></span></a>
+  <nav class="nav"><a class="on" href="/">Games</a><a href="/#board">Board</a><a href="/#prof">Profile</a></nav>
+  <a class="me" href="/#prof"><div><span>@ruben</span><small>Level 3</small></div><span class="orb">R</span></a>
+</header>
+
+<main class="page">
+  <div class="gt">
+    <div><h1>Five Letters</h1><p class="meta">Words &middot; 1 player &middot; a new daily word at midnight</p></div>
+    <div class="tools"><button class="fav" id="favBtn" aria-pressed="false"><span class="h">&#9829;</span><span id="favTxt">Add to My Recess</span></button><button class="btn alt" id="statsBtn">Stats</button></div>
+  </div>
+
+  <section id="game" aria-label="Five Letters game">
+    <div class="modes" role="group" aria-label="Mode">
+      <button id="mDaily" aria-pressed="true">Daily</button><button id="mFree" aria-pressed="false">Practice</button>
+    </div>
+    <div class="board" id="board" aria-label="Guesses"></div>
+    <div class="msg" id="msg" role="status" aria-live="polite"></div>
+    <div class="kb" id="kb"></div>
+  </section>
+
+  <p class="how"><b>How to play:</b> guess the hidden word in six tries. Type any real five-letter word and press Enter.
+    <span class="sw" style="background:#3fd39a"></span>right letter, right spot.
+    <span class="sw" style="background:#ffc94a"></span>in the word, wrong spot.
+    <span class="sw" style="background:#2a2d40"></span>not in the word.
+    Daily is the same word for everyone; Practice gives you a fresh one any time.</p>
+</main>
+
+<footer class="foot"><h6>Every game on Recess</h6><div class="az" id="allgames"></div><p>&copy; <span id="yr"></span> Recess &middot; someone coming? <span class="kbd">`</span></p></footer>
+
+<dialog id="stats" aria-labelledby="stTitle">
+  <h2 id="stTitle">Daily stats</h2>
+  <div class="nums" id="nums"></div>
+  <div class="dist" id="dist"></div>
+  <div class="row2"><button class="btn" id="shareBtn">Share</button><button class="btn alt" id="closeStats">Close</button></div>
+</dialog>
+
+<script src="words.js"></script>
+<script src="/assets/logo.js"></script>
+<script src="/assets/teacher.js"></script>
+<script src="/assets/recess.js"></script>
+<script>
+{
+const $=id=>document.getElementById(id);
+const SLUG='five-letters', ROWS=6, LEN=5;
+const VALID=new Set([...ANSWERS,...GUESSES]);
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},put(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+// daily word: the answer list in a fixed shuffled order, one per local day
+const EPOCH=new Date(2026,0,1);
+const dayNo=()=>{const n=new Date();return Math.round((new Date(n.getFullYear(),n.getMonth(),n.getDate())-EPOCH)/864e5)};
+const ORDER=(()=>{const a=ANSWERS.map((_,i)=>i);let s=20260101;const r=()=>(s=(s*1103515245+12345)%2147483648)/2147483648;for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a})();
+const dailyWord=d=>ANSWERS[ORDER[((d%ORDER.length)+ORDER.length)%ORDER.length]];
+
+let mode='daily', answer='', guesses=[], cur='', over=false, busy=false;
+
+// board + keyboard
+$('board').innerHTML=Array.from({length:ROWS},()=>`<div class="row">${'<div class="tile"></div>'.repeat(LEN)}</div>`).join('');
+const rows=[...$('board').children];
+$('kb').innerHTML=['qwertyuiop','asdfghjkl','+zxcvbnm-'].map(r=>`<div class="kr">${[...r].map(k=>
+  k==='+'?'<button class="key wide" data-k="Enter">Enter</button>':k==='-'?'<button class="key wide" data-k="Backspace" aria-label="Delete">&#9003;</button>':`<button class="key" data-k="${k}">${k}</button>`).join('')}</div>`).join('');
+$('kb').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b){b.blur();press(b.dataset.k)}});
+addEventListener('keydown',e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey||document.querySelector('dialog[open]')||document.getElementById('teacher'))return;
+  if(e.key==='Enter'||e.key==='Backspace'||/^[a-zA-Z]$/.test(e.key)){e.preventDefault();press(e.key==='Enter'||e.key==='Backspace'?e.key:e.key.toLowerCase())}
+});
+
+function score(g,a){
+  const res=Array(LEN).fill('miss'),left={};
+  for(let i=0;i<LEN;i++){if(g[i]===a[i])res[i]='hit';else left[a[i]]=(left[a[i]]||0)+1}
+  for(let i=0;i<LEN;i++)if(res[i]!=='hit'&&left[g[i]]){res[i]='near';left[g[i]]--}
+  return res;
+}
+const RANK={miss:1,near:2,hit:3};
+function paintKeys(){
+  const best={};
+  guesses.forEach(g=>score(g,answer).forEach((r,i)=>{if(!best[g[i]]||RANK[r]>RANK[best[g[i]]])best[g[i]]=r}));
+  document.querySelectorAll('.key[data-k]').forEach(k=>{k.classList.remove('hit','near','miss');if(best[k.dataset.k])k.classList.add(best[k.dataset.k])});
+}
+function drawRow(r,word,res,animate){
+  [...rows[r].children].forEach((t,i)=>{
+    t.textContent=word[i]||'';t.className='tile'+(word[i]?' full':'');
+    if(res){if(animate){t.style.animationDelay=(i*.25)+'s';t.classList.add('flip');setTimeout(()=>t.classList.add(res[i]),i*250+250)}else t.classList.add(res[i])}
+  });
+}
+function say(html,ms){const m=$('msg');m.innerHTML=html;if(ms){clearTimeout(say.t);say.t=setTimeout(()=>{if(m.innerHTML===html)m.innerHTML=''},ms)}}
+function shake(){rows[guesses.length].classList.remove('shake');void rows[guesses.length].offsetWidth;rows[guesses.length].classList.add('shake')}
+
+function press(k){
+  if(over||busy)return;
+  if(k==='Backspace'){cur=cur.slice(0,-1);drawRow(guesses.length,cur);return}
+  if(k==='Enter'){
+    if(cur.length<LEN){shake();say('Not enough letters',1400);return}
+    if(!VALID.has(cur)){shake();say('Not in the word list',1400);return}
+    submit();return;
+  }
+  if(cur.length<LEN){cur+=k;drawRow(guesses.length,cur)}
+}
+function submit(){
+  const r=guesses.length,word=cur,res=score(word,answer);
+  guesses.push(word);cur='';busy=true;
+  drawRow(r,word,res,true);save();
+  setTimeout(()=>{
+    busy=false;paintKeys();
+    if(word===answer)finish(true,r);
+    else if(guesses.length===ROWS)finish(false);
+  },LEN*250+300);
+}
+const PRAISE=['Genius','Magnificent','Impressive','Splendid','Great','Phew'];
+function finish(won,r,quiet){
+  over=true;
+  if(won&&!quiet)[...rows[r].children].forEach((t,i)=>{t.classList.remove('flip');t.style.animationDelay=(i*.1)+'s';t.classList.add('win')});
+  say((won?`<span>${PRAISE[r]}!</span>`:`<span>The word was</span> <span class="ans">${answer.toUpperCase()}</span>`)+
+    (mode==='free'?' <button class="btn" id="again">New word</button>':' <button class="btn alt" id="seeStats">Stats</button>'));
+  if(mode==='free')$('again').onclick=newFree;else $('seeStats').onclick=openStats;
+  if(!quiet&&mode==='daily'){record(won,r);setTimeout(openStats,1400)}
+  if(!quiet)Recess.played(SLUG);
+}
+
+// saving
+function save(){if(mode==='daily')store.put('fl-daily',{day:dayNo(),guesses})}
+function record(won,r){
+  const s=store.get('fl-stats',{played:0,wins:0,streak:0,best:0,dist:[0,0,0,0,0,0],last:null});
+  const d=dayNo();if(s.last===d)return;
+  s.played++;if(won){s.wins++;s.dist[r]++;s.streak=(s.lastWin===d-1?s.streak:0)+1;s.lastWin=d;s.best=Math.max(s.best,s.streak)}else s.streak=0;
+  s.last=d;s.lastRow=won?r:null;store.put('fl-stats',s);
+}
+
+function reset(word,saved){
+  answer=word;guesses=[];cur='';over=false;busy=false;say('');
+  rows.forEach((_,i)=>drawRow(i,''));paintKeys();
+  (saved||[]).forEach((g,i)=>{guesses.push(g);drawRow(i,g,score(g,answer))});
+  paintKeys();
+  const last=guesses[guesses.length-1];
+  if(last===answer)finish(true,guesses.length-1,true);else if(guesses.length===ROWS)finish(false,0,true);
+}
+function startDaily(){const sv=store.get('fl-daily',null);reset(dailyWord(dayNo()),sv&&sv.day===dayNo()?sv.guesses:[])}
+function newFree(){reset(ANSWERS[Math.floor(Math.random()*ANSWERS.length)])}
+function setMode(m){mode=m;$('mDaily').setAttribute('aria-pressed',m==='daily');$('mFree').setAttribute('aria-pressed',m==='free');m==='daily'?startDaily():newFree()}
+$('mDaily').onclick=()=>{$('mDaily').blur();setMode('daily')};
+$('mFree').onclick=()=>{$('mFree').blur();setMode('free')};
+
+// stats + share
+function openStats(){
+  const s=store.get('fl-stats',{played:0,wins:0,streak:0,best:0,dist:[0,0,0,0,0,0]});
+  $('nums').innerHTML=[[s.played,'Played'],[s.played?Math.round(s.wins/s.played*100):0,'Win %'],[s.streak,'Streak'],[s.best,'Best']].map(([n,l])=>`<div><b>${n}</b><span>${l}</span></div>`).join('');
+  const mx=Math.max(1,...s.dist),today=s.last===dayNo()?s.lastRow:null;
+  $('dist').innerHTML=s.dist.map((n,i)=>`<div>${i+1}<i class="${i===today?'now':''}" style="width:${8+n/mx*88}%">${n}</i></div>`).join('');
+  const sv=store.get('fl-daily',null),done=sv&&sv.day===dayNo()&&(sv.guesses.includes(dailyWord(dayNo()))||sv.guesses.length===ROWS);
+  $('shareBtn').disabled=!done;$('shareBtn').style.opacity=done?1:.4;
+  $('stats').showModal();
+}
+$('statsBtn').onclick=openStats;
+$('closeStats').onclick=()=>$('stats').close();
+$('stats').addEventListener('click',e=>{if(e.target===$('stats'))$('stats').close()});
+$('shareBtn').onclick=()=>{
+  const sv=store.get('fl-daily',null);if(!sv)return;const a=dailyWord(sv.day);
+  const won=sv.guesses.includes(a);
+  const txt=`Five Letters #${sv.day+1} ${won?sv.guesses.indexOf(a)+1:'X'}/6\n\n`+sv.guesses.map(g=>score(g,a).map(r=>({hit:'🟩',near:'🟨',miss:'⬛'})[r]).join('')).join('\n')+`\n${location.origin}/games/${SLUG}/`;
+  (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{$('shareBtn').textContent='Copied!';setTimeout(()=>$('shareBtn').textContent='Share',1500)}).catch(()=>prompt('Copy your result:',txt));
+};
+
+{const fb=$('favBtn');const draw=()=>{const on=Recess.isFav(SLUG);fb.setAttribute('aria-pressed',String(on));$('favTxt').textContent=on?'In My Recess':'Add to My Recess'};draw();fb.onclick=()=>{Recess.toggleFav(SLUG);draw()}}
+$('yr').textContent=new Date().getFullYear();
+setMode('daily');
+}
+</script>
+</body>
+</html>
