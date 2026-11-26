@@ -1,0 +1,691 @@
+[
+  {
+    "id": "mov-pixar",
+    "text": "Name a Pixar feature film released up to 2025.",
+    "category": "Movies",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "Toy Story",
+        "rarity": "common"
+      },
+      {
+        "name": "Finding Nemo",
+        "rarity": "common"
+      },
+      {
+        "name": "Cars",
+        "rarity": "common"
+      },
+      {
+        "name": "Up",
+        "rarity": "common"
+      },
+      {
+        "name": "The Incredibles",
+        "rarity": "common",
+        "aliases": [
+          "Incredibles"
+        ]
+      },
+      {
+        "name": "Monsters, Inc.",
+        "rarity": "common",
+        "aliases": [
+          "Monsters Inc"
+        ]
+      },
+      {
+        "name": "Inside Out",
+        "rarity": "common"
+      },
+      {
+        "name": "Ratatouille",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "WALL-E",
+        "rarity": "uncommon",
+        "aliases": [
+          "Wall E"
+        ]
+      },
+      {
+        "name": "Coco",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Toy Story 2",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Toy Story 3",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Toy Story 4",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Brave",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Finding Dory",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Incredibles 2",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Inside Out 2",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Monsters University",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Cars 2",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Cars 3",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Soul",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Luca",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "A Bug's Life",
+        "rarity": "notable",
+        "aliases": [
+          "Bugs Life"
+        ]
+      },
+      {
+        "name": "Turning Red",
+        "rarity": "notable"
+      },
+      {
+        "name": "Onward",
+        "rarity": "notable"
+      },
+      {
+        "name": "Elemental",
+        "rarity": "notable"
+      },
+      {
+        "name": "Lightyear",
+        "rarity": "notable"
+      },
+      {
+        "name": "The Good Dinosaur",
+        "rarity": "rare"
+      },
+      {
+        "name": "Elio",
+        "rarity": "legendary"
+      }
+    ],
+    "reject": [
+      "Shrek",
+      "Frozen",
+      "Moana",
+      "Madagascar",
+      "Zootopia",
+      "Tangled",
+      "Encanto",
+      "Kung Fu Panda",
+      "Despicable Me",
+      "Ice Age",
+      "Antz",
+      "Minions",
+      "Shark Tale"
+    ]
+  },
+  {
+    "id": "mov-star-wars",
+    "text": "Name a live-action Star Wars theatrical film.",
+    "category": "Movies",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "A New Hope",
+        "rarity": "common",
+        "aliases": [
+          "Star Wars",
+          "Episode 4",
+          "Episode IV",
+          "Star Wars Episode IV"
+        ]
+      },
+      {
+        "name": "The Empire Strikes Back",
+        "rarity": "common",
+        "aliases": [
+          "Empire Strikes Back",
+          "Episode 5",
+          "Episode V"
+        ]
+      },
+      {
+        "name": "Return of the Jedi",
+        "rarity": "common",
+        "aliases": [
+          "Episode 6",
+          "Episode VI"
+        ]
+      },
+      {
+        "name": "The Phantom Menace",
+        "rarity": "uncommon",
+        "aliases": [
+          "Phantom Menace",
+          "Episode 1",
+          "Episode I"
+        ]
+      },
+      {
+        "name": "Revenge of the Sith",
+        "rarity": "uncommon",
+        "aliases": [
+          "Episode 3",
+          "Episode III"
+        ]
+      },
+      {
+        "name": "The Force Awakens",
+        "rarity": "uncommon",
+        "aliases": [
+          "Force Awakens",
+          "Episode 7",
+          "Episode VII"
+        ]
+      },
+      {
+        "name": "Attack of the Clones",
+        "rarity": "notable",
+        "aliases": [
+          "Episode 2",
+          "Episode II"
+        ]
+      },
+      {
+        "name": "The Last Jedi",
+        "rarity": "notable",
+        "aliases": [
+          "Last Jedi",
+          "Episode 8",
+          "Episode VIII"
+        ]
+      },
+      {
+        "name": "The Rise of Skywalker",
+        "rarity": "notable",
+        "aliases": [
+          "Rise of Skywalker",
+          "Episode 9",
+          "Episode IX"
+        ]
+      },
+      {
+        "name": "Rogue One",
+        "rarity": "notable",
+        "aliases": [
+          "Rogue One: A Star Wars Story"
+        ]
+      },
+      {
+        "name": "Solo",
+        "rarity": "rare",
+        "aliases": [
+          "Solo: A Star Wars Story"
+        ]
+      }
+    ],
+    "reject": [
+      "The Clone Wars",
+      "Clone Wars",
+      "The Mandalorian",
+      "Andor",
+      "Spaceballs",
+      "Star Trek",
+      "Episode 10"
+    ]
+  },
+  {
+    "id": "mov-batman-actors",
+    "text": "Name an actor who played Batman in a live-action theatrical film.",
+    "category": "Movies",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Christian Bale",
+        "rarity": "common",
+        "aliases": [
+          "Bale"
+        ]
+      },
+      {
+        "name": "Michael Keaton",
+        "rarity": "common",
+        "aliases": [
+          "Keaton"
+        ]
+      },
+      {
+        "name": "Ben Affleck",
+        "rarity": "common",
+        "aliases": [
+          "Affleck"
+        ]
+      },
+      {
+        "name": "Robert Pattinson",
+        "rarity": "uncommon",
+        "aliases": [
+          "Pattinson"
+        ]
+      },
+      {
+        "name": "George Clooney",
+        "rarity": "uncommon",
+        "aliases": [
+          "Clooney"
+        ]
+      },
+      {
+        "name": "Val Kilmer",
+        "rarity": "notable",
+        "aliases": [
+          "Kilmer"
+        ]
+      },
+      {
+        "name": "Adam West",
+        "rarity": "rare",
+        "aliases": [
+          "West"
+        ]
+      },
+      {
+        "name": "Lewis Wilson",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Robert Lowery",
+        "rarity": "mythic",
+        "aliases": [
+          "Lowery"
+        ]
+      }
+    ],
+    "reject": [
+      "Kevin Conroy",
+      "Will Arnett",
+      "Heath Ledger",
+      "Jack Nicholson",
+      "Jared Leto",
+      "Joaquin Phoenix"
+    ]
+  },
+  {
+    "id": "mov-mcu-films",
+    "text": "Name a Marvel Cinematic Universe film released up to 2025.",
+    "category": "Movies",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Iron Man",
+        "rarity": "common",
+        "aliases": [
+          "Iron Man 1"
+        ]
+      },
+      {
+        "name": "The Avengers",
+        "rarity": "common",
+        "aliases": [
+          "Avengers"
+        ]
+      },
+      {
+        "name": "Avengers: Endgame",
+        "rarity": "common",
+        "aliases": [
+          "Endgame"
+        ]
+      },
+      {
+        "name": "Avengers: Infinity War",
+        "rarity": "common",
+        "aliases": [
+          "Infinity War"
+        ]
+      },
+      {
+        "name": "Black Panther",
+        "rarity": "common"
+      },
+      {
+        "name": "Guardians of the Galaxy",
+        "rarity": "common",
+        "aliases": [
+          "Guardians of the Galaxy Vol 1"
+        ]
+      },
+      {
+        "name": "Thor",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Captain America: The First Avenger",
+        "rarity": "uncommon",
+        "aliases": [
+          "The First Avenger",
+          "First Avenger",
+          "Captain America"
+        ]
+      },
+      {
+        "name": "Captain America: Civil War",
+        "rarity": "uncommon",
+        "aliases": [
+          "Civil War",
+          "Captain America 3"
+        ]
+      },
+      {
+        "name": "Captain America: The Winter Soldier",
+        "rarity": "uncommon",
+        "aliases": [
+          "Winter Soldier",
+          "Captain America 2"
+        ]
+      },
+      {
+        "name": "Doctor Strange",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Ant-Man",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Captain Marvel",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Spider-Man: No Way Home",
+        "rarity": "uncommon",
+        "aliases": [
+          "No Way Home"
+        ]
+      },
+      {
+        "name": "Spider-Man: Homecoming",
+        "rarity": "uncommon",
+        "aliases": [
+          "Homecoming"
+        ]
+      },
+      {
+        "name": "Spider-Man: Far From Home",
+        "rarity": "uncommon",
+        "aliases": [
+          "Far From Home"
+        ]
+      },
+      {
+        "name": "Iron Man 2",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Iron Man 3",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Thor: Ragnarok",
+        "rarity": "uncommon",
+        "aliases": [
+          "Ragnarok",
+          "Thor 3"
+        ]
+      },
+      {
+        "name": "Avengers: Age of Ultron",
+        "rarity": "uncommon",
+        "aliases": [
+          "Age of Ultron",
+          "Avengers 2"
+        ]
+      },
+      {
+        "name": "Deadpool & Wolverine",
+        "rarity": "uncommon",
+        "aliases": [
+          "Deadpool and Wolverine"
+        ]
+      },
+      {
+        "name": "Guardians of the Galaxy Vol. 2",
+        "rarity": "notable",
+        "aliases": [
+          "Guardians of the Galaxy 2",
+          "Guardians 2"
+        ]
+      },
+      {
+        "name": "Guardians of the Galaxy Vol. 3",
+        "rarity": "notable",
+        "aliases": [
+          "Guardians of the Galaxy 3",
+          "Guardians 3"
+        ]
+      },
+      {
+        "name": "Black Widow",
+        "rarity": "notable"
+      },
+      {
+        "name": "Shang-Chi and the Legend of the Ten Rings",
+        "rarity": "notable",
+        "aliases": [
+          "Shang-Chi",
+          "Shang Chi"
+        ]
+      },
+      {
+        "name": "Black Panther: Wakanda Forever",
+        "rarity": "notable",
+        "aliases": [
+          "Wakanda Forever",
+          "Black Panther 2"
+        ]
+      },
+      {
+        "name": "Thor: The Dark World",
+        "rarity": "notable",
+        "aliases": [
+          "The Dark World",
+          "Thor 2"
+        ]
+      },
+      {
+        "name": "Ant-Man and the Wasp",
+        "rarity": "notable",
+        "aliases": [
+          "Ant-Man 2"
+        ]
+      },
+      {
+        "name": "Thor: Love and Thunder",
+        "rarity": "notable",
+        "aliases": [
+          "Love and Thunder",
+          "Thor 4"
+        ]
+      },
+      {
+        "name": "Doctor Strange in the Multiverse of Madness",
+        "rarity": "notable",
+        "aliases": [
+          "Multiverse of Madness",
+          "Doctor Strange 2"
+        ]
+      },
+      {
+        "name": "The Fantastic Four: First Steps",
+        "rarity": "notable",
+        "aliases": [
+          "Fantastic Four: First Steps",
+          "First Steps"
+        ]
+      },
+      {
+        "name": "Thunderbolts*",
+        "rarity": "notable",
+        "aliases": [
+          "Thunderbolts"
+        ]
+      },
+      {
+        "name": "Eternals",
+        "rarity": "rare",
+        "aliases": [
+          "The Eternals"
+        ]
+      },
+      {
+        "name": "The Marvels",
+        "rarity": "rare"
+      },
+      {
+        "name": "Ant-Man and the Wasp: Quantumania",
+        "rarity": "rare",
+        "aliases": [
+          "Quantumania",
+          "Ant-Man 3"
+        ]
+      },
+      {
+        "name": "Captain America: Brave New World",
+        "rarity": "rare",
+        "aliases": [
+          "Brave New World",
+          "Captain America 4"
+        ]
+      },
+      {
+        "name": "The Incredible Hulk",
+        "rarity": "legendary",
+        "aliases": [
+          "Incredible Hulk"
+        ]
+      }
+    ],
+    "reject": [
+      "Spider-Man",
+      "Deadpool",
+      "Deadpool 2",
+      "Venom",
+      "Logan",
+      "X-Men",
+      "Hulk",
+      "Fantastic Four",
+      "Morbius",
+      "Madame Web",
+      "Kraven the Hunter",
+      "Avengers: Doomsday",
+      "Daredevil",
+      "Elektra",
+      "Blade",
+      "Ghost Rider",
+      "The Amazing Spider-Man",
+      "Fantastic 4"
+    ]
+  },
+  {
+    "id": "mov-nolan-films",
+    "text": "Name a feature film directed by Christopher Nolan, released up to 2025.",
+    "category": "Movies",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Inception",
+        "rarity": "common"
+      },
+      {
+        "name": "Interstellar",
+        "rarity": "common"
+      },
+      {
+        "name": "The Dark Knight",
+        "rarity": "common",
+        "aliases": [
+          "Dark Knight"
+        ]
+      },
+      {
+        "name": "Oppenheimer",
+        "rarity": "common"
+      },
+      {
+        "name": "Dunkirk",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Tenet",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Batman Begins",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "The Dark Knight Rises",
+        "rarity": "uncommon",
+        "aliases": [
+          "Dark Knight Rises"
+        ]
+      },
+      {
+        "name": "Memento",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "The Prestige",
+        "rarity": "uncommon",
+        "aliases": [
+          "Prestige"
+        ]
+      },
+      {
+        "name": "Insomnia",
+        "rarity": "rare"
+      },
+      {
+        "name": "Following",
+        "rarity": "mythic"
+      }
+    ],
+    "reject": [
+      "The Odyssey",
+      "Odyssey",
+      "Man of Steel",
+      "Joker",
+      "Shutter Island",
+      "Fight Club",
+      "Gravity",
+      "Arrival",
+      "Blade Runner 2049"
+    ]
+  }
+]

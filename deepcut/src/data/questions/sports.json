@@ -1,0 +1,913 @@
+[
+  {
+    "id": "spo-world-cup-winners",
+    "text": "Name a country that has won the men's FIFA World Cup.",
+    "category": "Sports",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Brazil",
+        "rarity": "common"
+      },
+      {
+        "name": "Germany",
+        "rarity": "common",
+        "aliases": [
+          "West Germany"
+        ]
+      },
+      {
+        "name": "Argentina",
+        "rarity": "common"
+      },
+      {
+        "name": "France",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Italy",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Spain",
+        "rarity": "notable"
+      },
+      {
+        "name": "England",
+        "rarity": "rare"
+      },
+      {
+        "name": "Uruguay",
+        "rarity": "mythic"
+      }
+    ],
+    "reject": [
+      "Netherlands",
+      "Holland",
+      "Portugal",
+      "Croatia",
+      "Belgium",
+      "United Kingdom",
+      "UK",
+      "Great Britain",
+      "Mexico",
+      "USA",
+      "Hungary"
+    ]
+  },
+  {
+    "id": "spo-nba-teams",
+    "text": "Name a current NBA team.",
+    "category": "Sports",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "Los Angeles Lakers",
+        "rarity": "common",
+        "aliases": [
+          "Lakers",
+          "LA Lakers"
+        ]
+      },
+      {
+        "name": "Boston Celtics",
+        "rarity": "common",
+        "aliases": [
+          "Celtics"
+        ]
+      },
+      {
+        "name": "Chicago Bulls",
+        "rarity": "common",
+        "aliases": [
+          "Bulls"
+        ]
+      },
+      {
+        "name": "Golden State Warriors",
+        "rarity": "common",
+        "aliases": [
+          "Warriors",
+          "Golden State"
+        ]
+      },
+      {
+        "name": "New York Knicks",
+        "rarity": "common",
+        "aliases": [
+          "Knicks"
+        ]
+      },
+      {
+        "name": "Miami Heat",
+        "rarity": "common",
+        "aliases": [
+          "Heat"
+        ]
+      },
+      {
+        "name": "San Antonio Spurs",
+        "rarity": "uncommon",
+        "aliases": [
+          "Spurs"
+        ]
+      },
+      {
+        "name": "Cleveland Cavaliers",
+        "rarity": "uncommon",
+        "aliases": [
+          "Cavaliers",
+          "Cavs"
+        ]
+      },
+      {
+        "name": "Houston Rockets",
+        "rarity": "uncommon",
+        "aliases": [
+          "Rockets"
+        ]
+      },
+      {
+        "name": "Dallas Mavericks",
+        "rarity": "uncommon",
+        "aliases": [
+          "Mavericks",
+          "Mavs"
+        ]
+      },
+      {
+        "name": "Brooklyn Nets",
+        "rarity": "uncommon",
+        "aliases": [
+          "Nets"
+        ]
+      },
+      {
+        "name": "Philadelphia 76ers",
+        "rarity": "uncommon",
+        "aliases": [
+          "76ers",
+          "Sixers"
+        ]
+      },
+      {
+        "name": "Phoenix Suns",
+        "rarity": "uncommon",
+        "aliases": [
+          "Suns"
+        ]
+      },
+      {
+        "name": "Milwaukee Bucks",
+        "rarity": "uncommon",
+        "aliases": [
+          "Bucks"
+        ]
+      },
+      {
+        "name": "Denver Nuggets",
+        "rarity": "uncommon",
+        "aliases": [
+          "Nuggets"
+        ]
+      },
+      {
+        "name": "Toronto Raptors",
+        "rarity": "uncommon",
+        "aliases": [
+          "Raptors"
+        ]
+      },
+      {
+        "name": "Los Angeles Clippers",
+        "rarity": "notable",
+        "aliases": [
+          "Clippers",
+          "LA Clippers"
+        ]
+      },
+      {
+        "name": "Oklahoma City Thunder",
+        "rarity": "notable",
+        "aliases": [
+          "Thunder",
+          "OKC",
+          "OKC Thunder"
+        ]
+      },
+      {
+        "name": "Portland Trail Blazers",
+        "rarity": "notable",
+        "aliases": [
+          "Trail Blazers",
+          "Blazers"
+        ]
+      },
+      {
+        "name": "Detroit Pistons",
+        "rarity": "notable",
+        "aliases": [
+          "Pistons"
+        ]
+      },
+      {
+        "name": "Atlanta Hawks",
+        "rarity": "notable",
+        "aliases": [
+          "Hawks"
+        ]
+      },
+      {
+        "name": "Utah Jazz",
+        "rarity": "rare",
+        "aliases": [
+          "Jazz"
+        ]
+      },
+      {
+        "name": "Orlando Magic",
+        "rarity": "rare",
+        "aliases": [
+          "Magic"
+        ]
+      },
+      {
+        "name": "Minnesota Timberwolves",
+        "rarity": "rare",
+        "aliases": [
+          "Timberwolves",
+          "Wolves"
+        ]
+      },
+      {
+        "name": "Indiana Pacers",
+        "rarity": "rare",
+        "aliases": [
+          "Pacers"
+        ]
+      },
+      {
+        "name": "Memphis Grizzlies",
+        "rarity": "rare",
+        "aliases": [
+          "Grizzlies"
+        ]
+      },
+      {
+        "name": "Sacramento Kings",
+        "rarity": "rare",
+        "aliases": [
+          "Kings"
+        ]
+      },
+      {
+        "name": "Charlotte Hornets",
+        "rarity": "legendary",
+        "aliases": [
+          "Hornets"
+        ]
+      },
+      {
+        "name": "New Orleans Pelicans",
+        "rarity": "legendary",
+        "aliases": [
+          "Pelicans"
+        ]
+      },
+      {
+        "name": "Washington Wizards",
+        "rarity": "mythic",
+        "aliases": [
+          "Wizards"
+        ]
+      }
+    ],
+    "reject": [
+      "Seattle SuperSonics",
+      "SuperSonics",
+      "Sonics",
+      "New Jersey Nets",
+      "Vancouver Grizzlies",
+      "Charlotte Bobcats",
+      "Bobcats",
+      "Washington Bullets",
+      "Bullets",
+      "Harlem Globetrotters",
+      "Los Angeles Sparks"
+    ]
+  },
+  {
+    "id": "spo-paris-2024-sports",
+    "text": "Name a sport contested at the Paris 2024 Summer Olympics.",
+    "category": "Sports",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Swimming",
+        "rarity": "common"
+      },
+      {
+        "name": "Athletics",
+        "rarity": "common",
+        "aliases": [
+          "Track and field",
+          "Track"
+        ]
+      },
+      {
+        "name": "Gymnastics",
+        "rarity": "common",
+        "aliases": [
+          "Artistic gymnastics"
+        ]
+      },
+      {
+        "name": "Basketball",
+        "rarity": "common"
+      },
+      {
+        "name": "Football",
+        "rarity": "common",
+        "aliases": [
+          "Soccer"
+        ]
+      },
+      {
+        "name": "Tennis",
+        "rarity": "common"
+      },
+      {
+        "name": "Boxing",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Cycling",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Volleyball",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Diving",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Fencing",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Rowing",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Wrestling",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Judo",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Golf",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Table tennis",
+        "rarity": "uncommon",
+        "aliases": [
+          "Ping pong"
+        ]
+      },
+      {
+        "name": "Archery",
+        "rarity": "notable"
+      },
+      {
+        "name": "Badminton",
+        "rarity": "notable"
+      },
+      {
+        "name": "Beach volleyball",
+        "rarity": "notable"
+      },
+      {
+        "name": "Handball",
+        "rarity": "notable"
+      },
+      {
+        "name": "Weightlifting",
+        "rarity": "notable"
+      },
+      {
+        "name": "Equestrian",
+        "rarity": "notable",
+        "aliases": [
+          "Horse riding"
+        ]
+      },
+      {
+        "name": "Taekwondo",
+        "rarity": "notable"
+      },
+      {
+        "name": "Water polo",
+        "rarity": "notable"
+      },
+      {
+        "name": "Skateboarding",
+        "rarity": "notable"
+      },
+      {
+        "name": "Surfing",
+        "rarity": "notable"
+      },
+      {
+        "name": "Rugby sevens",
+        "rarity": "notable",
+        "aliases": [
+          "Rugby",
+          "Rugby 7s"
+        ]
+      },
+      {
+        "name": "Sailing",
+        "rarity": "notable"
+      },
+      {
+        "name": "Shooting",
+        "rarity": "notable"
+      },
+      {
+        "name": "Triathlon",
+        "rarity": "notable"
+      },
+      {
+        "name": "Field hockey",
+        "rarity": "notable",
+        "aliases": [
+          "Hockey"
+        ]
+      },
+      {
+        "name": "Sport climbing",
+        "rarity": "rare",
+        "aliases": [
+          "Climbing",
+          "Rock climbing"
+        ]
+      },
+      {
+        "name": "Canoeing",
+        "rarity": "rare",
+        "aliases": [
+          "Canoe",
+          "Kayaking",
+          "Canoe sprint",
+          "Canoe slalom"
+        ]
+      },
+      {
+        "name": "Breaking",
+        "rarity": "rare",
+        "aliases": [
+          "Breakdancing",
+          "Breakdance"
+        ]
+      },
+      {
+        "name": "Trampoline",
+        "rarity": "rare"
+      },
+      {
+        "name": "BMX",
+        "rarity": "rare"
+      },
+      {
+        "name": "Mountain biking",
+        "rarity": "rare",
+        "aliases": [
+          "Mountain bike"
+        ]
+      },
+      {
+        "name": "Modern pentathlon",
+        "rarity": "legendary",
+        "aliases": [
+          "Pentathlon"
+        ]
+      },
+      {
+        "name": "Artistic swimming",
+        "rarity": "legendary",
+        "aliases": [
+          "Synchronized swimming",
+          "Synchronised swimming"
+        ]
+      },
+      {
+        "name": "Rhythmic gymnastics",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Marathon swimming",
+        "rarity": "mythic",
+        "aliases": [
+          "Open water swimming"
+        ]
+      }
+    ],
+    "reject": [
+      "Baseball",
+      "Softball",
+      "Karate",
+      "Cricket",
+      "Lacrosse",
+      "Squash",
+      "Flag football",
+      "Ice hockey",
+      "Skiing",
+      "Figure skating",
+      "Curling",
+      "Snowboarding",
+      "American football",
+      "Bowling",
+      "Darts",
+      "Chess",
+      "Polo"
+    ]
+  },
+  {
+    "id": "spo-nfl-teams",
+    "text": "Name a current NFL team.",
+    "category": "Sports",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "Dallas Cowboys",
+        "rarity": "common",
+        "aliases": [
+          "Cowboys"
+        ]
+      },
+      {
+        "name": "New England Patriots",
+        "rarity": "common",
+        "aliases": [
+          "Patriots",
+          "Pats"
+        ]
+      },
+      {
+        "name": "Green Bay Packers",
+        "rarity": "common",
+        "aliases": [
+          "Packers"
+        ]
+      },
+      {
+        "name": "Pittsburgh Steelers",
+        "rarity": "common",
+        "aliases": [
+          "Steelers"
+        ]
+      },
+      {
+        "name": "Kansas City Chiefs",
+        "rarity": "common",
+        "aliases": [
+          "Chiefs"
+        ]
+      },
+      {
+        "name": "Philadelphia Eagles",
+        "rarity": "common",
+        "aliases": [
+          "Eagles"
+        ]
+      },
+      {
+        "name": "San Francisco 49ers",
+        "rarity": "common",
+        "aliases": [
+          "49ers",
+          "Niners",
+          "Forty Niners"
+        ]
+      },
+      {
+        "name": "New York Giants",
+        "rarity": "uncommon",
+        "aliases": [
+          "Giants"
+        ]
+      },
+      {
+        "name": "Chicago Bears",
+        "rarity": "uncommon",
+        "aliases": [
+          "Bears"
+        ]
+      },
+      {
+        "name": "Las Vegas Raiders",
+        "rarity": "uncommon",
+        "aliases": [
+          "Raiders"
+        ]
+      },
+      {
+        "name": "Denver Broncos",
+        "rarity": "uncommon",
+        "aliases": [
+          "Broncos"
+        ]
+      },
+      {
+        "name": "Seattle Seahawks",
+        "rarity": "uncommon",
+        "aliases": [
+          "Seahawks"
+        ]
+      },
+      {
+        "name": "Miami Dolphins",
+        "rarity": "uncommon",
+        "aliases": [
+          "Dolphins"
+        ]
+      },
+      {
+        "name": "New York Jets",
+        "rarity": "uncommon",
+        "aliases": [
+          "Jets"
+        ]
+      },
+      {
+        "name": "Baltimore Ravens",
+        "rarity": "uncommon",
+        "aliases": [
+          "Ravens"
+        ]
+      },
+      {
+        "name": "Buffalo Bills",
+        "rarity": "uncommon",
+        "aliases": [
+          "Bills"
+        ]
+      },
+      {
+        "name": "Los Angeles Rams",
+        "rarity": "notable",
+        "aliases": [
+          "Rams",
+          "LA Rams"
+        ]
+      },
+      {
+        "name": "Detroit Lions",
+        "rarity": "notable",
+        "aliases": [
+          "Lions"
+        ]
+      },
+      {
+        "name": "Tampa Bay Buccaneers",
+        "rarity": "notable",
+        "aliases": [
+          "Buccaneers",
+          "Bucs"
+        ]
+      },
+      {
+        "name": "Minnesota Vikings",
+        "rarity": "notable",
+        "aliases": [
+          "Vikings"
+        ]
+      },
+      {
+        "name": "New Orleans Saints",
+        "rarity": "notable",
+        "aliases": [
+          "Saints"
+        ]
+      },
+      {
+        "name": "Atlanta Falcons",
+        "rarity": "notable",
+        "aliases": [
+          "Falcons"
+        ]
+      },
+      {
+        "name": "Los Angeles Chargers",
+        "rarity": "notable",
+        "aliases": [
+          "Chargers",
+          "LA Chargers"
+        ]
+      },
+      {
+        "name": "Cincinnati Bengals",
+        "rarity": "rare",
+        "aliases": [
+          "Bengals"
+        ]
+      },
+      {
+        "name": "Cleveland Browns",
+        "rarity": "rare",
+        "aliases": [
+          "Browns"
+        ]
+      },
+      {
+        "name": "Indianapolis Colts",
+        "rarity": "rare",
+        "aliases": [
+          "Colts"
+        ]
+      },
+      {
+        "name": "Arizona Cardinals",
+        "rarity": "rare",
+        "aliases": [
+          "Cardinals"
+        ]
+      },
+      {
+        "name": "Washington Commanders",
+        "rarity": "rare",
+        "aliases": [
+          "Commanders"
+        ]
+      },
+      {
+        "name": "Carolina Panthers",
+        "rarity": "rare",
+        "aliases": [
+          "Panthers"
+        ]
+      },
+      {
+        "name": "Jacksonville Jaguars",
+        "rarity": "legendary",
+        "aliases": [
+          "Jaguars",
+          "Jags"
+        ]
+      },
+      {
+        "name": "Tennessee Titans",
+        "rarity": "legendary",
+        "aliases": [
+          "Titans"
+        ]
+      },
+      {
+        "name": "Houston Texans",
+        "rarity": "mythic",
+        "aliases": [
+          "Texans"
+        ]
+      }
+    ],
+    "reject": [
+      "Oakland Raiders",
+      "San Diego Chargers",
+      "St. Louis Rams",
+      "Washington Redskins",
+      "Redskins",
+      "Washington Football Team",
+      "Houston Oilers",
+      "Oilers",
+      "Baltimore Colts",
+      "Los Angeles Raiders"
+    ]
+  },
+  {
+    "id": "spo-summer-olympic-hosts",
+    "text": "Name a country that has hosted the Summer Olympic Games (up to 2024).",
+    "category": "Sports",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "United States",
+        "rarity": "common",
+        "aliases": [
+          "USA",
+          "US",
+          "United States of America",
+          "America"
+        ]
+      },
+      {
+        "name": "United Kingdom",
+        "rarity": "common",
+        "aliases": [
+          "UK",
+          "Great Britain",
+          "Britain",
+          "England"
+        ]
+      },
+      {
+        "name": "China",
+        "rarity": "common"
+      },
+      {
+        "name": "France",
+        "rarity": "common"
+      },
+      {
+        "name": "Greece",
+        "rarity": "common"
+      },
+      {
+        "name": "Japan",
+        "rarity": "common"
+      },
+      {
+        "name": "Australia",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Brazil",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Germany",
+        "rarity": "uncommon",
+        "aliases": [
+          "West Germany"
+        ]
+      },
+      {
+        "name": "Spain",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Italy",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Canada",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Mexico",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "South Korea",
+        "rarity": "notable",
+        "aliases": [
+          "Korea",
+          "Republic of Korea"
+        ]
+      },
+      {
+        "name": "Soviet Union",
+        "rarity": "notable",
+        "aliases": [
+          "USSR",
+          "Russia"
+        ]
+      },
+      {
+        "name": "Sweden",
+        "rarity": "rare"
+      },
+      {
+        "name": "Netherlands",
+        "rarity": "rare",
+        "aliases": [
+          "Holland"
+        ]
+      },
+      {
+        "name": "Finland",
+        "rarity": "rare"
+      },
+      {
+        "name": "Belgium",
+        "rarity": "legendary"
+      }
+    ],
+    "reject": [
+      "Norway",
+      "Switzerland",
+      "Austria",
+      "India",
+      "Qatar",
+      "South Africa",
+      "Argentina",
+      "Turkey",
+      "Egypt",
+      "Portugal"
+    ]
+  }
+]

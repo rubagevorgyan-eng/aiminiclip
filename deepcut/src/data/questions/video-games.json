@@ -1,0 +1,1322 @@
+[
+  {
+    "id": "vg-gen1-pokemon",
+    "text": "Name a Pokémon from the original 151 (Generation I).",
+    "category": "Video Games",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "Pikachu",
+        "rarity": "common"
+      },
+      {
+        "name": "Charizard",
+        "rarity": "common"
+      },
+      {
+        "name": "Bulbasaur",
+        "rarity": "common"
+      },
+      {
+        "name": "Squirtle",
+        "rarity": "common"
+      },
+      {
+        "name": "Charmander",
+        "rarity": "common"
+      },
+      {
+        "name": "Mewtwo",
+        "rarity": "common"
+      },
+      {
+        "name": "Mew",
+        "rarity": "common"
+      },
+      {
+        "name": "Eevee",
+        "rarity": "common"
+      },
+      {
+        "name": "Snorlax",
+        "rarity": "common"
+      },
+      {
+        "name": "Jigglypuff",
+        "rarity": "common"
+      },
+      {
+        "name": "Meowth",
+        "rarity": "common"
+      },
+      {
+        "name": "Psyduck",
+        "rarity": "common"
+      },
+      {
+        "name": "Gengar",
+        "rarity": "common"
+      },
+      {
+        "name": "Magikarp",
+        "rarity": "common"
+      },
+      {
+        "name": "Gyarados",
+        "rarity": "common"
+      },
+      {
+        "name": "Blastoise",
+        "rarity": "common"
+      },
+      {
+        "name": "Venusaur",
+        "rarity": "common"
+      },
+      {
+        "name": "Raichu",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Ivysaur",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Charmeleon",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Wartortle",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Caterpie",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Metapod",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Butterfree",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Weedle",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Pidgey",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Rattata",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Ekans",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Arbok",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Vulpix",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Ninetales",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Zubat",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Diglett",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Growlithe",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Arcanine",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Abra",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Alakazam",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Machamp",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Geodude",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Onix",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Slowpoke",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Cubone",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Lapras",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Ditto",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Vaporeon",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Jolteon",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Flareon",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Dragonite",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Articuno",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Zapdos",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Moltres",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Kakuna",
+        "rarity": "notable"
+      },
+      {
+        "name": "Beedrill",
+        "rarity": "notable"
+      },
+      {
+        "name": "Pidgeotto",
+        "rarity": "notable"
+      },
+      {
+        "name": "Pidgeot",
+        "rarity": "notable"
+      },
+      {
+        "name": "Raticate",
+        "rarity": "notable"
+      },
+      {
+        "name": "Spearow",
+        "rarity": "notable"
+      },
+      {
+        "name": "Sandshrew",
+        "rarity": "notable"
+      },
+      {
+        "name": "Clefairy",
+        "rarity": "notable"
+      },
+      {
+        "name": "Wigglytuff",
+        "rarity": "notable"
+      },
+      {
+        "name": "Golbat",
+        "rarity": "notable"
+      },
+      {
+        "name": "Oddish",
+        "rarity": "notable"
+      },
+      {
+        "name": "Dugtrio",
+        "rarity": "notable"
+      },
+      {
+        "name": "Persian",
+        "rarity": "notable"
+      },
+      {
+        "name": "Mankey",
+        "rarity": "notable"
+      },
+      {
+        "name": "Poliwag",
+        "rarity": "notable"
+      },
+      {
+        "name": "Kadabra",
+        "rarity": "notable"
+      },
+      {
+        "name": "Machop",
+        "rarity": "notable"
+      },
+      {
+        "name": "Machoke",
+        "rarity": "notable"
+      },
+      {
+        "name": "Bellsprout",
+        "rarity": "notable"
+      },
+      {
+        "name": "Tentacool",
+        "rarity": "notable"
+      },
+      {
+        "name": "Graveler",
+        "rarity": "notable"
+      },
+      {
+        "name": "Golem",
+        "rarity": "notable"
+      },
+      {
+        "name": "Ponyta",
+        "rarity": "notable"
+      },
+      {
+        "name": "Rapidash",
+        "rarity": "notable"
+      },
+      {
+        "name": "Slowbro",
+        "rarity": "notable"
+      },
+      {
+        "name": "Magnemite",
+        "rarity": "notable"
+      },
+      {
+        "name": "Haunter",
+        "rarity": "notable"
+      },
+      {
+        "name": "Gastly",
+        "rarity": "notable"
+      },
+      {
+        "name": "Voltorb",
+        "rarity": "notable"
+      },
+      {
+        "name": "Electrode",
+        "rarity": "notable"
+      },
+      {
+        "name": "Hitmonlee",
+        "rarity": "notable"
+      },
+      {
+        "name": "Hitmonchan",
+        "rarity": "notable"
+      },
+      {
+        "name": "Koffing",
+        "rarity": "notable"
+      },
+      {
+        "name": "Weezing",
+        "rarity": "notable"
+      },
+      {
+        "name": "Chansey",
+        "rarity": "notable"
+      },
+      {
+        "name": "Staryu",
+        "rarity": "notable"
+      },
+      {
+        "name": "Starmie",
+        "rarity": "notable"
+      },
+      {
+        "name": "Mr. Mime",
+        "rarity": "notable",
+        "aliases": [
+          "Mr Mime"
+        ]
+      },
+      {
+        "name": "Scyther",
+        "rarity": "notable"
+      },
+      {
+        "name": "Jynx",
+        "rarity": "notable"
+      },
+      {
+        "name": "Electabuzz",
+        "rarity": "notable"
+      },
+      {
+        "name": "Magmar",
+        "rarity": "notable"
+      },
+      {
+        "name": "Tauros",
+        "rarity": "notable"
+      },
+      {
+        "name": "Porygon",
+        "rarity": "notable"
+      },
+      {
+        "name": "Aerodactyl",
+        "rarity": "notable"
+      },
+      {
+        "name": "Dratini",
+        "rarity": "notable"
+      },
+      {
+        "name": "Dragonair",
+        "rarity": "notable"
+      },
+      {
+        "name": "Kabuto",
+        "rarity": "notable"
+      },
+      {
+        "name": "Omanyte",
+        "rarity": "notable"
+      },
+      {
+        "name": "Seel",
+        "rarity": "notable"
+      },
+      {
+        "name": "Fearow",
+        "rarity": "rare"
+      },
+      {
+        "name": "Sandslash",
+        "rarity": "rare"
+      },
+      {
+        "name": "Nidoran",
+        "rarity": "rare",
+        "aliases": [
+          "Nidoran female",
+          "Nidoran male"
+        ]
+      },
+      {
+        "name": "Nidorina",
+        "rarity": "rare"
+      },
+      {
+        "name": "Nidoqueen",
+        "rarity": "rare"
+      },
+      {
+        "name": "Nidorino",
+        "rarity": "rare"
+      },
+      {
+        "name": "Nidoking",
+        "rarity": "rare"
+      },
+      {
+        "name": "Clefable",
+        "rarity": "rare"
+      },
+      {
+        "name": "Gloom",
+        "rarity": "rare"
+      },
+      {
+        "name": "Vileplume",
+        "rarity": "rare"
+      },
+      {
+        "name": "Paras",
+        "rarity": "rare"
+      },
+      {
+        "name": "Venonat",
+        "rarity": "rare"
+      },
+      {
+        "name": "Primeape",
+        "rarity": "rare"
+      },
+      {
+        "name": "Golduck",
+        "rarity": "rare"
+      },
+      {
+        "name": "Poliwhirl",
+        "rarity": "rare"
+      },
+      {
+        "name": "Poliwrath",
+        "rarity": "rare"
+      },
+      {
+        "name": "Weepinbell",
+        "rarity": "rare"
+      },
+      {
+        "name": "Victreebel",
+        "rarity": "rare"
+      },
+      {
+        "name": "Tentacruel",
+        "rarity": "rare"
+      },
+      {
+        "name": "Magneton",
+        "rarity": "rare"
+      },
+      {
+        "name": "Farfetch'd",
+        "rarity": "rare",
+        "aliases": [
+          "Farfetchd"
+        ]
+      },
+      {
+        "name": "Doduo",
+        "rarity": "rare"
+      },
+      {
+        "name": "Grimer",
+        "rarity": "rare"
+      },
+      {
+        "name": "Muk",
+        "rarity": "rare"
+      },
+      {
+        "name": "Shellder",
+        "rarity": "rare"
+      },
+      {
+        "name": "Cloyster",
+        "rarity": "rare"
+      },
+      {
+        "name": "Drowzee",
+        "rarity": "rare"
+      },
+      {
+        "name": "Hypno",
+        "rarity": "rare"
+      },
+      {
+        "name": "Krabby",
+        "rarity": "rare"
+      },
+      {
+        "name": "Exeggutor",
+        "rarity": "rare"
+      },
+      {
+        "name": "Marowak",
+        "rarity": "rare"
+      },
+      {
+        "name": "Rhyhorn",
+        "rarity": "rare"
+      },
+      {
+        "name": "Rhydon",
+        "rarity": "rare"
+      },
+      {
+        "name": "Kangaskhan",
+        "rarity": "rare"
+      },
+      {
+        "name": "Horsea",
+        "rarity": "rare"
+      },
+      {
+        "name": "Goldeen",
+        "rarity": "rare"
+      },
+      {
+        "name": "Pinsir",
+        "rarity": "rare"
+      },
+      {
+        "name": "Kabutops",
+        "rarity": "rare"
+      },
+      {
+        "name": "Omastar",
+        "rarity": "rare"
+      },
+      {
+        "name": "Parasect",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Venomoth",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Dodrio",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Dewgong",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Kingler",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Exeggcute",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Lickitung",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Seadra",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Tangela",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Seaking",
+        "rarity": "mythic"
+      }
+    ],
+    "reject": [
+      "Togepi",
+      "Pichu",
+      "Lucario",
+      "Mimikyu",
+      "Greninja",
+      "Ash",
+      "Misty",
+      "Brock",
+      "Pikachu Libre",
+      "Raticate Alolan",
+      "Marill",
+      "Cleffa",
+      "Igglybuff",
+      "Steelix",
+      "Scizor",
+      "Espeon",
+      "Umbreon",
+      "Tyranitar",
+      "Lugia",
+      "Ho-Oh",
+      "Celebi"
+    ]
+  },
+  {
+    "id": "vg-home-consoles",
+    "text": "Name a commercially released home video game console (not a handheld).",
+    "category": "Video Games",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "PlayStation",
+        "rarity": "common",
+        "aliases": [
+          "PS1",
+          "PSX",
+          "PlayStation 1",
+          "PSOne"
+        ]
+      },
+      {
+        "name": "PlayStation 2",
+        "rarity": "common",
+        "aliases": [
+          "PS2"
+        ]
+      },
+      {
+        "name": "PlayStation 4",
+        "rarity": "common",
+        "aliases": [
+          "PS4"
+        ]
+      },
+      {
+        "name": "PlayStation 5",
+        "rarity": "common",
+        "aliases": [
+          "PS5"
+        ]
+      },
+      {
+        "name": "Nintendo Switch",
+        "rarity": "common",
+        "aliases": [
+          "Switch"
+        ]
+      },
+      {
+        "name": "Xbox 360",
+        "rarity": "common"
+      },
+      {
+        "name": "Wii",
+        "rarity": "common",
+        "aliases": [
+          "Nintendo Wii"
+        ]
+      },
+      {
+        "name": "PlayStation 3",
+        "rarity": "uncommon",
+        "aliases": [
+          "PS3"
+        ]
+      },
+      {
+        "name": "Xbox",
+        "rarity": "uncommon",
+        "aliases": [
+          "Original Xbox"
+        ]
+      },
+      {
+        "name": "Xbox One",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Xbox Series X",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Nintendo 64",
+        "rarity": "uncommon",
+        "aliases": [
+          "N64"
+        ]
+      },
+      {
+        "name": "Nintendo Entertainment System",
+        "rarity": "uncommon",
+        "aliases": [
+          "NES",
+          "Famicom",
+          "Family Computer"
+        ]
+      },
+      {
+        "name": "Super Nintendo",
+        "rarity": "uncommon",
+        "aliases": [
+          "SNES",
+          "Super Nintendo Entertainment System",
+          "Super Famicom"
+        ]
+      },
+      {
+        "name": "GameCube",
+        "rarity": "uncommon",
+        "aliases": [
+          "Nintendo GameCube"
+        ]
+      },
+      {
+        "name": "Wii U",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Nintendo Switch 2",
+        "rarity": "uncommon",
+        "aliases": [
+          "Switch 2"
+        ]
+      },
+      {
+        "name": "Xbox Series S",
+        "rarity": "notable"
+      },
+      {
+        "name": "Sega Genesis",
+        "rarity": "notable",
+        "aliases": [
+          "Genesis",
+          "Mega Drive",
+          "Sega Mega Drive"
+        ]
+      },
+      {
+        "name": "Dreamcast",
+        "rarity": "notable",
+        "aliases": [
+          "Sega Dreamcast"
+        ]
+      },
+      {
+        "name": "Atari 2600",
+        "rarity": "notable",
+        "aliases": [
+          "Atari VCS"
+        ]
+      },
+      {
+        "name": "Sega Saturn",
+        "rarity": "notable",
+        "aliases": [
+          "Saturn"
+        ]
+      },
+      {
+        "name": "Sega Master System",
+        "rarity": "rare",
+        "aliases": [
+          "Master System"
+        ]
+      },
+      {
+        "name": "Atari 7800",
+        "rarity": "rare"
+      },
+      {
+        "name": "Atari 5200",
+        "rarity": "rare"
+      },
+      {
+        "name": "Atari Jaguar",
+        "rarity": "rare",
+        "aliases": [
+          "Jaguar"
+        ]
+      },
+      {
+        "name": "Neo Geo",
+        "rarity": "rare",
+        "aliases": [
+          "Neo Geo AES"
+        ]
+      },
+      {
+        "name": "TurboGrafx-16",
+        "rarity": "rare",
+        "aliases": [
+          "TurboGrafx",
+          "PC Engine"
+        ]
+      },
+      {
+        "name": "ColecoVision",
+        "rarity": "rare"
+      },
+      {
+        "name": "Intellivision",
+        "rarity": "rare"
+      },
+      {
+        "name": "Magnavox Odyssey",
+        "rarity": "rare",
+        "aliases": [
+          "Odyssey"
+        ]
+      },
+      {
+        "name": "Ouya",
+        "rarity": "rare"
+      },
+      {
+        "name": "3DO",
+        "rarity": "legendary",
+        "aliases": [
+          "3DO Interactive Multiplayer"
+        ]
+      },
+      {
+        "name": "Philips CD-i",
+        "rarity": "legendary",
+        "aliases": [
+          "CD-i"
+        ]
+      },
+      {
+        "name": "Vectrex",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Fairchild Channel F",
+        "rarity": "legendary",
+        "aliases": [
+          "Channel F"
+        ]
+      }
+    ],
+    "reject": [
+      "Game Boy",
+      "Nintendo DS",
+      "3DS",
+      "Nintendo 3DS",
+      "PSP",
+      "PS Vita",
+      "PlayStation Vita",
+      "Game Gear",
+      "Steam Deck",
+      "Atari Lynx",
+      "Game Boy Advance",
+      "PlayStation 6",
+      "PS6",
+      "Xbox 720",
+      "Virtual Boy",
+      "Switch Lite"
+    ]
+  },
+  {
+    "id": "vg-smash-64",
+    "text": "Name a playable character in the original Super Smash Bros. on the Nintendo 64.",
+    "category": "Video Games",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Mario",
+        "rarity": "common"
+      },
+      {
+        "name": "Pikachu",
+        "rarity": "common"
+      },
+      {
+        "name": "Link",
+        "rarity": "common"
+      },
+      {
+        "name": "Kirby",
+        "rarity": "common"
+      },
+      {
+        "name": "Donkey Kong",
+        "rarity": "uncommon",
+        "aliases": [
+          "DK"
+        ]
+      },
+      {
+        "name": "Yoshi",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Fox",
+        "rarity": "uncommon",
+        "aliases": [
+          "Fox McCloud"
+        ]
+      },
+      {
+        "name": "Samus",
+        "rarity": "uncommon",
+        "aliases": [
+          "Samus Aran"
+        ]
+      },
+      {
+        "name": "Luigi",
+        "rarity": "notable"
+      },
+      {
+        "name": "Captain Falcon",
+        "rarity": "notable",
+        "aliases": [
+          "Falcon"
+        ]
+      },
+      {
+        "name": "Jigglypuff",
+        "rarity": "rare"
+      },
+      {
+        "name": "Ness",
+        "rarity": "legendary"
+      }
+    ],
+    "reject": [
+      "Bowser",
+      "Peach",
+      "Princess Peach",
+      "Zelda",
+      "Sheik",
+      "Falco",
+      "Marth",
+      "Ganondorf",
+      "Mewtwo",
+      "Ice Climbers",
+      "Wario",
+      "Sonic",
+      "Master Hand"
+    ]
+  },
+  {
+    "id": "vg-gta-games",
+    "text": "Name a Grand Theft Auto game released up to 2025 (including expansions).",
+    "category": "Video Games",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Grand Theft Auto V",
+        "rarity": "common",
+        "aliases": [
+          "Grand Theft Auto 5",
+          "GTA V",
+          "GTA 5"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto: San Andreas",
+        "rarity": "common",
+        "aliases": [
+          "San Andreas",
+          "Grand Theft Auto San Andreas",
+          "GTA: San Andreas",
+          "GTA San Andreas"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto: Vice City",
+        "rarity": "common",
+        "aliases": [
+          "Vice City",
+          "Grand Theft Auto Vice City",
+          "GTA: Vice City",
+          "GTA Vice City"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto IV",
+        "rarity": "uncommon",
+        "aliases": [
+          "Grand Theft Auto 4",
+          "GTA IV",
+          "GTA 4"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto III",
+        "rarity": "uncommon",
+        "aliases": [
+          "Grand Theft Auto 3",
+          "GTA III",
+          "GTA 3"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto: Liberty City Stories",
+        "rarity": "notable",
+        "aliases": [
+          "Liberty City Stories",
+          "Grand Theft Auto Liberty City Stories",
+          "GTA: Liberty City Stories",
+          "GTA Liberty City Stories"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto: Vice City Stories",
+        "rarity": "notable",
+        "aliases": [
+          "Vice City Stories",
+          "Grand Theft Auto Vice City Stories",
+          "GTA: Vice City Stories",
+          "GTA Vice City Stories"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto: Chinatown Wars",
+        "rarity": "notable",
+        "aliases": [
+          "Chinatown Wars",
+          "Grand Theft Auto Chinatown Wars",
+          "GTA: Chinatown Wars",
+          "GTA Chinatown Wars"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto Online",
+        "rarity": "notable",
+        "aliases": [
+          "GTA Online"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto 2",
+        "rarity": "rare",
+        "aliases": [
+          "Grand Theft Auto II",
+          "GTA 2",
+          "GTA II"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto Advance",
+        "rarity": "rare",
+        "aliases": [
+          "GTA Advance"
+        ]
+      },
+      {
+        "name": "The Lost and Damned",
+        "rarity": "rare",
+        "aliases": [
+          "Grand Theft Auto IV: The Lost and Damned",
+          "Lost and Damned",
+          "GTA IV: The Lost and Damned"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto (1997)",
+        "rarity": "legendary",
+        "aliases": [
+          "Grand Theft Auto 1",
+          "Grand Theft Auto 1997",
+          "GTA (1997)",
+          "GTA 1",
+          "GTA 1997"
+        ]
+      },
+      {
+        "name": "The Ballad of Gay Tony",
+        "rarity": "legendary",
+        "aliases": [
+          "Ballad of Gay Tony",
+          "Grand Theft Auto: The Ballad of Gay Tony",
+          "GTA: The Ballad of Gay Tony"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto: London 1969",
+        "rarity": "mythic",
+        "aliases": [
+          "London 1969",
+          "Grand Theft Auto London 1969",
+          "GTA: London 1969",
+          "GTA London 1969"
+        ]
+      },
+      {
+        "name": "Grand Theft Auto: London 1961",
+        "rarity": "mythic",
+        "aliases": [
+          "London 1961",
+          "Grand Theft Auto London 1961",
+          "GTA: London 1961",
+          "GTA London 1961"
+        ]
+      }
+    ],
+    "reject": [
+      "Grand Theft Auto VI",
+      "Grand Theft Auto 6",
+      "GTA VI",
+      "GTA 6",
+      "Grand Theft Auto",
+      "GTA",
+      "Red Dead Redemption",
+      "Bully",
+      "Saints Row",
+      "Watch Dogs",
+      "Mafia",
+      "Sleeping Dogs"
+    ]
+  },
+  {
+    "id": "vg-zelda-games",
+    "text": "Name a main-series The Legend of Zelda game.",
+    "category": "Video Games",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Breath of the Wild",
+        "rarity": "common",
+        "aliases": [
+          "BOTW",
+          "Legend of Zelda: Breath of the Wild"
+        ]
+      },
+      {
+        "name": "Ocarina of Time",
+        "rarity": "common",
+        "aliases": [
+          "OOT",
+          "Legend of Zelda: Ocarina of Time"
+        ]
+      },
+      {
+        "name": "Tears of the Kingdom",
+        "rarity": "common",
+        "aliases": [
+          "TOTK",
+          "Legend of Zelda: Tears of the Kingdom"
+        ]
+      },
+      {
+        "name": "Majora's Mask",
+        "rarity": "uncommon",
+        "aliases": [
+          "Majoras Mask",
+          "MM"
+        ]
+      },
+      {
+        "name": "The Wind Waker",
+        "rarity": "uncommon",
+        "aliases": [
+          "Wind Waker",
+          "TWW"
+        ]
+      },
+      {
+        "name": "Twilight Princess",
+        "rarity": "uncommon",
+        "aliases": [
+          "TP"
+        ]
+      },
+      {
+        "name": "A Link to the Past",
+        "rarity": "uncommon",
+        "aliases": [
+          "Link to the Past",
+          "LTTP",
+          "ALTTP"
+        ]
+      },
+      {
+        "name": "Link's Awakening",
+        "rarity": "uncommon",
+        "aliases": [
+          "Links Awakening",
+          "LA"
+        ]
+      },
+      {
+        "name": "Skyward Sword",
+        "rarity": "uncommon",
+        "aliases": [
+          "SS"
+        ]
+      },
+      {
+        "name": "The Legend of Zelda (1986)",
+        "rarity": "notable",
+        "aliases": [
+          "Legend of Zelda 1",
+          "Zelda 1",
+          "Zelda NES",
+          "Legend of Zelda NES",
+          "Legend of Zelda 1986"
+        ]
+      },
+      {
+        "name": "The Minish Cap",
+        "rarity": "notable",
+        "aliases": [
+          "Minish Cap"
+        ]
+      },
+      {
+        "name": "A Link Between Worlds",
+        "rarity": "notable",
+        "aliases": [
+          "Link Between Worlds",
+          "ALBW"
+        ]
+      },
+      {
+        "name": "Echoes of Wisdom",
+        "rarity": "notable"
+      },
+      {
+        "name": "Zelda II: The Adventure of Link",
+        "rarity": "notable",
+        "aliases": [
+          "Adventure of Link",
+          "Zelda 2",
+          "Zelda II"
+        ]
+      },
+      {
+        "name": "Phantom Hourglass",
+        "rarity": "rare"
+      },
+      {
+        "name": "Spirit Tracks",
+        "rarity": "rare"
+      },
+      {
+        "name": "Oracle of Seasons",
+        "rarity": "rare"
+      },
+      {
+        "name": "Oracle of Ages",
+        "rarity": "rare"
+      },
+      {
+        "name": "Four Swords Adventures",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Tri Force Heroes",
+        "rarity": "legendary",
+        "aliases": [
+          "Triforce Heroes"
+        ]
+      },
+      {
+        "name": "Four Swords",
+        "rarity": "mythic",
+        "aliases": [
+          "A Link to the Past & Four Swords"
+        ]
+      }
+    ],
+    "ignore": [
+      "legend",
+      "of",
+      "zelda"
+    ],
+    "reject": [
+      "Hyrule Warriors",
+      "Age of Calamity",
+      "Cadence of Hyrule",
+      "Link: The Faces of Evil",
+      "Zelda: The Wand of Gamelon",
+      "Wand of Gamelon",
+      "Faces of Evil",
+      "Zelda",
+      "Legend of Zelda",
+      "Link",
+      "Ganon"
+    ]
+  }
+]

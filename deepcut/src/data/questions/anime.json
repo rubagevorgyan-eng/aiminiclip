@@ -1,0 +1,538 @@
+[
+  {
+    "id": "ani-straw-hats",
+    "text": "Name a member of the Straw Hat Pirates in One Piece.",
+    "category": "Anime",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "Monkey D. Luffy",
+        "rarity": "common",
+        "aliases": [
+          "Luffy"
+        ]
+      },
+      {
+        "name": "Roronoa Zoro",
+        "rarity": "common",
+        "aliases": [
+          "Zoro",
+          "Zolo"
+        ]
+      },
+      {
+        "name": "Nami",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Sanji",
+        "rarity": "uncommon",
+        "aliases": [
+          "Vinsmoke Sanji"
+        ]
+      },
+      {
+        "name": "Usopp",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Tony Tony Chopper",
+        "rarity": "notable",
+        "aliases": [
+          "Chopper"
+        ]
+      },
+      {
+        "name": "Nico Robin",
+        "rarity": "notable",
+        "aliases": [
+          "Robin"
+        ]
+      },
+      {
+        "name": "Franky",
+        "rarity": "rare",
+        "aliases": [
+          "Cutty Flam"
+        ]
+      },
+      {
+        "name": "Brook",
+        "rarity": "rare"
+      },
+      {
+        "name": "Jinbe",
+        "rarity": "legendary",
+        "aliases": [
+          "Jimbei",
+          "Jinbei"
+        ]
+      }
+    ],
+    "reject": [
+      "Shanks",
+      "Ace",
+      "Portgas D. Ace",
+      "Vivi",
+      "Buggy",
+      "Sabo",
+      "Boa Hancock",
+      "Law",
+      "Trafalgar Law",
+      "Garp",
+      "Whitebeard",
+      "Going Merry"
+    ]
+  },
+  {
+    "id": "ani-ghibli-films",
+    "text": "Name a Studio Ghibli feature film.",
+    "category": "Anime",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Spirited Away",
+        "rarity": "common"
+      },
+      {
+        "name": "My Neighbor Totoro",
+        "rarity": "common",
+        "aliases": [
+          "Totoro"
+        ]
+      },
+      {
+        "name": "Howl's Moving Castle",
+        "rarity": "common",
+        "aliases": [
+          "Howls Moving Castle"
+        ]
+      },
+      {
+        "name": "Princess Mononoke",
+        "rarity": "common",
+        "aliases": [
+          "Mononoke Hime"
+        ]
+      },
+      {
+        "name": "Kiki's Delivery Service",
+        "rarity": "uncommon",
+        "aliases": [
+          "Kikis Delivery Service"
+        ]
+      },
+      {
+        "name": "Ponyo",
+        "rarity": "uncommon",
+        "aliases": [
+          "Ponyo on the Cliff by the Sea"
+        ]
+      },
+      {
+        "name": "Castle in the Sky",
+        "rarity": "uncommon",
+        "aliases": [
+          "Laputa",
+          "Laputa: Castle in the Sky"
+        ]
+      },
+      {
+        "name": "Grave of the Fireflies",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "The Boy and the Heron",
+        "rarity": "uncommon",
+        "aliases": [
+          "How Do You Live?"
+        ]
+      },
+      {
+        "name": "Nausicaä of the Valley of the Wind",
+        "rarity": "notable",
+        "aliases": [
+          "Nausicaa",
+          "Nausicaa of the Valley of the Wind"
+        ]
+      },
+      {
+        "name": "Porco Rosso",
+        "rarity": "notable"
+      },
+      {
+        "name": "The Wind Rises",
+        "rarity": "notable"
+      },
+      {
+        "name": "Arrietty",
+        "rarity": "notable",
+        "aliases": [
+          "The Secret World of Arrietty",
+          "The Borrower Arrietty"
+        ]
+      },
+      {
+        "name": "Whisper of the Heart",
+        "rarity": "notable"
+      },
+      {
+        "name": "The Cat Returns",
+        "rarity": "notable"
+      },
+      {
+        "name": "The Tale of the Princess Kaguya",
+        "rarity": "rare",
+        "aliases": [
+          "Princess Kaguya"
+        ]
+      },
+      {
+        "name": "When Marnie Was There",
+        "rarity": "rare"
+      },
+      {
+        "name": "From Up on Poppy Hill",
+        "rarity": "rare"
+      },
+      {
+        "name": "Pom Poko",
+        "rarity": "rare"
+      },
+      {
+        "name": "Tales from Earthsea",
+        "rarity": "rare"
+      },
+      {
+        "name": "Only Yesterday",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Earwig and the Witch",
+        "rarity": "legendary"
+      },
+      {
+        "name": "My Neighbors the Yamadas",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Ocean Waves",
+        "rarity": "mythic",
+        "aliases": [
+          "I Can Hear the Sea"
+        ]
+      }
+    ],
+    "reject": [
+      "Akira",
+      "Your Name",
+      "Weathering with You",
+      "Paprika",
+      "Ghost in the Shell",
+      "Perfect Blue",
+      "The Red Turtle",
+      "Mary and the Witch's Flower",
+      "Wolf Children",
+      "Suzume"
+    ]
+  },
+  {
+    "id": "ani-tailed-beasts",
+    "text": "Name one of the nine tailed beasts in Naruto.",
+    "category": "Anime",
+    "difficulty": "hard",
+    "answers": [
+      {
+        "name": "Kurama",
+        "rarity": "common",
+        "aliases": [
+          "Nine-Tails",
+          "Nine Tails",
+          "Nine-Tailed Fox",
+          "Kyubi",
+          "Kyuubi"
+        ]
+      },
+      {
+        "name": "Shukaku",
+        "rarity": "uncommon",
+        "aliases": [
+          "One-Tail",
+          "One Tail",
+          "Ichibi"
+        ]
+      },
+      {
+        "name": "Gyuki",
+        "rarity": "notable",
+        "aliases": [
+          "Gyūki",
+          "Eight-Tails",
+          "Eight Tails",
+          "Hachibi"
+        ]
+      },
+      {
+        "name": "Matatabi",
+        "rarity": "rare",
+        "aliases": [
+          "Two-Tails",
+          "Two Tails",
+          "Nibi"
+        ]
+      },
+      {
+        "name": "Son Goku",
+        "rarity": "rare",
+        "aliases": [
+          "Four-Tails",
+          "Four Tails",
+          "Yonbi"
+        ]
+      },
+      {
+        "name": "Isobu",
+        "rarity": "legendary",
+        "aliases": [
+          "Three-Tails",
+          "Three Tails",
+          "Sanbi"
+        ]
+      },
+      {
+        "name": "Kokuo",
+        "rarity": "legendary",
+        "aliases": [
+          "Kokuō",
+          "Five-Tails",
+          "Five Tails",
+          "Gobi"
+        ]
+      },
+      {
+        "name": "Saiken",
+        "rarity": "legendary",
+        "aliases": [
+          "Six-Tails",
+          "Six Tails",
+          "Rokubi"
+        ]
+      },
+      {
+        "name": "Chomei",
+        "rarity": "mythic",
+        "aliases": [
+          "Chōmei",
+          "Seven-Tails",
+          "Seven Tails",
+          "Nanabi"
+        ]
+      }
+    ],
+    "reject": [
+      "Ten-Tails",
+      "Ten Tails",
+      "Juubi",
+      "Gamabunta",
+      "Manda",
+      "Katsuyu"
+    ]
+  },
+  {
+    "id": "ani-hokage",
+    "text": "Name a Hokage of the Hidden Leaf Village in Naruto.",
+    "category": "Anime",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Naruto Uzumaki",
+        "rarity": "common",
+        "aliases": [
+          "Naruto"
+        ]
+      },
+      {
+        "name": "Kakashi Hatake",
+        "rarity": "uncommon",
+        "aliases": [
+          "Kakashi"
+        ]
+      },
+      {
+        "name": "Minato Namikaze",
+        "rarity": "uncommon",
+        "aliases": [
+          "Minato"
+        ]
+      },
+      {
+        "name": "Tsunade",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Hiruzen Sarutobi",
+        "rarity": "notable",
+        "aliases": [
+          "Hiruzen",
+          "Sarutobi"
+        ]
+      },
+      {
+        "name": "Hashirama Senju",
+        "rarity": "rare",
+        "aliases": [
+          "Hashirama"
+        ]
+      },
+      {
+        "name": "Tobirama Senju",
+        "rarity": "legendary",
+        "aliases": [
+          "Tobirama"
+        ]
+      }
+    ],
+    "reject": [
+      "Danzo",
+      "Danzo Shimura",
+      "Jiraiya",
+      "Sasuke",
+      "Itachi",
+      "Madara",
+      "Orochimaru",
+      "Boruto",
+      "Senju"
+    ]
+  },
+  {
+    "id": "ani-saiyans",
+    "text": "Name a Saiyan (full or part) from Dragon Ball.",
+    "category": "Anime",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Goku",
+        "rarity": "common",
+        "aliases": [
+          "Son Goku",
+          "Kakarot"
+        ]
+      },
+      {
+        "name": "Vegeta",
+        "rarity": "common",
+        "aliases": [
+          "Prince Vegeta"
+        ]
+      },
+      {
+        "name": "Gohan",
+        "rarity": "uncommon",
+        "aliases": [
+          "Son Gohan"
+        ]
+      },
+      {
+        "name": "Trunks",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Goten",
+        "rarity": "uncommon",
+        "aliases": [
+          "Son Goten"
+        ]
+      },
+      {
+        "name": "Broly",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Raditz",
+        "rarity": "notable"
+      },
+      {
+        "name": "Nappa",
+        "rarity": "notable"
+      },
+      {
+        "name": "Bardock",
+        "rarity": "notable"
+      },
+      {
+        "name": "Pan",
+        "rarity": "notable"
+      },
+      {
+        "name": "Gotenks",
+        "rarity": "notable"
+      },
+      {
+        "name": "Vegito",
+        "rarity": "notable",
+        "aliases": [
+          "Vegetto"
+        ]
+      },
+      {
+        "name": "Gogeta",
+        "rarity": "notable"
+      },
+      {
+        "name": "Bulla",
+        "rarity": "rare",
+        "aliases": [
+          "Bra"
+        ]
+      },
+      {
+        "name": "King Vegeta",
+        "rarity": "rare"
+      },
+      {
+        "name": "Cabba",
+        "rarity": "rare"
+      },
+      {
+        "name": "Caulifla",
+        "rarity": "rare"
+      },
+      {
+        "name": "Kale",
+        "rarity": "rare"
+      },
+      {
+        "name": "Paragus",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Turles",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Gine",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Tarble",
+        "rarity": "mythic"
+      }
+    ],
+    "reject": [
+      "Krillin",
+      "Piccolo",
+      "Frieza",
+      "Cell",
+      "Majin Buu",
+      "Buu",
+      "Yamcha",
+      "Tien",
+      "Chi-Chi",
+      "Bulma",
+      "Beerus",
+      "Whis",
+      "Android 18",
+      "Master Roshi"
+    ]
+  }
+]

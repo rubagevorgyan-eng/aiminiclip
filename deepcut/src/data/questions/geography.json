@@ -1,0 +1,578 @@
+[
+  {
+    "id": "geo-borders-china",
+    "text": "Name a country that borders China.",
+    "category": "Geography",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Russia",
+        "rarity": "common"
+      },
+      {
+        "name": "Mongolia",
+        "rarity": "common"
+      },
+      {
+        "name": "India",
+        "rarity": "common"
+      },
+      {
+        "name": "North Korea",
+        "rarity": "common",
+        "aliases": [
+          "DPRK"
+        ]
+      },
+      {
+        "name": "Vietnam",
+        "rarity": "uncommon",
+        "aliases": [
+          "Viet Nam"
+        ]
+      },
+      {
+        "name": "Pakistan",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Nepal",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Kazakhstan",
+        "rarity": "notable"
+      },
+      {
+        "name": "Afghanistan",
+        "rarity": "notable"
+      },
+      {
+        "name": "Laos",
+        "rarity": "notable"
+      },
+      {
+        "name": "Myanmar",
+        "rarity": "rare",
+        "aliases": [
+          "Burma"
+        ]
+      },
+      {
+        "name": "Bhutan",
+        "rarity": "rare"
+      },
+      {
+        "name": "Kyrgyzstan",
+        "rarity": "legendary",
+        "aliases": [
+          "Kyrgyz Republic"
+        ]
+      },
+      {
+        "name": "Tajikistan",
+        "rarity": "legendary"
+      }
+    ],
+    "reject": [
+      "Japan",
+      "South Korea",
+      "Taiwan",
+      "Thailand"
+    ]
+  },
+  {
+    "id": "geo-countries-s",
+    "text": "Name a country whose name begins with the letter S.",
+    "category": "Geography",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "Spain",
+        "rarity": "common"
+      },
+      {
+        "name": "Sweden",
+        "rarity": "common"
+      },
+      {
+        "name": "Switzerland",
+        "rarity": "common"
+      },
+      {
+        "name": "South Africa",
+        "rarity": "common"
+      },
+      {
+        "name": "Saudi Arabia",
+        "rarity": "common"
+      },
+      {
+        "name": "South Korea",
+        "rarity": "common",
+        "aliases": [
+          "Republic of Korea"
+        ]
+      },
+      {
+        "name": "Singapore",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Syria",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Somalia",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Sudan",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Senegal",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Serbia",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Sri Lanka",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Slovakia",
+        "rarity": "notable"
+      },
+      {
+        "name": "Slovenia",
+        "rarity": "notable"
+      },
+      {
+        "name": "South Sudan",
+        "rarity": "notable"
+      },
+      {
+        "name": "Sierra Leone",
+        "rarity": "notable"
+      },
+      {
+        "name": "San Marino",
+        "rarity": "rare"
+      },
+      {
+        "name": "Seychelles",
+        "rarity": "rare"
+      },
+      {
+        "name": "Suriname",
+        "rarity": "rare"
+      },
+      {
+        "name": "Samoa",
+        "rarity": "rare"
+      },
+      {
+        "name": "Solomon Islands",
+        "rarity": "rare"
+      },
+      {
+        "name": "Saint Lucia",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Saint Kitts and Nevis",
+        "rarity": "legendary",
+        "aliases": [
+          "Saint Kitts"
+        ]
+      },
+      {
+        "name": "Saint Vincent and the Grenadines",
+        "rarity": "mythic",
+        "aliases": [
+          "Saint Vincent"
+        ]
+      },
+      {
+        "name": "São Tomé and Príncipe",
+        "rarity": "mythic",
+        "aliases": [
+          "Sao Tome"
+        ]
+      }
+    ],
+    "reject": [
+      "Scotland",
+      "Swaziland",
+      "Siam",
+      "Sardinia",
+      "Sicily",
+      "Saxony",
+      "Slavonia"
+    ]
+  },
+  {
+    "id": "geo-us-states-canada",
+    "text": "Name a US state that shares a border with Canada.",
+    "category": "Geography",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Alaska",
+        "rarity": "common"
+      },
+      {
+        "name": "Washington",
+        "rarity": "common",
+        "aliases": [
+          "Washington State"
+        ]
+      },
+      {
+        "name": "New York",
+        "rarity": "common"
+      },
+      {
+        "name": "Michigan",
+        "rarity": "common"
+      },
+      {
+        "name": "Maine",
+        "rarity": "common"
+      },
+      {
+        "name": "Montana",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Minnesota",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Vermont",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "North Dakota",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Idaho",
+        "rarity": "notable"
+      },
+      {
+        "name": "New Hampshire",
+        "rarity": "notable"
+      },
+      {
+        "name": "Ohio",
+        "rarity": "rare"
+      },
+      {
+        "name": "Pennsylvania",
+        "rarity": "legendary"
+      }
+    ],
+    "reject": [
+      "Washington DC",
+      "Wisconsin",
+      "Oregon",
+      "South Dakota",
+      "Massachusetts"
+    ]
+  },
+  {
+    "id": "geo-largest-countries",
+    "text": "Name one of the ten largest countries in the world by total area.",
+    "category": "Geography",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Russia",
+        "rarity": "common"
+      },
+      {
+        "name": "Canada",
+        "rarity": "common"
+      },
+      {
+        "name": "United States",
+        "rarity": "common",
+        "aliases": [
+          "USA",
+          "US",
+          "United States of America",
+          "America"
+        ]
+      },
+      {
+        "name": "China",
+        "rarity": "common"
+      },
+      {
+        "name": "Brazil",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Australia",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "India",
+        "rarity": "notable"
+      },
+      {
+        "name": "Argentina",
+        "rarity": "rare"
+      },
+      {
+        "name": "Kazakhstan",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Algeria",
+        "rarity": "mythic"
+      }
+    ],
+    "reject": [
+      "Greenland",
+      "Antarctica",
+      "Mexico",
+      "Indonesia",
+      "Saudi Arabia",
+      "Democratic Republic of the Congo",
+      "Sudan"
+    ]
+  },
+  {
+    "id": "geo-europe-capitals",
+    "text": "Name the capital city of a European country.",
+    "category": "Geography",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "London",
+        "rarity": "common"
+      },
+      {
+        "name": "Paris",
+        "rarity": "common"
+      },
+      {
+        "name": "Berlin",
+        "rarity": "common"
+      },
+      {
+        "name": "Rome",
+        "rarity": "common"
+      },
+      {
+        "name": "Madrid",
+        "rarity": "common"
+      },
+      {
+        "name": "Amsterdam",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Lisbon",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Dublin",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Athens",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Moscow",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Vienna",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Brussels",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Prague",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Oslo",
+        "rarity": "notable"
+      },
+      {
+        "name": "Stockholm",
+        "rarity": "notable"
+      },
+      {
+        "name": "Copenhagen",
+        "rarity": "notable"
+      },
+      {
+        "name": "Warsaw",
+        "rarity": "notable"
+      },
+      {
+        "name": "Budapest",
+        "rarity": "notable"
+      },
+      {
+        "name": "Helsinki",
+        "rarity": "notable"
+      },
+      {
+        "name": "Kyiv",
+        "rarity": "notable",
+        "aliases": [
+          "Kiev"
+        ]
+      },
+      {
+        "name": "Bern",
+        "rarity": "notable",
+        "aliases": [
+          "Berne"
+        ]
+      },
+      {
+        "name": "Reykjavík",
+        "rarity": "rare",
+        "aliases": [
+          "Reykjavik"
+        ]
+      },
+      {
+        "name": "Bucharest",
+        "rarity": "rare"
+      },
+      {
+        "name": "Sofia",
+        "rarity": "rare"
+      },
+      {
+        "name": "Belgrade",
+        "rarity": "rare"
+      },
+      {
+        "name": "Zagreb",
+        "rarity": "rare"
+      },
+      {
+        "name": "Bratislava",
+        "rarity": "rare"
+      },
+      {
+        "name": "Luxembourg",
+        "rarity": "rare",
+        "aliases": [
+          "Luxembourg City"
+        ]
+      },
+      {
+        "name": "Monaco",
+        "rarity": "rare"
+      },
+      {
+        "name": "Valletta",
+        "rarity": "rare"
+      },
+      {
+        "name": "Tallinn",
+        "rarity": "rare"
+      },
+      {
+        "name": "Riga",
+        "rarity": "rare"
+      },
+      {
+        "name": "Vilnius",
+        "rarity": "rare"
+      },
+      {
+        "name": "Minsk",
+        "rarity": "rare"
+      },
+      {
+        "name": "Nicosia",
+        "rarity": "rare"
+      },
+      {
+        "name": "Ljubljana",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Tirana",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Skopje",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Sarajevo",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Podgorica",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Chișinău",
+        "rarity": "legendary",
+        "aliases": [
+          "Chisinau"
+        ]
+      },
+      {
+        "name": "Pristina",
+        "rarity": "legendary",
+        "aliases": [
+          "Prishtina"
+        ]
+      },
+      {
+        "name": "Andorra la Vella",
+        "rarity": "legendary"
+      },
+      {
+        "name": "San Marino",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Vaduz",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Vatican City",
+        "rarity": "mythic",
+        "aliases": [
+          "Vatican"
+        ]
+      }
+    ],
+    "reject": [
+      "Edinburgh",
+      "Cardiff",
+      "Belfast",
+      "Geneva",
+      "Zurich",
+      "Barcelona",
+      "Milan",
+      "Istanbul",
+      "Saint Petersburg",
+      "Munich",
+      "Frankfurt",
+      "Krakow",
+      "Rotterdam"
+    ]
+  }
+]

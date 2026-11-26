@@ -1,0 +1,430 @@
+[
+  {
+    "id": "gk-zodiac-signs",
+    "text": "Name a sign of the Western zodiac.",
+    "category": "General Knowledge",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "Leo",
+        "rarity": "common"
+      },
+      {
+        "name": "Aries",
+        "rarity": "common"
+      },
+      {
+        "name": "Gemini",
+        "rarity": "common"
+      },
+      {
+        "name": "Scorpio",
+        "rarity": "common"
+      },
+      {
+        "name": "Virgo",
+        "rarity": "common"
+      },
+      {
+        "name": "Taurus",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Cancer",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Libra",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Pisces",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Sagittarius",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Aquarius",
+        "rarity": "notable"
+      },
+      {
+        "name": "Capricorn",
+        "rarity": "rare"
+      }
+    ],
+    "reject": [
+      "Ophiuchus",
+      "Dragon",
+      "Rat",
+      "Ox",
+      "Tiger",
+      "Rabbit",
+      "Snake",
+      "Horse",
+      "Goat",
+      "Monkey",
+      "Rooster",
+      "Dog",
+      "Pig",
+      "Orion"
+    ]
+  },
+  {
+    "id": "gk-chess-pieces",
+    "text": "Name a chess piece.",
+    "category": "General Knowledge",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "Queen",
+        "rarity": "common"
+      },
+      {
+        "name": "King",
+        "rarity": "common"
+      },
+      {
+        "name": "Pawn",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Knight",
+        "rarity": "uncommon",
+        "aliases": [
+          "Horse"
+        ]
+      },
+      {
+        "name": "Bishop",
+        "rarity": "notable"
+      },
+      {
+        "name": "Rook",
+        "rarity": "rare",
+        "aliases": [
+          "Castle"
+        ]
+      }
+    ],
+    "reject": [
+      "Checker",
+      "Jack",
+      "Ace",
+      "Joker"
+    ]
+  },
+  {
+    "id": "gk-rainbow-colors",
+    "text": "Name one of the seven colors of the rainbow (ROYGBIV).",
+    "category": "General Knowledge",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "Red",
+        "rarity": "common"
+      },
+      {
+        "name": "Blue",
+        "rarity": "common"
+      },
+      {
+        "name": "Green",
+        "rarity": "common"
+      },
+      {
+        "name": "Yellow",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Orange",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Violet",
+        "rarity": "notable",
+        "aliases": [
+          "Purple"
+        ]
+      },
+      {
+        "name": "Indigo",
+        "rarity": "rare"
+      }
+    ],
+    "reject": [
+      "Pink",
+      "Black",
+      "White",
+      "Brown",
+      "Gray",
+      "Grey",
+      "Cyan",
+      "Magenta",
+      "Turquoise",
+      "Teal"
+    ]
+  },
+  {
+    "id": "gk-harry-potter-books",
+    "text": "Name one of the seven main Harry Potter books.",
+    "category": "General Knowledge",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "Harry Potter and the Philosopher's Stone",
+        "rarity": "common",
+        "aliases": [
+          "Philosopher's Stone",
+          "Sorcerer's Stone",
+          "Harry Potter and the Sorcerer's Stone"
+        ]
+      },
+      {
+        "name": "Harry Potter and the Deathly Hallows",
+        "rarity": "common",
+        "aliases": [
+          "Deathly Hallows"
+        ]
+      },
+      {
+        "name": "Harry Potter and the Chamber of Secrets",
+        "rarity": "uncommon",
+        "aliases": [
+          "Chamber of Secrets"
+        ]
+      },
+      {
+        "name": "Harry Potter and the Prisoner of Azkaban",
+        "rarity": "uncommon",
+        "aliases": [
+          "Prisoner of Azkaban"
+        ]
+      },
+      {
+        "name": "Harry Potter and the Goblet of Fire",
+        "rarity": "uncommon",
+        "aliases": [
+          "Goblet of Fire"
+        ]
+      },
+      {
+        "name": "Harry Potter and the Order of the Phoenix",
+        "rarity": "notable",
+        "aliases": [
+          "Order of the Phoenix"
+        ]
+      },
+      {
+        "name": "Harry Potter and the Half-Blood Prince",
+        "rarity": "rare",
+        "aliases": [
+          "Half-Blood Prince",
+          "Half Blood Prince"
+        ]
+      }
+    ],
+    "ignore": [
+      "harry",
+      "potter",
+      "and",
+      "the"
+    ],
+    "reject": [
+      "Cursed Child",
+      "The Cursed Child",
+      "Fantastic Beasts",
+      "Quidditch Through the Ages",
+      "The Tales of Beedle the Bard"
+    ]
+  },
+  {
+    "id": "gk-orchestra-instruments",
+    "text": "Name an instrument found in a standard symphony orchestra.",
+    "category": "General Knowledge",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Violin",
+        "rarity": "common"
+      },
+      {
+        "name": "Cello",
+        "rarity": "common"
+      },
+      {
+        "name": "Flute",
+        "rarity": "common"
+      },
+      {
+        "name": "Trumpet",
+        "rarity": "common"
+      },
+      {
+        "name": "Viola",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Double bass",
+        "rarity": "uncommon",
+        "aliases": [
+          "Contrabass",
+          "Upright bass",
+          "Bass"
+        ]
+      },
+      {
+        "name": "Clarinet",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Oboe",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Trombone",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "French horn",
+        "rarity": "uncommon",
+        "aliases": [
+          "Horn"
+        ]
+      },
+      {
+        "name": "Harp",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Timpani",
+        "rarity": "uncommon",
+        "aliases": [
+          "Kettle drum",
+          "Kettledrums"
+        ]
+      },
+      {
+        "name": "Bassoon",
+        "rarity": "notable"
+      },
+      {
+        "name": "Tuba",
+        "rarity": "notable"
+      },
+      {
+        "name": "Piccolo",
+        "rarity": "notable"
+      },
+      {
+        "name": "Cymbals",
+        "rarity": "notable",
+        "aliases": [
+          "Cymbal"
+        ]
+      },
+      {
+        "name": "Bass drum",
+        "rarity": "notable"
+      },
+      {
+        "name": "Snare drum",
+        "rarity": "notable",
+        "aliases": [
+          "Snare"
+        ]
+      },
+      {
+        "name": "Triangle",
+        "rarity": "notable"
+      },
+      {
+        "name": "Piano",
+        "rarity": "notable"
+      },
+      {
+        "name": "Cor anglais",
+        "rarity": "rare",
+        "aliases": [
+          "English horn"
+        ]
+      },
+      {
+        "name": "Contrabassoon",
+        "rarity": "rare",
+        "aliases": [
+          "Double bassoon"
+        ]
+      },
+      {
+        "name": "Bass clarinet",
+        "rarity": "rare"
+      },
+      {
+        "name": "Glockenspiel",
+        "rarity": "rare"
+      },
+      {
+        "name": "Xylophone",
+        "rarity": "rare"
+      },
+      {
+        "name": "Celesta",
+        "rarity": "rare",
+        "aliases": [
+          "Celeste"
+        ]
+      },
+      {
+        "name": "Tubular bells",
+        "rarity": "legendary",
+        "aliases": [
+          "Chimes"
+        ]
+      },
+      {
+        "name": "Tam-tam",
+        "rarity": "legendary",
+        "aliases": [
+          "Gong"
+        ]
+      },
+      {
+        "name": "Tambourine",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Bass trombone",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Wagner tuba",
+        "rarity": "mythic"
+      },
+      {
+        "name": "E-flat clarinet",
+        "rarity": "mythic",
+        "aliases": [
+          "Eb clarinet"
+        ]
+      }
+    ],
+    "reject": [
+      "Guitar",
+      "Electric guitar",
+      "Bass guitar",
+      "Saxophone",
+      "Drum kit",
+      "Drums",
+      "Ukulele",
+      "Banjo",
+      "Accordion",
+      "Harmonica",
+      "Bagpipes",
+      "Recorder",
+      "Keytar",
+      "Synthesizer"
+    ]
+  }
+]

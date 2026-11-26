@@ -1,0 +1,530 @@
+[
+  {
+    "id": "his-20th-century-presidents",
+    "text": "Name a US president who first took office in the 20th century (1901 to 2000).",
+    "category": "History",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "John F. Kennedy",
+        "rarity": "common",
+        "aliases": [
+          "JFK",
+          "Kennedy",
+          "John Kennedy"
+        ]
+      },
+      {
+        "name": "Richard Nixon",
+        "rarity": "common",
+        "aliases": [
+          "Nixon"
+        ]
+      },
+      {
+        "name": "Ronald Reagan",
+        "rarity": "common",
+        "aliases": [
+          "Reagan"
+        ]
+      },
+      {
+        "name": "Bill Clinton",
+        "rarity": "common",
+        "aliases": [
+          "Clinton"
+        ]
+      },
+      {
+        "name": "Franklin D. Roosevelt",
+        "rarity": "common",
+        "aliases": [
+          "FDR",
+          "Franklin Roosevelt",
+          "Franklin Delano Roosevelt"
+        ]
+      },
+      {
+        "name": "Theodore Roosevelt",
+        "rarity": "uncommon",
+        "aliases": [
+          "Teddy Roosevelt",
+          "Teddy"
+        ]
+      },
+      {
+        "name": "Harry S. Truman",
+        "rarity": "uncommon",
+        "aliases": [
+          "Truman",
+          "Harry Truman"
+        ]
+      },
+      {
+        "name": "Dwight D. Eisenhower",
+        "rarity": "uncommon",
+        "aliases": [
+          "Eisenhower",
+          "Ike",
+          "Dwight Eisenhower"
+        ]
+      },
+      {
+        "name": "Jimmy Carter",
+        "rarity": "uncommon",
+        "aliases": [
+          "Carter"
+        ]
+      },
+      {
+        "name": "George H. W. Bush",
+        "rarity": "uncommon",
+        "aliases": [
+          "George HW Bush",
+          "HW Bush",
+          "George Bush",
+          "Bush",
+          "Bush Sr",
+          "George Bush Sr"
+        ]
+      },
+      {
+        "name": "Gerald Ford",
+        "rarity": "notable",
+        "aliases": [
+          "Ford"
+        ]
+      },
+      {
+        "name": "Lyndon B. Johnson",
+        "rarity": "notable",
+        "aliases": [
+          "LBJ",
+          "Lyndon Johnson",
+          "Johnson"
+        ]
+      },
+      {
+        "name": "Woodrow Wilson",
+        "rarity": "notable",
+        "aliases": [
+          "Wilson"
+        ]
+      },
+      {
+        "name": "Herbert Hoover",
+        "rarity": "notable",
+        "aliases": [
+          "Hoover"
+        ]
+      },
+      {
+        "name": "William Howard Taft",
+        "rarity": "rare",
+        "aliases": [
+          "Taft",
+          "William Taft"
+        ]
+      },
+      {
+        "name": "Calvin Coolidge",
+        "rarity": "rare",
+        "aliases": [
+          "Coolidge"
+        ]
+      },
+      {
+        "name": "Warren G. Harding",
+        "rarity": "legendary",
+        "aliases": [
+          "Harding",
+          "Warren Harding"
+        ]
+      }
+    ],
+    "reject": [
+      "George W. Bush",
+      "George W Bush",
+      "Barack Obama",
+      "Obama",
+      "William McKinley",
+      "McKinley",
+      "Abraham Lincoln",
+      "Lincoln",
+      "Roosevelt",
+      "Donald Trump",
+      "Joe Biden"
+    ]
+  },
+  {
+    "id": "his-thirteen-colonies",
+    "text": "Name one of the original Thirteen Colonies that became the United States.",
+    "category": "History",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "Virginia",
+        "rarity": "common"
+      },
+      {
+        "name": "Massachusetts",
+        "rarity": "common",
+        "aliases": [
+          "Massachusetts Bay"
+        ]
+      },
+      {
+        "name": "New York",
+        "rarity": "common"
+      },
+      {
+        "name": "Pennsylvania",
+        "rarity": "common"
+      },
+      {
+        "name": "New Jersey",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Connecticut",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Maryland",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Georgia",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "North Carolina",
+        "rarity": "notable"
+      },
+      {
+        "name": "South Carolina",
+        "rarity": "notable"
+      },
+      {
+        "name": "Rhode Island",
+        "rarity": "notable",
+        "aliases": [
+          "Rhode Island and Providence Plantations"
+        ]
+      },
+      {
+        "name": "New Hampshire",
+        "rarity": "rare"
+      },
+      {
+        "name": "Delaware",
+        "rarity": "legendary"
+      }
+    ],
+    "reject": [
+      "Maine",
+      "Vermont",
+      "Florida",
+      "Ohio",
+      "Kentucky",
+      "West Virginia",
+      "Carolina"
+    ]
+  },
+  {
+    "id": "his-henry-viii-wives",
+    "text": "Name one of the six wives of King Henry VIII.",
+    "category": "History",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Anne Boleyn",
+        "rarity": "common",
+        "aliases": [
+          "Boleyn"
+        ]
+      },
+      {
+        "name": "Catherine of Aragon",
+        "rarity": "uncommon",
+        "aliases": [
+          "Katherine of Aragon",
+          "Catalina of Aragon"
+        ]
+      },
+      {
+        "name": "Jane Seymour",
+        "rarity": "notable",
+        "aliases": [
+          "Seymour"
+        ]
+      },
+      {
+        "name": "Catherine Parr",
+        "rarity": "rare",
+        "aliases": [
+          "Katherine Parr",
+          "Parr"
+        ]
+      },
+      {
+        "name": "Anne of Cleves",
+        "rarity": "rare",
+        "aliases": [
+          "Cleves"
+        ]
+      },
+      {
+        "name": "Catherine Howard",
+        "rarity": "legendary",
+        "aliases": [
+          "Katherine Howard",
+          "Howard"
+        ]
+      }
+    ],
+    "reject": [
+      "Mary Boleyn",
+      "Elizabeth I",
+      "Mary I",
+      "Catherine",
+      "Anne"
+    ]
+  },
+  {
+    "id": "his-roman-emperors",
+    "text": "Name a Roman emperor.",
+    "category": "History",
+    "difficulty": "hard",
+    "answers": [
+      {
+        "name": "Augustus",
+        "rarity": "common",
+        "aliases": [
+          "Octavian",
+          "Caesar Augustus"
+        ]
+      },
+      {
+        "name": "Nero",
+        "rarity": "common"
+      },
+      {
+        "name": "Caligula",
+        "rarity": "common"
+      },
+      {
+        "name": "Marcus Aurelius",
+        "rarity": "common"
+      },
+      {
+        "name": "Constantine the Great",
+        "rarity": "uncommon",
+        "aliases": [
+          "Constantine",
+          "Constantine I"
+        ]
+      },
+      {
+        "name": "Hadrian",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Claudius",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Tiberius",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Trajan",
+        "rarity": "notable"
+      },
+      {
+        "name": "Commodus",
+        "rarity": "notable"
+      },
+      {
+        "name": "Vespasian",
+        "rarity": "notable"
+      },
+      {
+        "name": "Diocletian",
+        "rarity": "notable"
+      },
+      {
+        "name": "Titus",
+        "rarity": "rare"
+      },
+      {
+        "name": "Domitian",
+        "rarity": "rare"
+      },
+      {
+        "name": "Caracalla",
+        "rarity": "rare"
+      },
+      {
+        "name": "Septimius Severus",
+        "rarity": "rare"
+      },
+      {
+        "name": "Antoninus Pius",
+        "rarity": "rare"
+      },
+      {
+        "name": "Nerva",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Galba",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Otho",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Vitellius",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Elagabalus",
+        "rarity": "legendary",
+        "aliases": [
+          "Heliogabalus"
+        ]
+      },
+      {
+        "name": "Aurelian",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Valerian",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Romulus Augustulus",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Pertinax",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Didius Julianus",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Theodosius I",
+        "rarity": "mythic",
+        "aliases": [
+          "Theodosius the Great",
+          "Theodosius"
+        ]
+      },
+      {
+        "name": "Julian",
+        "rarity": "mythic",
+        "aliases": [
+          "Julian the Apostate"
+        ]
+      },
+      {
+        "name": "Lucius Verus",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Macrinus",
+        "rarity": "mythic"
+      }
+    ],
+    "reject": [
+      "Julius Caesar",
+      "Caesar",
+      "Pompey",
+      "Mark Antony",
+      "Brutus",
+      "Romulus",
+      "Cicero",
+      "Justinian",
+      "Charlemagne",
+      "Attila"
+    ]
+  },
+  {
+    "id": "his-ancient-wonders",
+    "text": "Name one of the Seven Wonders of the Ancient World.",
+    "category": "History",
+    "difficulty": "hard",
+    "answers": [
+      {
+        "name": "Great Pyramid of Giza",
+        "rarity": "common",
+        "aliases": [
+          "Great Pyramid",
+          "Pyramids of Giza",
+          "Pyramid of Giza",
+          "Pyramids",
+          "Giza Pyramid"
+        ]
+      },
+      {
+        "name": "Hanging Gardens of Babylon",
+        "rarity": "common",
+        "aliases": [
+          "Hanging Gardens"
+        ]
+      },
+      {
+        "name": "Colossus of Rhodes",
+        "rarity": "uncommon",
+        "aliases": [
+          "Colossus"
+        ]
+      },
+      {
+        "name": "Lighthouse of Alexandria",
+        "rarity": "notable",
+        "aliases": [
+          "Pharos of Alexandria",
+          "Pharos"
+        ]
+      },
+      {
+        "name": "Statue of Zeus at Olympia",
+        "rarity": "rare",
+        "aliases": [
+          "Statue of Zeus"
+        ]
+      },
+      {
+        "name": "Temple of Artemis at Ephesus",
+        "rarity": "legendary",
+        "aliases": [
+          "Temple of Artemis"
+        ]
+      },
+      {
+        "name": "Mausoleum at Halicarnassus",
+        "rarity": "mythic",
+        "aliases": [
+          "Mausoleum of Halicarnassus",
+          "Mausoleum of Mausolus"
+        ]
+      }
+    ],
+    "reject": [
+      "Great Wall of China",
+      "Great Wall",
+      "Colosseum",
+      "Stonehenge",
+      "Petra",
+      "Machu Picchu",
+      "Taj Mahal",
+      "Sphinx",
+      "Great Sphinx"
+    ]
+  }
+]

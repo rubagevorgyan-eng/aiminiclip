@@ -1,0 +1,692 @@
+[
+  {
+    "id": "ani-wild-cats",
+    "text": "Name a species of cat (family Felidae).",
+    "category": "Animals",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Lion",
+        "rarity": "common"
+      },
+      {
+        "name": "Tiger",
+        "rarity": "common"
+      },
+      {
+        "name": "Cheetah",
+        "rarity": "common"
+      },
+      {
+        "name": "Leopard",
+        "rarity": "common"
+      },
+      {
+        "name": "Jaguar",
+        "rarity": "common"
+      },
+      {
+        "name": "Domestic cat",
+        "rarity": "common",
+        "aliases": [
+          "House cat",
+          "Housecat",
+          "Cat"
+        ]
+      },
+      {
+        "name": "Cougar",
+        "rarity": "uncommon",
+        "aliases": [
+          "Puma",
+          "Mountain lion",
+          "Catamount",
+          "Panther"
+        ]
+      },
+      {
+        "name": "Lynx",
+        "rarity": "uncommon",
+        "aliases": [
+          "Eurasian lynx",
+          "Canada lynx",
+          "Canadian lynx",
+          "Iberian lynx"
+        ]
+      },
+      {
+        "name": "Snow leopard",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Bobcat",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Ocelot",
+        "rarity": "notable"
+      },
+      {
+        "name": "Serval",
+        "rarity": "notable"
+      },
+      {
+        "name": "Caracal",
+        "rarity": "notable"
+      },
+      {
+        "name": "Clouded leopard",
+        "rarity": "notable"
+      },
+      {
+        "name": "Wildcat",
+        "rarity": "notable",
+        "aliases": [
+          "Wild cat",
+          "European wildcat",
+          "African wildcat"
+        ]
+      },
+      {
+        "name": "Sand cat",
+        "rarity": "rare"
+      },
+      {
+        "name": "Fishing cat",
+        "rarity": "rare"
+      },
+      {
+        "name": "Margay",
+        "rarity": "rare"
+      },
+      {
+        "name": "Pallas's cat",
+        "rarity": "rare",
+        "aliases": [
+          "Pallas cat",
+          "Manul"
+        ]
+      },
+      {
+        "name": "Jaguarundi",
+        "rarity": "rare"
+      },
+      {
+        "name": "Black-footed cat",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Rusty-spotted cat",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Leopard cat",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Jungle cat",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Marbled cat",
+        "rarity": "legendary"
+      },
+      {
+        "name": "African golden cat",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Kodkod",
+        "rarity": "mythic",
+        "aliases": [
+          "Guigna"
+        ]
+      },
+      {
+        "name": "Oncilla",
+        "rarity": "mythic",
+        "aliases": [
+          "Northern tiger cat"
+        ]
+      },
+      {
+        "name": "Andean mountain cat",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Flat-headed cat",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Geoffroy's cat",
+        "rarity": "mythic",
+        "aliases": [
+          "Geoffroys cat"
+        ]
+      },
+      {
+        "name": "Bay cat",
+        "rarity": "mythic",
+        "aliases": [
+          "Bornean bay cat"
+        ]
+      },
+      {
+        "name": "Asian golden cat",
+        "rarity": "mythic"
+      }
+    ],
+    "reject": [
+      "Black panther",
+      "Liger",
+      "Tigon",
+      "Hyena",
+      "Civet",
+      "Genet",
+      "Mongoose",
+      "Sabre-toothed cat",
+      "Saber-toothed tiger"
+    ]
+  },
+  {
+    "id": "ani-marsupials",
+    "text": "Name a marsupial.",
+    "category": "Animals",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Kangaroo",
+        "rarity": "common"
+      },
+      {
+        "name": "Koala",
+        "rarity": "common"
+      },
+      {
+        "name": "Wombat",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Tasmanian devil",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Opossum",
+        "rarity": "uncommon",
+        "aliases": [
+          "Possum",
+          "Virginia opossum"
+        ]
+      },
+      {
+        "name": "Wallaby",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Sugar glider",
+        "rarity": "notable"
+      },
+      {
+        "name": "Quokka",
+        "rarity": "notable"
+      },
+      {
+        "name": "Bandicoot",
+        "rarity": "notable"
+      },
+      {
+        "name": "Numbat",
+        "rarity": "rare"
+      },
+      {
+        "name": "Bilby",
+        "rarity": "rare"
+      },
+      {
+        "name": "Quoll",
+        "rarity": "rare"
+      },
+      {
+        "name": "Wallaroo",
+        "rarity": "rare"
+      },
+      {
+        "name": "Tree kangaroo",
+        "rarity": "rare"
+      },
+      {
+        "name": "Cuscus",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Potoroo",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Bettong",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Marsupial mole",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Pademelon",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Thylacine",
+        "rarity": "legendary",
+        "aliases": [
+          "Tasmanian tiger"
+        ]
+      },
+      {
+        "name": "Dunnart",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Antechinus",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Monito del monte",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Honey possum",
+        "rarity": "mythic",
+        "aliases": [
+          "Noolbenger"
+        ]
+      }
+    ],
+    "reject": [
+      "Platypus",
+      "Echidna",
+      "Kiwi",
+      "Dingo",
+      "Sloth",
+      "Armadillo",
+      "Raccoon",
+      "Lemur"
+    ]
+  },
+  {
+    "id": "ani-penguins",
+    "text": "Name a species of penguin.",
+    "category": "Animals",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Emperor",
+        "rarity": "common"
+      },
+      {
+        "name": "King",
+        "rarity": "common"
+      },
+      {
+        "name": "Adélie",
+        "rarity": "uncommon",
+        "aliases": [
+          "Adelie"
+        ]
+      },
+      {
+        "name": "African",
+        "rarity": "uncommon",
+        "aliases": [
+          "Jackass",
+          "Cape",
+          "Black-footed"
+        ]
+      },
+      {
+        "name": "Gentoo",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Chinstrap",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Little",
+        "rarity": "uncommon",
+        "aliases": [
+          "Little blue",
+          "Blue",
+          "Fairy"
+        ]
+      },
+      {
+        "name": "Macaroni",
+        "rarity": "notable"
+      },
+      {
+        "name": "Rockhopper",
+        "rarity": "notable",
+        "aliases": [
+          "Southern rockhopper",
+          "Northern rockhopper"
+        ]
+      },
+      {
+        "name": "Humboldt",
+        "rarity": "notable"
+      },
+      {
+        "name": "Magellanic",
+        "rarity": "notable"
+      },
+      {
+        "name": "Galápagos",
+        "rarity": "notable",
+        "aliases": [
+          "Galapagos"
+        ]
+      },
+      {
+        "name": "Yellow-eyed",
+        "rarity": "rare",
+        "aliases": [
+          "Hoiho"
+        ]
+      },
+      {
+        "name": "Royal",
+        "rarity": "rare"
+      },
+      {
+        "name": "Fiordland",
+        "rarity": "legendary",
+        "aliases": [
+          "Tawaki",
+          "Fiordland crested"
+        ]
+      },
+      {
+        "name": "Snares",
+        "rarity": "legendary",
+        "aliases": [
+          "Snares crested"
+        ]
+      },
+      {
+        "name": "Erect-crested",
+        "rarity": "mythic"
+      }
+    ],
+    "ignore": [
+      "penguin"
+    ],
+    "reject": [
+      "Puffin",
+      "Auk",
+      "Great auk",
+      "Arctic",
+      "Polar",
+      "Razorbill"
+    ]
+  },
+  {
+    "id": "ani-flightless-birds",
+    "text": "Name a flightless bird.",
+    "category": "Animals",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Ostrich",
+        "rarity": "common"
+      },
+      {
+        "name": "Penguin",
+        "rarity": "common"
+      },
+      {
+        "name": "Emu",
+        "rarity": "common"
+      },
+      {
+        "name": "Kiwi",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Cassowary",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Dodo",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Rhea",
+        "rarity": "notable"
+      },
+      {
+        "name": "Kākāpō",
+        "rarity": "notable",
+        "aliases": [
+          "Kakapo"
+        ]
+      },
+      {
+        "name": "Takahē",
+        "rarity": "rare",
+        "aliases": [
+          "Takahe"
+        ]
+      },
+      {
+        "name": "Weka",
+        "rarity": "rare"
+      },
+      {
+        "name": "Moa",
+        "rarity": "rare"
+      },
+      {
+        "name": "Elephant bird",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Flightless cormorant",
+        "rarity": "legendary",
+        "aliases": [
+          "Galápagos cormorant",
+          "Galapagos cormorant"
+        ]
+      },
+      {
+        "name": "Steamer duck",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Great auk",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Inaccessible Island rail",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Campbell teal",
+        "rarity": "mythic"
+      }
+    ],
+    "reject": [
+      "Chicken",
+      "Turkey",
+      "Peacock",
+      "Puffin",
+      "Roadrunner",
+      "Pheasant",
+      "Duck",
+      "Bat"
+    ]
+  },
+  {
+    "id": "ani-venomous-snakes",
+    "text": "Name a type of venomous snake.",
+    "category": "Animals",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Cobra",
+        "rarity": "common"
+      },
+      {
+        "name": "Rattlesnake",
+        "rarity": "common",
+        "aliases": [
+          "Rattler"
+        ]
+      },
+      {
+        "name": "Black mamba",
+        "rarity": "common"
+      },
+      {
+        "name": "Mamba",
+        "rarity": "common"
+      },
+      {
+        "name": "King cobra",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Viper",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Copperhead",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Cottonmouth",
+        "rarity": "uncommon",
+        "aliases": [
+          "Water moccasin"
+        ]
+      },
+      {
+        "name": "Coral",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Taipan",
+        "rarity": "notable",
+        "aliases": [
+          "Inland taipan",
+          "Coastal taipan"
+        ]
+      },
+      {
+        "name": "Adder",
+        "rarity": "notable"
+      },
+      {
+        "name": "Krait",
+        "rarity": "notable"
+      },
+      {
+        "name": "Sea",
+        "rarity": "notable"
+      },
+      {
+        "name": "Eastern brown",
+        "rarity": "notable",
+        "aliases": [
+          "Brown"
+        ]
+      },
+      {
+        "name": "Green mamba",
+        "rarity": "notable"
+      },
+      {
+        "name": "Sidewinder",
+        "rarity": "notable"
+      },
+      {
+        "name": "Boomslang",
+        "rarity": "rare"
+      },
+      {
+        "name": "Gaboon viper",
+        "rarity": "rare"
+      },
+      {
+        "name": "Puff adder",
+        "rarity": "rare"
+      },
+      {
+        "name": "Fer-de-lance",
+        "rarity": "rare"
+      },
+      {
+        "name": "Bushmaster",
+        "rarity": "rare"
+      },
+      {
+        "name": "Tiger",
+        "rarity": "rare"
+      },
+      {
+        "name": "Death adder",
+        "rarity": "rare"
+      },
+      {
+        "name": "Saw-scaled viper",
+        "rarity": "legendary",
+        "aliases": [
+          "Carpet viper"
+        ]
+      },
+      {
+        "name": "Russell's viper",
+        "rarity": "legendary",
+        "aliases": [
+          "Russells viper"
+        ]
+      },
+      {
+        "name": "Pit viper",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Asp",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Twig",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Lancehead",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Habu",
+        "rarity": "mythic"
+      }
+    ],
+    "ignore": [
+      "snake"
+    ],
+    "reject": [
+      "Python",
+      "Boa",
+      "Anaconda",
+      "Boa constrictor",
+      "Garter",
+      "King",
+      "Corn",
+      "Rat",
+      "Milk",
+      "Gopher",
+      "Hognose",
+      "Grass"
+    ]
+  }
+]

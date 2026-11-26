@@ -1,0 +1,665 @@
+[
+  {
+    "id": "sci-one-letter-elements",
+    "text": "Name a chemical element whose symbol is a single letter.",
+    "category": "Science",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Hydrogen",
+        "rarity": "common",
+        "aliases": [
+          "H"
+        ]
+      },
+      {
+        "name": "Oxygen",
+        "rarity": "common",
+        "aliases": [
+          "O"
+        ]
+      },
+      {
+        "name": "Carbon",
+        "rarity": "common",
+        "aliases": [
+          "C"
+        ]
+      },
+      {
+        "name": "Nitrogen",
+        "rarity": "uncommon",
+        "aliases": [
+          "N"
+        ]
+      },
+      {
+        "name": "Sulfur",
+        "rarity": "uncommon",
+        "aliases": [
+          "S",
+          "Sulphur"
+        ]
+      },
+      {
+        "name": "Potassium",
+        "rarity": "notable",
+        "aliases": [
+          "K"
+        ]
+      },
+      {
+        "name": "Phosphorus",
+        "rarity": "notable",
+        "aliases": [
+          "P"
+        ]
+      },
+      {
+        "name": "Iodine",
+        "rarity": "rare",
+        "aliases": [
+          "I"
+        ]
+      },
+      {
+        "name": "Fluorine",
+        "rarity": "rare",
+        "aliases": [
+          "F"
+        ]
+      },
+      {
+        "name": "Uranium",
+        "rarity": "rare",
+        "aliases": [
+          "U"
+        ]
+      },
+      {
+        "name": "Boron",
+        "rarity": "legendary",
+        "aliases": [
+          "B"
+        ]
+      },
+      {
+        "name": "Vanadium",
+        "rarity": "mythic",
+        "aliases": [
+          "V"
+        ]
+      },
+      {
+        "name": "Tungsten",
+        "rarity": "mythic",
+        "aliases": [
+          "W",
+          "Wolfram"
+        ]
+      },
+      {
+        "name": "Yttrium",
+        "rarity": "mythic",
+        "aliases": [
+          "Y"
+        ]
+      }
+    ],
+    "reject": [
+      "Helium",
+      "Sodium",
+      "Iron",
+      "Calcium",
+      "Chlorine",
+      "Neon",
+      "Gold",
+      "Silver",
+      "Zinc",
+      "Lead"
+    ]
+  },
+  {
+    "id": "sci-planets-dwarf-planets",
+    "text": "Name a planet or IAU-recognized dwarf planet in our solar system.",
+    "category": "Science",
+    "difficulty": "easy",
+    "answers": [
+      {
+        "name": "Earth",
+        "rarity": "common"
+      },
+      {
+        "name": "Mars",
+        "rarity": "common"
+      },
+      {
+        "name": "Jupiter",
+        "rarity": "common"
+      },
+      {
+        "name": "Saturn",
+        "rarity": "common"
+      },
+      {
+        "name": "Venus",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Mercury",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Pluto",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Neptune",
+        "rarity": "notable"
+      },
+      {
+        "name": "Uranus",
+        "rarity": "notable"
+      },
+      {
+        "name": "Ceres",
+        "rarity": "rare"
+      },
+      {
+        "name": "Eris",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Haumea",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Makemake",
+        "rarity": "mythic"
+      }
+    ],
+    "reject": [
+      "Sun",
+      "Moon",
+      "Titan",
+      "Europa",
+      "Sedna",
+      "Vulcan",
+      "Nibiru",
+      "Planet X"
+    ]
+  },
+  {
+    "id": "sci-noble-gases",
+    "text": "Name a noble gas.",
+    "category": "Science",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Helium",
+        "rarity": "common",
+        "aliases": [
+          "He"
+        ]
+      },
+      {
+        "name": "Neon",
+        "rarity": "common",
+        "aliases": [
+          "Ne"
+        ]
+      },
+      {
+        "name": "Argon",
+        "rarity": "uncommon",
+        "aliases": [
+          "Ar"
+        ]
+      },
+      {
+        "name": "Krypton",
+        "rarity": "notable",
+        "aliases": [
+          "Kr"
+        ]
+      },
+      {
+        "name": "Xenon",
+        "rarity": "notable",
+        "aliases": [
+          "Xe"
+        ]
+      },
+      {
+        "name": "Radon",
+        "rarity": "rare",
+        "aliases": [
+          "Rn"
+        ]
+      },
+      {
+        "name": "Oganesson",
+        "rarity": "mythic",
+        "aliases": [
+          "Og"
+        ]
+      }
+    ],
+    "reject": [
+      "Hydrogen",
+      "Nitrogen",
+      "Oxygen",
+      "Chlorine",
+      "Fluorine"
+    ]
+  },
+  {
+    "id": "sci-human-bones",
+    "text": "Name a bone in the human body.",
+    "category": "Science",
+    "difficulty": "medium",
+    "answers": [
+      {
+        "name": "Femur",
+        "rarity": "common",
+        "aliases": [
+          "Thigh bone"
+        ]
+      },
+      {
+        "name": "Skull",
+        "rarity": "common",
+        "aliases": [
+          "Cranium"
+        ]
+      },
+      {
+        "name": "Rib",
+        "rarity": "common",
+        "aliases": [
+          "Ribs"
+        ]
+      },
+      {
+        "name": "Tibia",
+        "rarity": "common",
+        "aliases": [
+          "Shinbone",
+          "Shin bone"
+        ]
+      },
+      {
+        "name": "Humerus",
+        "rarity": "common"
+      },
+      {
+        "name": "Clavicle",
+        "rarity": "common",
+        "aliases": [
+          "Collarbone",
+          "Collar bone"
+        ]
+      },
+      {
+        "name": "Patella",
+        "rarity": "common",
+        "aliases": [
+          "Kneecap",
+          "Knee cap"
+        ]
+      },
+      {
+        "name": "Fibula",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Radius",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Ulna",
+        "rarity": "uncommon"
+      },
+      {
+        "name": "Sternum",
+        "rarity": "uncommon",
+        "aliases": [
+          "Breastbone",
+          "Breast bone"
+        ]
+      },
+      {
+        "name": "Scapula",
+        "rarity": "uncommon",
+        "aliases": [
+          "Shoulder blade"
+        ]
+      },
+      {
+        "name": "Mandible",
+        "rarity": "uncommon",
+        "aliases": [
+          "Jaw",
+          "Jawbone",
+          "Jaw bone",
+          "Lower jaw"
+        ]
+      },
+      {
+        "name": "Vertebra",
+        "rarity": "uncommon",
+        "aliases": [
+          "Vertebrae"
+        ]
+      },
+      {
+        "name": "Coccyx",
+        "rarity": "uncommon",
+        "aliases": [
+          "Tailbone",
+          "Tail bone"
+        ]
+      },
+      {
+        "name": "Sacrum",
+        "rarity": "notable"
+      },
+      {
+        "name": "Maxilla",
+        "rarity": "notable",
+        "aliases": [
+          "Upper jaw"
+        ]
+      },
+      {
+        "name": "Phalanges",
+        "rarity": "notable",
+        "aliases": [
+          "Phalanx",
+          "Finger bone",
+          "Toe bone"
+        ]
+      },
+      {
+        "name": "Metacarpals",
+        "rarity": "notable",
+        "aliases": [
+          "Metacarpal"
+        ]
+      },
+      {
+        "name": "Metatarsals",
+        "rarity": "notable",
+        "aliases": [
+          "Metatarsal"
+        ]
+      },
+      {
+        "name": "Carpals",
+        "rarity": "notable",
+        "aliases": [
+          "Carpal",
+          "Wrist bone"
+        ]
+      },
+      {
+        "name": "Tarsals",
+        "rarity": "notable",
+        "aliases": [
+          "Tarsal"
+        ]
+      },
+      {
+        "name": "Calcaneus",
+        "rarity": "notable",
+        "aliases": [
+          "Heel bone"
+        ]
+      },
+      {
+        "name": "Hip bone",
+        "rarity": "notable",
+        "aliases": [
+          "Coxal bone",
+          "Os coxae",
+          "Innominate bone"
+        ]
+      },
+      {
+        "name": "Talus",
+        "rarity": "rare",
+        "aliases": [
+          "Ankle bone",
+          "Astragalus"
+        ]
+      },
+      {
+        "name": "Hyoid",
+        "rarity": "rare",
+        "aliases": [
+          "Hyoid bone"
+        ]
+      },
+      {
+        "name": "Stapes",
+        "rarity": "rare",
+        "aliases": [
+          "Stirrup"
+        ]
+      },
+      {
+        "name": "Incus",
+        "rarity": "rare",
+        "aliases": [
+          "Anvil"
+        ]
+      },
+      {
+        "name": "Malleus",
+        "rarity": "rare",
+        "aliases": [
+          "Hammer"
+        ]
+      },
+      {
+        "name": "Zygomatic bone",
+        "rarity": "rare",
+        "aliases": [
+          "Zygomatic",
+          "Cheekbone",
+          "Cheek bone"
+        ]
+      },
+      {
+        "name": "Nasal bone",
+        "rarity": "rare"
+      },
+      {
+        "name": "Ilium",
+        "rarity": "rare"
+      },
+      {
+        "name": "Ischium",
+        "rarity": "rare"
+      },
+      {
+        "name": "Pubis",
+        "rarity": "rare",
+        "aliases": [
+          "Pubic bone"
+        ]
+      },
+      {
+        "name": "Scaphoid",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Lunate",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Cuboid",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Navicular",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Sphenoid",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Ethmoid",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Occipital bone",
+        "rarity": "legendary",
+        "aliases": [
+          "Occipital"
+        ]
+      },
+      {
+        "name": "Parietal bone",
+        "rarity": "legendary",
+        "aliases": [
+          "Parietal"
+        ]
+      },
+      {
+        "name": "Temporal bone",
+        "rarity": "legendary",
+        "aliases": [
+          "Temporal"
+        ]
+      },
+      {
+        "name": "Frontal bone",
+        "rarity": "legendary",
+        "aliases": [
+          "Frontal"
+        ]
+      },
+      {
+        "name": "Vomer",
+        "rarity": "legendary"
+      },
+      {
+        "name": "Lacrimal bone",
+        "rarity": "legendary",
+        "aliases": [
+          "Lacrimal"
+        ]
+      },
+      {
+        "name": "Pisiform",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Triquetrum",
+        "rarity": "mythic",
+        "aliases": [
+          "Triquetral"
+        ]
+      },
+      {
+        "name": "Hamate",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Capitate",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Trapezium",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Trapezoid",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Palatine bone",
+        "rarity": "mythic",
+        "aliases": [
+          "Palatine"
+        ]
+      },
+      {
+        "name": "Cuneiform",
+        "rarity": "mythic"
+      },
+      {
+        "name": "Inferior nasal concha",
+        "rarity": "mythic",
+        "aliases": [
+          "Turbinate"
+        ]
+      }
+    ],
+    "reject": [
+      "Spine",
+      "Pelvis",
+      "Funny bone",
+      "Cartilage",
+      "Kneecaps"
+    ]
+  },
+  {
+    "id": "sci-si-base-units",
+    "text": "Name one of the seven SI base units.",
+    "category": "Science",
+    "difficulty": "hard",
+    "answers": [
+      {
+        "name": "Second",
+        "rarity": "common"
+      },
+      {
+        "name": "Metre",
+        "rarity": "common",
+        "aliases": [
+          "Meter"
+        ]
+      },
+      {
+        "name": "Kilogram",
+        "rarity": "common"
+      },
+      {
+        "name": "Ampere",
+        "rarity": "uncommon",
+        "aliases": [
+          "Amp"
+        ]
+      },
+      {
+        "name": "Kelvin",
+        "rarity": "notable"
+      },
+      {
+        "name": "Mole",
+        "rarity": "rare"
+      },
+      {
+        "name": "Candela",
+        "rarity": "mythic"
+      }
+    ],
+    "reject": [
+      "Gram",
+      "Liter",
+      "Litre",
+      "Newton",
+      "Joule",
+      "Watt",
+      "Volt",
+      "Celsius",
+      "Hertz",
+      "Pascal",
+      "Coulomb",
+      "Ohm"
+    ]
+  }
+]
