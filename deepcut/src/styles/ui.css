@@ -88,3 +88,6 @@
 .mi-R { fill: #45484f; }
 .mineral-icon.is-locked rect { fill: #23272e; }
 .mineral-icon.is-locked .mi-k { fill: #333840; }
+.field.is-accepted { color: var(--r); border-color: var(--r); box-shadow: 0 0 0 1px var(--r), 0 6px 24px -10px var(--r); animation: accept 320ms ease-out; }
+@keyframes accept { 0% { transform: scale(0.98); } 50% { transform: scale(1.015); } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .field.is-accepted { animation: none; } }

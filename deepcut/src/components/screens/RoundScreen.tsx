@@ -24,6 +24,7 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
   const q = state.questions[state.round];
   const total = state.questions.length;
   const asking = state.phase === 'QUESTION';
+  const resolved = state.phase === 'ROUND_RESULT';
   const ms = asking ? timeLeft(state, now) : 0;
   const secs = Math.ceil(ms / 1000);
   const warn = asking && secs <= GAME.timerWarningSeconds;
@@ -44,7 +45,20 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
     return () => clearTimeout(id);
   }, [state.wrong.length]);
 
-  useEffect(() => setText(''), [state.round]);
+  // Each new question: empty field, focused, ready to type. The field stays mounted between rounds so
+  // a phone keyboard stays open. A short arming delay stops an Enter held or repeated from the last
+  // round from submitting into the new one.
+  const armedAt = useRef(0);
+  useEffect(() => {
+    if (!asking) return;
+    setText('');
+    armedAt.current = Date.now() + 250;
+    input.current?.focus();
+  }, [state.round, asking]);
+  // Round resolved: show the accepted canonical answer in the field.
+  useEffect(() => {
+    if (resolved) setText(last?.outcome === 'correct' ? last.answer ?? '' : '');
+  }, [resolved]);
 
   // Sound: a find or a miss when a round ends, ticks in the last seconds.
   const prevRounds = useRef(state.records.length);
@@ -71,10 +85,22 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    if (suggestion && text === lastWrong) return acceptSuggestion();
-    if (text.trim()) onSubmit(text);
     input.current?.focus();
+    if (!asking || Date.now() < armedAt.current) return; // resolved round or just-started question
+    const guess = text.trim();
+    if (!guess) return;
+    if (suggestion && text === lastWrong) return acceptSuggestion();
+    if (guess === lastWrong?.trim()) {
+      // Same wrong guess again: nudge, don't count it twice.
+      setShaking(true);
+      input.current?.select();
+      return void setTimeout(() => setShaking(false), 300);
+    }
+    onSubmit(guess);
   };
+  // Buttons must not take focus from the field (it would close a phone keyboard).
+  const keepFocus = (e: { preventDefault: () => void }) => e.preventDefault();
+  const accepted = resolved && last?.outcome === 'correct' && last.rarity ? rarityOf(last.rarity) : null;
 
   return (
     <section className={`round-stage${keyboard ? ' is-kb' : ''}`}>
@@ -137,14 +163,22 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
 
       <div className="stage-gap" aria-hidden="true" />
 
-      {asking && (
+      {(asking || resolved) && (
         <div className="dock">
-          <p className={`feedback${lastWrong ? ' feedback--error' : ''}`} aria-live="polite">
-            {lastWrong ? (
+          <p className={`feedback${lastWrong && asking ? ' feedback--error' : ''}`} aria-live="polite">
+            {resolved ? (
+              accepted ? (
+                <>
+                  Accepted: <b>{last!.answer}</b> · {accepted.label} · +{accepted.points}m
+                </>
+              ) : (
+                'Next question coming up.'
+              )
+            ) : lastWrong ? (
               suggestion ? (
                 <>
                   <b>“{lastWrong}”</b> isn't on the list. Did you mean{' '}
-                  <button type="button" className="suggest" onClick={acceptSuggestion}>
+                  <button type="button" className="suggest" onPointerDown={keepFocus} onClick={acceptSuggestion}>
                     {suggestion.name}
                   </button>
                   ?
@@ -159,25 +193,31 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
             )}
           </p>
           <form className="answer" onSubmit={submit}>
-            <span className={`dock-secs num${warn ? ' is-warn' : ''}`} aria-hidden="true">{secs}</span>
+            <span className={`dock-secs num${warn ? ' is-warn' : ''}`} aria-hidden="true">{asking ? secs : 0}</span>
             <input
               ref={input}
-              key={state.round}
-              className={`field${shaking ? ' is-error' : ''}`}
+              className={`field${shaking ? ' is-error' : ''}${accepted ? ' is-accepted' : ''}`}
+              style={accepted ? ({ '--r': accepted.color } as CSSProperties) : undefined}
               autoFocus
+              readOnly={!asking}
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => asking && setText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && e.repeat) e.preventDefault(); // a held Enter never submits again
+              }}
               placeholder="Type your answer…"
               aria-label="Your answer"
               aria-invalid={shaking || undefined}
+              name="deepcut-answer"
+              inputMode="text"
               autoComplete="off"
               autoCapitalize="off"
               autoCorrect="off"
               spellCheck={false}
               enterKeyHint="go"
             />
-            <Button variant="primary" type="submit" silent>Dig</Button>
-            <Button variant="secondary" onClick={onSkip} silent>Skip</Button>
+            <Button variant="primary" type="submit" silent disabled={!asking} onPointerDown={keepFocus}>Dig</Button>
+            <Button variant="secondary" onClick={onSkip} silent disabled={!asking} onPointerDown={keepFocus}>Skip</Button>
           </form>
         </div>
       )}

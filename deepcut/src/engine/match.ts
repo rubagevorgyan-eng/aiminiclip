@@ -1,6 +1,7 @@
+import { TYPO } from '../config/game.ts';
 import type { Answer, Question } from './types.ts';
 
-const WORD_MAP: Record<string, string> = { st: 'saint', mt: 'mount', ft: 'fort', and: 'and' };
+const WORD_MAP: Record<string, string> = { st: 'saint', mt: 'mount', ft: 'fort', dr: 'doctor', jr: 'junior', sr: 'senior', vs: 'versus' };
 const ROMAN = /^(x{0,3})(ix|iv|v?i{0,3})$/;
 const ROMAN_VAL: Record<string, number> = { i: 1, v: 5, x: 10 };
 
@@ -54,11 +55,16 @@ export function editDistance(a: string, b: string, max: number): number {
   return d[a.length][b.length];
 }
 
+/** Edits allowed for a word of this (space-free) length; see TYPO in config/game.ts. */
+export const typoBudget = (len: number) =>
+  len < TYPO.exactBelow ? 0 : len < TYPO.twoEditsFrom ? 1 : len < TYPO.ratioFrom ? 2 : Math.min(TYPO.maxEdits, Math.floor(len * TYPO.ratio));
+
 /**
- * Typos allowed when both the guess and the candidate are at least this (space-free) length.
- * Short names must be exact: many real words sit one letter apart (Bulls/Bills, Taiwan/Taipan).
+ * Names of real things from the whole bank (normalized, space-free). A guess that IS one of them is
+ * a different entity, never a typo: "Austria" is not corrected to Australia, nor "Iran" to Iraq.
  */
-export const typoBudget = (len: number) => (len < 7 ? 0 : len < 11 ? 1 : 2);
+let knownNames: ReadonlySet<string> = new Set();
+export const setKnownNames = (names: Iterable<string>) => void (knownNames = new Set(names));
 
 interface Index {
   keys: Map<string, Answer | null>; // null = key shared by two answers (ambiguous, never accepted)
@@ -100,8 +106,7 @@ export interface Match {
 /**
  * Match a typed guess to one of the question's answers.
  * 1. Exact match on normalized names/aliases (also ignoring spaces), then simple plural forms.
- * 2. Conservative typo tolerance: same first letter, same numbers, small edit distance,
- *    and exactly one closest answer. Anything uncertain is rejected.
+ * 2. Conservative typo tolerance (`fuzzy`). Anything uncertain is rejected.
  */
 export function matchDetail(q: Question, guess: string): Match | null {
   const k = normalize(guess, q.ignore);
@@ -112,6 +117,7 @@ export function matchDetail(q: Question, guess: string): Match | null {
 
   const tries = [k, c];
   if (c.length > 3) {
+    if (k.endsWith('ies')) tries.push(k.slice(0, -3) + 'y');
     if (k.endsWith('es')) tries.push(k.slice(0, -2));
     if (k.endsWith('s')) tries.push(k.slice(0, -1));
     else tries.push(k + 's');
@@ -122,17 +128,25 @@ export function matchDetail(q: Question, guess: string): Match | null {
     if (a === null) return null;
   }
 
+  return fuzzy(q, c);
+}
+
+/**
+ * Conservative typo match against this question's answers only: within the length budget of both
+ * the guess and the answer, same numbers, same first letter (a first-letter slip only as the single
+ * edit on 8+ letters), exactly one closest answer, and the guess is not another known name.
+ */
+function fuzzy(q: Question, c: string): Match | null {
   const max = typoBudget(c.length);
-  if (!max) return null;
+  if (!max || knownNames.has(c)) return null;
   let best = max + 1;
   let found = new Set<Answer>();
-  for (const [key, a] of keys) {
-    if (!a || key.includes(' ')) continue; // compare space-free keys only
-    if (key[0] !== c[0] || digits(key) !== digits(c)) continue;
+  for (const [key, a] of index(q).keys) {
+    if (!a || key.includes(' ') || digits(key) !== digits(c)) continue;
     const allowed = Math.min(max, typoBudget(key.length));
     if (!allowed) continue;
     const d = editDistance(c, key, allowed);
-    if (d > allowed) continue;
+    if (d > allowed || (key[0] !== c[0] && (d > 1 || key.length < 8))) continue;
     if (d < best) {
       best = d;
       found = new Set([a]);
@@ -146,42 +160,13 @@ export function matchAnswer(q: Question, guess: string): Answer | null {
 }
 
 /**
- * Auto-correct for a guess `matchDetail` did not accept: a misspelling close enough to count by
- * itself (1 edit from 5 letters, 2 from 8), same first letter and numbers, exactly one closest
- * answer, and never a known-wrong answer. Looser near misses only get a "Did you mean…?".
- */
-export function autoCorrect(q: Question, guess: string): Answer | null {
-  if (matchDetail(q, guess)) return null;
-  const k = normalize(guess, q.ignore);
-  const c = compact(k);
-  const { keys, reject } = index(q);
-  if (c.length < 5 || reject.has(k) || reject.has(c)) return null;
-  const budget = (n: number) => (n < 5 ? 0 : n < 8 ? 1 : 2);
-  const max = budget(c.length);
-  let best = max + 1;
-  let found = new Set<Answer>();
-  for (const [key, a] of keys) {
-    if (!a || key.includes(' ') || key[0] !== c[0] || digits(key) !== digits(c)) continue;
-    const allowed = Math.min(max, budget(key.length));
-    if (!allowed) continue;
-    const d = editDistance(c, key, allowed);
-    if (d > allowed) continue;
-    if (d < best) {
-      best = d;
-      found = new Set([a]);
-    } else if (d === best) found.add(a);
-  }
-  return best <= max && found.size === 1 ? [...found][0] : null;
-}
-
-/**
  * "Did you mean…?" for a guess that was NOT accepted: a looser search than `matchDetail`, used only
  * to offer a suggestion the player must confirm. Never used to score an answer by itself.
  * Allows more typos (1 edit from 4 letters, 2 from 6, 3 from 10), a first-letter slip on longer
  * words, and unambiguous prefixes ("tyranno" -> Tyrannosaurus rex). Ties or known-wrong answers: null.
  */
 export function suggestAnswer(q: Question, guess: string): Answer | null {
-  if (matchDetail(q, guess) || autoCorrect(q, guess)) return null;
+  if (matchDetail(q, guess)) return null;
   const k = normalize(guess, q.ignore);
   const c = compact(k);
   const { keys, reject } = index(q);

@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { checkBank, QUESTIONS } from '../data/questions.ts';
-import { matchAnswer, matchDetail, normalize } from './match.ts';
+import { matchAnswer, matchDetail, normalize, setKnownNames } from './match.ts';
+import type { Question } from './types.ts';
 
 const q = (id: string) => {
   const found = QUESTIONS.find((x) => x.id === id);
@@ -82,7 +83,7 @@ test('accepts small typos on longer answers', () => {
   ok('ani-penguins', 'humbolt', 'Humboldt');
   ok('car-f1-champions', 'Schumacer', 'Michael Schumacher');
   ok('sci-human-bones', 'clavicel', 'Clavicle');
-  no('sci-human-bones', 'clavical'); // 2 edits on an 8-letter word: too far
+  ok('sci-human-bones', 'clavical', 'Clavicle'); // 2 edits on an 8-letter word
   ok('geo-europe-capitals', 'Copenhagan', 'Copenhagen');
   assert.equal(matchDetail(q('geo-largest-countries'), 'Austrailia')?.exact, false);
   assert.equal(matchDetail(q('geo-largest-countries'), 'Australia')?.exact, true);
@@ -125,6 +126,7 @@ test('no known name from another question is accepted as a typo', () => {
   const names = new Set<string>();
   for (const x of QUESTIONS) for (const a of x.answers) for (const n of [a.name, ...(a.aliases ?? [])]) names.add(n);
   for (const x of QUESTIONS) for (const r of x.reject ?? []) names.add(r);
+  setKnownNames([...names].map((n) => normalize(n).replace(/ /g, ''))); // as the game does from bank/names.json
   const bad: string[] = [];
   for (const x of QUESTIONS) {
     const own = new Set(x.answers.flatMap((a) => [a.name, ...(a.aliases ?? [])]).map((n) => normalize(n, x.ignore)));
@@ -134,6 +136,7 @@ test('no known name from another question is accepted as a typo', () => {
       if (m && !m.exact) bad.push(`${x.id}: "${g}" -> ${m.answer.name}`);
     }
   }
+  setKnownNames([]);
   assert.deepEqual(bad, []);
 });
 
@@ -143,7 +146,8 @@ test('suggestAnswer offers "did you mean" for near misses, never for accepted or
   assert.equal(s('vg-gen1-pokemon', 'Bulbasor'), null, 'auto-corrected instead');
   assert.equal(s('geo-largest-countries', 'Austria'), 'Australia');
   assert.equal(s('mov-pixar', 'ratatoui'), 'Ratatouille'); // prefix
-  assert.equal(s('mov-mcu-films', 'thorr'), 'Thor', 'a one-letter slip beats a longer title that starts the same');
+  assert.equal(s('mov-mcu-films', 'thorr'), null, 'a one-letter slip is auto-corrected, not suggested');
+  ok('mov-mcu-films', 'thorr', 'Thor');
   assert.equal(s('vg-gen1-pokemon', 'Charizard'), null, 'already accepted: no suggestion');
   assert.equal(s('vg-gen1-pokemon', 'Banana'), null);
   assert.equal(s('his-roman-emperors', 'Julius Caesar'), null, 'known wrong answers are never suggested');
@@ -152,16 +156,52 @@ test('suggestAnswer offers "did you mean" for near misses, never for accepted or
   assert.equal(s('sci-noble-gases', 'Neo'), null, 'too short');
 });
 
-test('autoCorrect accepts close misspellings by itself, but not a different real word', async () => {
-  const { autoCorrect } = await import('./match.ts');
-  const a = (id: string, g: string) => autoCorrect(q(id), g)?.name ?? null;
-  assert.equal(a('vg-gen1-pokemon', 'Bulbasor'), 'Bulbasaur');
-  assert.equal(a('vg-gen1-pokemon', 'Pikchu'), 'Pikachu');
-  assert.equal(a('sci-noble-gases', 'Xenom'), 'Xenon');
-  assert.equal(a('vg-gen1-pokemon', 'Charizard'), null, 'already exact');
-  assert.equal(a('geo-largest-countries', 'Austria'), null, 'two letters off a 7-letter word: only a suggestion');
-  assert.equal(a('his-roman-emperors', 'Julius Caesar'), null, 'known wrong answers are never accepted');
-  assert.equal(a('his-20th-century-presidents', 'Rosevelt'), null, 'ambiguous: two Roosevelts');
-  assert.equal(a('sci-noble-gases', 'Neo'), null, 'too short');
-  assert.equal(a('mov-pixar', 'Toy Story 5'), null, 'numbers must match');
+
+// Focused validation tests on a small synthetic question (independent of bank data).
+const mk = (answers: [string, string[]?][], extra: Partial<Question> = {}): Question => ({
+  id: 't', text: 'T', category: 'Geography', difficulty: 'easy', family: 't', n: answers.length,
+  answers: answers.map(([name, aliases], i) => ({ name, aliases, rarity: i % 2 ? 'rare' : 'common' })), ...extra,
+});
+const C = mk([['Thailand'], ['Australia'], ['Iraq'], ["Côte d'Ivoire", ['Ivory Coast']], ['United States', ['USA', 'US']], ['Netherlands', ['Holland']],
+  ['Saint Lucia'], ['Philippines'], ['Butterfly'], ['Mario'], ['Maria']], { reject: ['Austria'] });
+const m = (g: string) => matchDetail(C, g);
+const is = (g: string, name: string, exact: boolean) => assert.deepEqual([m(g)?.answer.name, m(g)?.exact], [name, exact], `"${g}"`);
+const not = (g: string) => assert.equal(m(g), null, `"${g}" should be rejected`);
+
+test('validation order: exact, normalized and alias matches are exact', () => {
+  is('Thailand', 'Thailand', true);
+  is('  thAILand  ', 'Thailand', true);
+  is('cote divoire', "Côte d'Ivoire", true);
+  is('Ivory   Coast', "Côte d'Ivoire", true);
+  is('US', 'United States', true); // 2-letter alias: explicit aliases always count
+  is('St. Lucia', 'Saint Lucia', true);
+  is('the Netherlands', 'Netherlands', true);
+  is('butterflies', 'Butterfly', true);
+  is('United-States', 'United States', true);
+  assert.equal(m('Holland')?.answer, m('Netherlands')?.answer, 'aliases share one canonical answer (same rarity)');
+});
+
+test('typos: transposed, missing, extra and wrong letters are auto-corrected', () => {
+  is('Thialand', 'Thailand', false); // transposition
+  is('Austrlia', 'Australia', false); // missing letter
+  is('Australiaa', 'Australia', false); // extra letter
+  is('Thailond', 'Thailand', false); // wrong letter
+  is('Phillipines', 'Philippines', false); // 2 edits on 11 letters
+  is('Hailand', 'Thailand', false); // first-letter slip: only as the single edit on 8+ letters
+  is('Unted States', 'United States', false); // inside a multiword answer
+  is('Irak', 'Iraq', false); // 4 letters: 1 edit
+});
+
+test('false positives: short words, ambiguity, known names and rejects are never corrected', () => {
+  not('Ira'); // 1-3 letters: exact or alias only
+  not('Irq');
+  not('Marie'); // 1 edit from both Mario and Maria
+  not('Austria'); // listed as a wrong answer
+  not('Thiland and'); // too far
+  not('Butterfy fish');
+  setKnownNames(['iran', 'austral']);
+  not('Iran'); // a real, different country
+  is('Irak', 'Iraq', false); // still a typo: not a known name
+  setKnownNames([]);
+  is('Iran', 'Iraq', false); // without the guard the 1-edit rule would accept it, hence the guard
 });

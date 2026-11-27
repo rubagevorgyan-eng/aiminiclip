@@ -1,5 +1,5 @@
 import { GAME, RARITY, type RarityId } from '../config/game.ts';
-import { autoCorrect, matchDetail } from './match.ts';
+import { matchDetail } from './match.ts';
 import type { Question } from './types.ts';
 
 /**
@@ -100,7 +100,7 @@ export function reduce(s: GameState, e: GameEvent): GameState {
       if (!guess) return s;
       const q = s.questions[s.round];
       const m = matchDetail(q, guess);
-      const a = m?.answer ?? autoCorrect(q, guess);
+      const a = m?.answer;
       if (!a) return { ...s, wrong: [...s.wrong, guess] };
       const exact = m?.exact ?? false;
       return endRound(

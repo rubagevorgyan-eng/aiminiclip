@@ -61,3 +61,10 @@ export function zoneIndexForDepth(m: number): number {
 export const rarityIndex = (id: RarityId) => RARITY.findIndex((t) => t.id === id);
 
 export const rarityOf = (id: RarityId): RarityTier => RARITY.find((t) => t.id === id)!;
+
+/**
+ * Typo tolerance for answers (edits = Damerau-Levenshtein distance on the space-free, normalized text).
+ * Below `exactBelow` letters only exact names/aliases count; then 1 edit up to `twoEditsFrom - 1`
+ * letters, 2 up to `ratioFrom - 1`, then `ratio` of the length (capped at `maxEdits`).
+ */
+export const TYPO = { exactBelow: 4, twoEditsFrom: 8, ratioFrom: 13, ratio: 0.18, maxEdits: 3 } as const;

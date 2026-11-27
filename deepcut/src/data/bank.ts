@@ -1,3 +1,4 @@
+import { setKnownNames } from '../engine/match.ts';
 import type { Question, QuestionMeta } from '../engine/types.ts';
 
 /**
@@ -15,7 +16,11 @@ export const setBankFetcher = (f: Fetcher) => void (fetcher = f);
 
 let indexPromise: Promise<QuestionMeta[]> | null = null;
 export function loadIndex(): Promise<QuestionMeta[]> {
-  indexPromise ??= (fetcher('bank/index.json') as Promise<{ questions: QuestionMeta[] }>).then((d) => d.questions);
+  indexPromise ??= Promise.all([
+    (fetcher('bank/index.json') as Promise<{ questions: QuestionMeta[] }>).then((d) => d.questions),
+    // Known names guard typo matching (a real, different name is never "corrected"). Optional.
+    (fetcher('bank/names.json') as Promise<string[]>).then(setKnownNames, () => undefined),
+  ]).then(([questions]) => questions);
   indexPromise.catch(() => (indexPromise = null)); // allow a retry after a network error
   return indexPromise;
 }
