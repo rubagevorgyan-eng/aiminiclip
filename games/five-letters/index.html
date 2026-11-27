@@ -529,7 +529,7 @@ $('shareBtn').onclick=()=>{
 
 {const fb=$('favBtn');const draw=()=>{const on=Recess.isFav(SLUG);fb.setAttribute('aria-pressed',String(on));$('favTxt').textContent=on?'In My Recess':'Add to My Recess'};draw();fb.onclick=()=>{Recess.toggleFav(SLUG);draw()}}
 $('yr').textContent=new Date().getFullYear();
-{const j=new URLSearchParams(location.search).get('vs');if(j){$('vsCode').value=j.toUpperCase().slice(0,4);setMode('vs')}else setMode('daily')}
+{const q=new URLSearchParams(location.search),j=q.get('vs'),m=q.get('mode');if(j){$('vsCode').value=j.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);setMode('vs')}else setMode(m==='vs'?'vs':m==='endless'?'end':'daily')}
 }
 </script>
 </body>
