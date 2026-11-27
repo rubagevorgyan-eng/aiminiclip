@@ -1,4 +1,4 @@
-# $20 Best Anime Character — project plan (final)
+# $20 Anime Battle — project plan (final)
 
 Read this first. It is the single reference for how the game works, how data is built and what is left to do.
 `CLAUDE.md` holds the standing rules; `DATABASE_PROGRESS.md` (generated) holds the live database numbers.

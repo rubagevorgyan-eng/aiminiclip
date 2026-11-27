@@ -1,4 +1,4 @@
-/* $20 Best Anime Character — match session helpers. Pure (no DOM): save format, bounded undo, timer arithmetic,
+/* $20 Anime Battle — match session helpers. Pure (no DOM): save format, bounded undo, timer arithmetic,
    hidden-information rules and Mystery clues. Used by the page and by tools/test-session.mjs. */
 (function (g) {
   const ABC = g.ABC = g.ABC || {};

@@ -1,4 +1,4 @@
-# $20 Best Anime Character — standing rules
+# $20 Anime Battle — standing rules
 
 Read `PROJECT_PLAN.md` first (architecture, rules, methods, test results). `DATABASE_PROGRESS.md` is generated.
 

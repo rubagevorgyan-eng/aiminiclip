@@ -1,4 +1,4 @@
-/* $20 Best Anime Character — character selection (appearance order). Pure; no DOM; seeded RNG supported.
+/* $20 Anime Battle — character selection (appearance order). Pure; no DOM; seeded RNG supported.
    Input: one already-resolved version per canonical character (setup.pool did the eligibility filtering and the
    version choice), so characters with many transformations get exactly one ticket each.
    The whole order is fixed at match start from the match's settings + seed + data snapshot. It never looks at

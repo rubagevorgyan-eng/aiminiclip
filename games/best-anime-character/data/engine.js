@@ -1,4 +1,4 @@
-/* $20 Best Anime Character — data engine: tier parsing, star mapping, deterministic scoring, validation, pools.
+/* $20 Anime Battle — data engine: tier parsing, star mapping, deterministic scoring, validation, pools.
    Pure functions over ABC.config and entry objects; no DOM, no network. Shared by the page and tools/check.mjs. */
 (function (g) {
   const ABC = g.ABC = g.ABC || {};

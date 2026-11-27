@@ -1,4 +1,4 @@
-/* $20 Best Anime Character — auction rules. Pure state transitions + structured events; no DOM.
+/* $20 Anime Battle — auction rules. Pure state transitions + structured events; no DOM.
    Every action goes through apply(state, action, ctx) which returns a NEW state, or the old one with a reason.
    ctx.charOf(entryId) -> { charId, power }  (from the character data).
    Used by the page and by tools/test-auction.mjs. */

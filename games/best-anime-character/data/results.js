@@ -1,4 +1,4 @@
-/* $20 Best Anime Character — end-of-match results. Pure (no DOM).
+/* $20 Anime Battle — end-of-match results. Pure (no DOM).
    summarize() turns a finished match state into a self-contained summary: every character's name, series, form,
    stars, power and VS tier are copied in, so stored results never change when the database is updated later.
    Winner = the existing rule (auction.rank): total power, then strongest single character, then money left; equal on

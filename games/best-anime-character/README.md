@@ -1,4 +1,4 @@
-# $20 Best Anime Character
+# $20 Anime Battle
 
 Two players, $20 each: bid on anime, manga and manhwa characters and build the strongest team.
 Static page (`index.html`), no build step. Docs: `PROJECT_PLAN.md` (how it works), `CLAUDE.md` (rules for changes),

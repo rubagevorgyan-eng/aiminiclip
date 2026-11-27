@@ -1,4 +1,4 @@
-/* $20 Best Anime Character — match setup: modes, settings, pool filtering, validation, persistence.
+/* $20 Anime Battle — match setup: modes, settings, pool filtering, validation, persistence.
    Pure (no DOM). Settings are separate from live match state: a match copies what it needs at start. */
 (function (g) {
   const ABC = g.ABC = g.ABC || {};

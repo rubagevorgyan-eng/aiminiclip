@@ -1,4 +1,4 @@
-/* $20 Best Anime Character — central game configuration.
+/* $20 Anime Battle — central game configuration.
    Everything here is a GAME-SPECIFIC conversion. VS Battles Wiki is a community power-scaling reference,
    not an official canon authority, and it has no "stars". Loaded by the page and by tools/*.mjs (Node). */
 (function (g) {
