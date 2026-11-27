@@ -52,12 +52,23 @@ export class MineRenderer {
   private get reduced() {
     return this.forceReduced || this.sysReduced;
   }
-  /** Home-screen mode: slowly tour the mine with occasional swings. */
+  /**
+   * Menu mode: a calm shot of the surface (night sky, headframe, the miner at the shaft entrance,
+   * the top of the underground below) with stars twinkling and an occasional idle swing.
+   * Leaving it glides the camera down into the gameplay framing ("entering the mine").
+   */
   setAmbient(on: boolean) {
+    const now = performance.now();
+    if (this.ambient && !on) this.enteringUntil = now + 1600;
     this.ambient = on;
-    if (on) this.cancelEffects(); // back to the menu: drop any dig still playing
-    this.nextAmbientSwing = performance.now() + 1200;
+    if (on) {
+      this.cancelEffects(); // back to the menu: drop any dig still playing
+      this.depth = 0;
+    }
+    this.nextAmbientSwing = now + 1800;
   }
+  private enteringUntil = 0;
+  private stars = Array.from({ length: 28 }, (_, i) => ({ x: (i * 97 + 13) % MINE.width, y: 4 + ((i * 53) % (MINE.sky - 28)), phase: i * 1.7 }));
 
   /** Player setting that forces reduced motion regardless of the system preference. */
   setForceReduced(v: boolean) {
@@ -105,8 +116,8 @@ export class MineRenderer {
   }
 
   /** Jump without animation (new game, resume). */
-  reset(depth: number) {
-    this.cam = null;
+  reset(depth: number, keepCamera = false) {
+    if (!keepCamera) this.cam = null;
     this.cancelEffects();
     this.parts = [];
     this.depth = depth;
@@ -144,18 +155,12 @@ export class MineRenderer {
 
   // ---------------------------------------------------------------- update
   private update(now: number, dt: number) {
-    if (this.ambient && !this.reduced) {
-      this.depth += 6 * dt;
-      if (this.depth > ZONES[ZONES.length - 1].to) {
-        this.depth = 0;
-        this.parts = [];
-      }
-      if (!this.swing && now > this.nextAmbientSwing) {
-        const r = Math.random();
-        const tier = r < 0.4 ? 0 : r < 0.65 ? 1 : r < 0.8 ? 2 : r < 0.9 ? 3 : r < 0.97 ? 4 : 5;
-        this.swing = { start: now, tier, target: this.depth, struck: false };
-        this.nextAmbientSwing = now + 2400 + Math.random() * 2200;
-      }
+    if (this.ambient && !this.reduced && !this.swing && now > this.nextAmbientSwing) {
+      // idle digging at the entrance: mostly small strikes, now and then a glint
+      const r = Math.random();
+      const tier = r < 0.55 ? 0 : r < 0.8 ? 1 : r < 0.93 ? 2 : 3;
+      this.swing = { start: now, tier, target: this.depth, struck: false };
+      this.nextAmbientSwing = now + 3800 + Math.random() * 3200;
     }
     const s = this.swing;
     if (s) {
@@ -262,10 +267,14 @@ export class MineRenderer {
     const fy = this.feetY();
     // Camera follows the exact (fractional) depth; the buffer is drawn at whole pixels and the
     // remainder is applied when scaling up, so scrolling is smooth instead of stepping per pixel.
-    const target = Math.max(0, Math.min(this.world.height - H - 1, yForDepth(this.depth) - H * 0.58));
+    // Menu: a high shot with the ground low on screen; play: the miner a little below centre.
+    // Tall phone screens need the ground lower so the menu fits above the headframe.
+    const anchor = this.ambient ? (this.viewH / this.viewW > 1.4 ? 0.8 : 0.7) : 0.58;
+    const target = Math.max(0, Math.min(this.world.height - H - 1, yForDepth(this.depth) - H * anchor));
     // The camera trails the miner slightly (eased follow), so descents feel like travel, not a cut.
     const prev = this.cam ?? target;
-    this.cam = this.reduced ? target : prev + (target - prev) * Math.min(1, (now - (this.lastDraw || now)) / 1000 * 13); // settles in ~150ms
+    const rate = now < this.enteringUntil ? 2.6 : 13; // slow glide when entering the mine, else settles in ~150ms
+    this.cam = this.reduced ? target : prev + (target - prev) * Math.min(1, (now - (this.lastDraw || now)) / 1000 * rate);
     this.lastDraw = now;
     const camF = this.cam;
     const camDelta = camF - prev;
@@ -295,6 +304,20 @@ export class MineRenderer {
         b.fillRect(cx + sh - 2, yy, 2, 8);
       }
     }
+
+    // stars twinkle in the night sky above the mine
+    if (!this.reduced && camY < MINE.sky)
+      for (const st of this.stars) {
+        const yy = st.y - camY;
+        if (yy < 0 || yy > H) continue;
+        const a = Math.sin(now / 900 + st.phase);
+        if (a < 0.2) continue;
+        b.globalAlpha = (a - 0.2) * 0.9;
+        b.fillStyle = '#dfe6f5';
+        b.fillRect(st.x, yy, 1, 1);
+        if (a > 0.92) { b.globalAlpha = 0.35; b.fillRect(st.x - 1, yy, 3, 1); b.fillRect(st.x, yy - 1, 1, 3); }
+      }
+    b.globalAlpha = 1;
 
     // twinkles: gems near the headlamp catch the light more often
     const lampX = this.minerX() + LAMP.x, lampY = fy - MINER_H + LAMP.y - camY;
@@ -384,7 +407,7 @@ export class MineRenderer {
 
     // foreground outcrops at the view edges, scrolling faster than the world (parallax)
     {
-      const c0 = Math.max(0, yForDepth(0) - H * 0.58);
+      const c0 = Math.max(0, yForDepth(0) - H * 0.58); // aligned with the gameplay framing at the surface
       const fy0 = Math.round(camF * FORE_SPEED - c0 * (FORE_SPEED - 1));
       const inset = this.viewW < 150 ? 12 : 0; // narrow screens: only the outer part shows
       b.drawImage(this.world.fore, 0, fy0, FORE_W, H + 1, this.xOff - inset, 0, FORE_W, H + 1);

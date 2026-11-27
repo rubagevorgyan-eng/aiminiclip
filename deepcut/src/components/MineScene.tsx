@@ -61,7 +61,7 @@ export function MineScene({ depth, digs, tier, ambient = false, hud = false, dim
     const r = renderer.current;
     if (!r) return;
     r.setAmbient(ambient);
-    if (!ambient) r.reset(depth); // a game starts at its own depth, not wherever the tour was
+    if (!ambient) r.reset(depth, true); // the camera glides from the menu shot into the game
     prevDigs.current = digs;
     prevDepth.current = depth;
   }, [ambient]);
