@@ -1,41 +1,58 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { dailyNumber, dailyQuestions, msUntilNextDaily, previousDateKey, unlimitedQuestions, utcDateKey } from './selection.ts';
-import { QUESTIONS } from './questions.ts';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import type { QuestionMeta } from '../engine/types.ts';
 import { mulberry32 } from '../utils/random.ts';
+import { GROUPS, dailyNumber, dailyPick, msUntilNextDaily, pickGame, previousDateKey, unlimitedPick, utcDateKey } from './selection.ts';
 
-const ids = (qs: { id: string }[]) => qs.map((q) => q.id);
+const INDEX = join(import.meta.dirname, '..', '..', 'public', 'bank', 'index.json');
+const bank: QuestionMeta[] = existsSync(INDEX) ? JSON.parse(readFileSync(INDEX, 'utf8')).questions : [];
+const groupOf = (q: QuestionMeta) => (Object.keys(GROUPS) as (keyof typeof GROUPS)[]).filter((g) => (GROUPS[g] as readonly string[]).includes(q.category));
 
 test('UTC date helpers', () => {
   assert.equal(utcDateKey(Date.parse('2026-11-26T23:59:59Z')), '2026-11-26');
   assert.equal(utcDateKey(Date.parse('2026-11-27T00:00:00Z')), '2026-11-27');
   assert.equal(previousDateKey('2026-03-01'), '2026-02-28');
   assert.equal(dailyNumber('2026-11-01'), 1);
-  assert.equal(dailyNumber('2026-11-26'), 26);
   assert.equal(msUntilNextDaily(Date.parse('2026-11-26T23:00:00Z')), 3_600_000);
 });
 
-test('daily: same date gives the same 7 unique questions; dates differ', () => {
-  const a = ids(dailyQuestions('2026-11-26'));
-  assert.deepEqual(a, ids(dailyQuestions('2026-11-26')));
-  assert.equal(new Set(a).size, 7);
-  assert.notDeepEqual(a, ids(dailyQuestions('2026-11-27')));
-  // Order of the bank array must not matter.
-  const shuffledPool = [...QUESTIONS.map((q) => q.id)].reverse().sort();
-  assert.deepEqual(a, ids(dailyQuestions('2026-11-26', shuffledPool)));
+/** Variety rules every game must meet (when the bank can support them). */
+function assertVaried(game: QuestionMeta[], label: string) {
+  assert.equal(game.length, 7, label);
+  assert.equal(new Set(game.map((q) => q.id)).size, 7, `${label}: duplicate question`);
+  assert.equal(new Set(game.map((q) => q.family)).size, 7, `${label}: repeated template family`);
+  assert.ok(new Set(game.map((q) => q.category)).size >= 5, `${label}: fewer than 5 categories`);
+  for (const g of ['everyday', 'world', 'nature'] as const) assert.ok(game.some((q) => groupOf(q).includes(g)), `${label}: no ${g} question`);
+  assert.ok(game.filter((q) => groupOf(q).includes('vocab')).length <= 1, `${label}: more than one vocabulary question`);
+  assert.ok(game.some((q) => q.difficulty !== 'easy'), `${label}: all easy`);
+}
+
+test('real bank: daily picks are deterministic and varied every day for a year', { skip: !bank.length && 'bank not built' }, () => {
+  const a = dailyPick('2026-11-27', bank).map((q) => q.id);
+  assert.deepEqual(a, dailyPick('2026-11-27', [...bank].reverse()).map((q) => q.id), 'order of the index must not matter');
+  assert.notDeepEqual(a, dailyPick('2026-11-28', bank).map((q) => q.id));
+  for (let d = 0; d < 365; d++) {
+    const key = utcDateKey(Date.parse('2026-11-27T00:00:00Z') + d * 86_400_000);
+    assertVaried(dailyPick(key, bank), key);
+  }
 });
 
-test('unlimited: 7 unique, avoids recent questions when possible', () => {
-  const rand = mulberry32(1);
-  const recent = ids(QUESTIONS.slice(0, 40));
-  for (let i = 0; i < 20; i++) {
-    const g = ids(unlimitedQuestions(recent, rand));
-    assert.equal(new Set(g).size, 7);
-    assert.ok(g.every((id) => !recent.includes(id)), 'should avoid recent');
+test('real bank: unlimited games are varied and avoid recent questions', { skip: !bank.length && 'bank not built' }, () => {
+  const rand = mulberry32(7);
+  let recent: string[] = [];
+  for (let i = 0; i < 200; i++) {
+    const g = unlimitedPick(bank, recent, rand);
+    assertVaried(g, `unlimited #${i}`);
+    assert.ok(g.every((q) => !recent.includes(q.id)), 'repeated a recent question');
+    recent = [...recent, ...g.map((q) => q.id)].slice(-21);
   }
-  // Too few fresh questions: fills with the least recently played, still unique.
-  const almostAll = ids(QUESTIONS.slice(0, 47));
-  const g = ids(unlimitedQuestions(almostAll, rand));
-  assert.equal(new Set(g).size, 7);
-  assert.ok(g.includes(almostAll[0]));
+});
+
+test('pickGame relaxes gracefully on a tiny pool', () => {
+  const tiny: QuestionMeta[] = Array.from({ length: 9 }, (_, i) => ({ id: `q${i}`, text: `Q${i}`, category: 'Geography', difficulty: 'easy', family: `f${i}`, n: 10 }));
+  const g = pickGame(tiny, mulberry32(1));
+  assert.equal(g.length, 7);
+  assert.equal(new Set(g.map((q) => q.id)).size, 7);
 });

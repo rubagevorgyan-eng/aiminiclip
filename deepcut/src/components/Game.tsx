@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { dailyNumber, dailyQuestions, msUntilNextDaily, questionById, unlimitedQuestions, utcDateKey } from '../data/selection.ts';
+import { loadByIds, loadIndex, loadQuestions } from '../data/bank.ts';
+import { dailyNumber, dailyPick, msUntilNextDaily, unlimitedPick, utcDateKey } from '../data/selection.ts';
 import { playComplete } from '../audio/sfx.ts';
 import { rarityIndex, zoneIndexForDepth } from '../config/game.ts';
 import { depth, timeLeft, type GameState } from '../engine/machine.ts';
-import type { Question } from '../engine/types.ts';
+import type { Question, QuestionMeta } from '../engine/types.ts';
 import { formatCountdown, useNow } from '../hooks/useNow.ts';
 import { useGame } from '../hooks/useGame.ts';
 import { browserKV } from '../storage/storage.ts';
@@ -28,6 +29,13 @@ export default function Game() {
   const [progress, setProgress] = useState<Progress>(loadProgress);
   const [mode, setMode] = useState<Mode | null>(null);
   const [page, setPage] = useState<Page>('home');
+  const [loading, setLoading] = useState<string | null>(null); // label of the dig being loaded
+  const [loadError, setLoadError] = useState(false);
+  const [pastDaily, setPastDaily] = useState<{ date: string; questions: (Question | undefined)[] } | null>(null);
+
+  useEffect(() => {
+    loadIndex().catch(() => undefined); // warm the question index while the player is on the home screen
+  }, []);
   const recorded = useRef<GameState['records'] | null>(null);
   const [newBest, setNewBest] = useState(false);
   const clock = useNow(1000);
@@ -64,12 +72,33 @@ export default function Game() {
     commit((p) => addRecent(p, qs.map((q) => q.id)));
     start(qs);
   };
+  /** Fetch the chosen questions' answers, then start. Network trouble shows a retry message. */
+  const prepare = async (label: string, pick: (index: QuestionMeta[]) => QuestionMeta[], m: Mode) => {
+    if (loading) return;
+    setLoading(label);
+    setLoadError(false);
+    try {
+      const qs = await loadQuestions(pick(await loadIndex()));
+      begin(m, qs);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setLoading(null);
+    }
+  };
+  const viewDaily = async (date: string) => {
+    const r = loadProgress().daily.results[date];
+    if (!r) return;
+    setPage({ daily: date });
+    setPastDaily({ date, questions: await loadByIds(r.ids).catch(() => r.ids.map(() => undefined)) });
+  };
   const playDaily = () => {
     const today = utcDateKey(Date.now());
-    if (loadProgress().daily.results[today]) return setPage({ daily: today });
-    begin({ kind: 'daily', date: today }, dailyQuestions(today));
+    if (loadProgress().daily.results[today]) return void viewDaily(today);
+    void prepare('Daily Dig', (index) => dailyPick(today, index), { kind: 'daily', date: today });
   };
-  const playUnlimited = () => begin({ kind: 'unlimited', id: newId() }, unlimitedQuestions(loadProgress().recent));
+  const playUnlimited = () =>
+    void prepare('Unlimited Dig', (index) => unlimitedPick(index, loadProgress().recent), { kind: 'unlimited', id: newId() });
   const home = () => {
     quit();
     setMode(null);
@@ -82,11 +111,11 @@ export default function Game() {
     if (page === 'collection') return <CollectionScreen progress={progress} onBack={() => setPage('home')} />;
     if (typeof page === 'object') {
       const r = progress.daily.results[page.daily];
-      if (r)
+      if (r && pastDaily?.date === page.daily)
         return (
           <FinalScreen
             heading={`Daily Dig #${dailyNumber(page.daily)} · ${page.daily}`}
-            state={{ questions: r.ids.map(questionById) as Question[], records: r.records, score: r.score }}
+            state={{ questions: pastDaily.questions as Question[], records: r.records, score: r.score }}
             share={{ mode: 'daily', dailyNumber: dailyNumber(page.daily), date: page.daily }}
             note={<>Next Daily Dig in <span className="num">{formatCountdown(msUntilNextDaily(clock))}</span></>}
             again={{ label: 'Unlimited Dig', onClick: playUnlimited }}
@@ -94,7 +123,17 @@ export default function Game() {
           />
         );
     }
-    return <HomeScreen progress={progress} onDaily={playDaily} onUnlimited={playUnlimited} onStats={() => setPage('stats')} onCollection={() => setPage('collection')} />;
+    return (
+      <HomeScreen
+        progress={progress}
+        loading={loading}
+        loadError={loadError}
+        onDaily={playDaily}
+        onUnlimited={playUnlimited}
+        onStats={() => setPage('stats')}
+        onCollection={() => setPage('collection')}
+      />
+    );
   }
 
   if (state.phase === 'COUNTDOWN') return <CountdownScreen secs={Math.max(1, Math.ceil(timeLeft(state, now) / 1000))} />;

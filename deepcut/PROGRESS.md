@@ -77,3 +77,7 @@
 
 ## Stage 14: volume control (done)
 - The sound button opens a volume bar on hover/focus (first tap on touchscreens); dragging or arrow keys set the volume with a preview tick, clicking the speaker mutes/unmutes, the icon shows muted/low/high. Volume persists; audio uses a perceptual curve. Phone header stays within the screen. 30 tests pass.
+
+## Stage 15: generated question bank (partial)
+- Questions now load lazily from `public/bank/` (index + one file per question), built by `scripts/bank/build.py` from Wikidata (CC0; rarity from sitelink counts) plus the editorial sets. Every game mixes categories (`pickGame`), tested for 365 dailies and 200 unlimited games.
+- Built so far: 336 questions / 20,476 answers (directors, actors, artists' songs, football clubs, birthplaces, fixed sets, editorial). Remaining families in `families.py` batches 1–3 are defined but not yet built; run `--batch N` then `--write` to add them.

@@ -8,11 +8,19 @@ export interface Answer {
   rarity: RarityId;
 }
 
-export interface Question {
+/** Question listing entry (no answers): what selection needs. */
+export interface QuestionMeta {
   id: string;
   text: string;
   category: string;
   difficulty: 'easy' | 'medium' | 'hard';
+  /** Template family (e.g. "geo-city"); no two questions of one family in a game. */
+  family: string;
+  /** Number of accepted answers. */
+  n: number;
+}
+
+export interface Question extends QuestionMeta {
   answers: Answer[];
   /** Words ignored when matching, e.g. ["penguin"] so "Emperor penguin" = "Emperor". */
   ignore?: string[];
