@@ -159,7 +159,10 @@
     need('continuity', typeof e.continuity === 'string' && e.continuity.length > 0, 'required');
     need('medium', c.media.includes(e.medium), c.media.join(' | '));
     need('anime', c.animeStatus.includes(e.anime), c.animeStatus.join(' | '));
-    need('img', e.img === null || (typeof e.img === 'string' && /^https:\/\/s4\.anilist\.co\/file\/anilistcdn\/character\/(large|medium)\/[\w.-]+$/.test(e.img)), 'null or an AniList character image URL');
+    need('img', e.img === null || (typeof e.img === 'string' && (/^https:\/\/s4\.anilist\.co\/file\/anilistcdn\/character\/(large|medium)\/[\w.-]+$/.test(e.img) ||
+      /^https:\/\/static\.wikia\.nocookie\.net\/vsbattles\/images\/[0-9a-f]\/[0-9a-f]{2}\/[^\s"'<>]+$/.test(e.img))), 'null, an AniList character image or a VS Battles file URL');
+    need('imgMatch', e.imgMatch == null || ['key', 'single', 'latest', 'base', 'portrait'].includes(e.imgMatch), 'key | single | latest | base | portrait | null');
+    need('imgSource', e.imgSource == null || (e.imgSource === 'vsbattles' ? !!e.imgPage : e.imgSource === 'anilist'), 'vsbattles (with imgPage) | anilist | null');
     const st = e.stats;
     need('stats', st && typeof st === 'object', 'required object (values may be null)');
     if (st) {

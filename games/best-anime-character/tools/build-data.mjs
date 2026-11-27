@@ -15,6 +15,7 @@ import { categoryMembers, fetchPages, slug, apiCalls } from './api.mjs';
 import { extract, keysOf, fieldText } from './vsb.mjs';
 import { loadABC } from './load.mjs';
 import VERIFIED from './spec/verified.mjs';
+import { pickImage, resolveFiles } from './images.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url)), ROOT = join(HERE, '..');
 const IMPORTS = join(HERE, 'imports'), OUT = join(ROOT, 'data', 'characters');
@@ -97,7 +98,7 @@ for (const sid of SIDS) if (toImport.includes(sid) || !existsSync(join(IMPORTS, 
 const legacy = JSON.parse(readFileSync(join(HERE, 'spec', 'legacy.json'), 'utf8'));
 const legacyImg = new Map(), legacyPage = new Map();
 for (const l of legacy) { const cid = slug(l.name.replace(/["']/g, '')); if (l.img) legacyImg.set(cid, l.img); if (l.page) legacyPage.set(l.page, cid); }
-const out = [];
+const out = [], imgKey = new Map();          // entry id -> {title, key, keys, keyIndex} for the artwork pass
 const pageChar = new Map();                       // VS page title -> charId (reviewer spec and legacy links win)
 const nameChar = new Map();                       // series|base name -> charId, so every page of one character joins it
 for (const c of VERIFIED) for (const v of c.versions) { pageChar.set(v.vsb[0], c.charId); nameChar.set(c.series + '|' + splitTitle(v.vsb[0], c.series).name, c.charId); }
@@ -109,6 +110,7 @@ const imgFor = cid => legacyImg.has(cid) ? CFG.imageBase + legacyImg.get(cid) : 
 /* reviewer-verified versions (Step 3 test set) */
 for (const c of VERIFIED) for (const v of c.versions) {
   const pg0 = fetchPages([v.vsb[0]])[0], x = extract(pg0, v.vsb[1]);
+  imgKey.set(c.charId + '--' + v.v, { title: pg0.title, key: x.vsb.key, keys: x.vsb.keys, keyIndex: x.vsb.keyIndex });
   const tc = ENG.parseTier(x.stats.tier);
   out.push({ id: c.charId + '--' + v.v, charId: c.charId, name: c.name, alt: c.alt, series: c.series, form: v.form, formType: v.formType ?? null,
     roles: rolesOf(pg0.categories), continuity: c.continuity, medium: v.medium, anime: v.anime, img: imgFor(c.charId) || (c.img && imgFor(slug(c.img))) || null, desc: null,
@@ -145,6 +147,7 @@ for (const sid of SIDS) {
       if (usedIds.has(id)) id = cid + '--' + slug((formLabel || 'base') + ' ' + pg.title);
       if (usedIds.has(id)) { removed['duplicate id']++; continue; }
       usedIds.add(id);
+      imgKey.set(id, { title: pg.title, key, keys: pg.keys, keyIndex: v.keyIndex });
       const anime = S.animeDone.includes(pg.origin) ? ((S.animeOrigins || []).includes(pg.origin) ? 'anime-only' : 'shown') : S.mangaOnly.includes(pg.origin) ? 'not-shown' : 'unknown';
       const medium = (S.animeOrigins || []).includes(pg.origin) ? 'anime' : S.medium;
       const name = reviewerChars.has(cid) ? VERIFIED.find(c => c.charId === cid).name : pg.split.name;
@@ -193,11 +196,43 @@ for (const l of legacy) {
     review: { status: 'needs-review', by: 'legacy', date: '2026-11-27', tier: MANUAL[l.name], notes: ['Legacy entry from the first version of the game: tier only, no VS Battles page matched in the import. Not playable until reviewed.'] } });
 }
 
+/* ---------- artwork: one form-specific image per version (see tools/images.mjs) ---------- */
+{
+  const picks = new Map();
+  for (const e of out) {
+    const k = imgKey.get(e.id); if (!k) continue;
+    const pg = fetchPages([k.title])[0]; if (!pg) continue;
+    const p = pickImage(pg.wikitext, { key: k.key, keys: k.keys, keyIndex: k.keyIndex, anime: e.anime });
+    if (p) picks.set(e.id, p);
+  }
+  const info = resolveFiles([...picks.values()].map(p => p.file));
+  /* a file picked for two different characters is a group picture -> not usable for either;
+     a file picked for several versions of one character -> only the best-matched (then strongest) version keeps it */
+  const RANK = { key: 4, single: 3, latest: 2, base: 1 };
+  const byFile = new Map();
+  for (const e of out) { const p = picks.get(e.id); if (p) { if (!byFile.has(p.file)) byFile.set(p.file, []); byFile.get(p.file).push(e); } }
+  for (const [, es] of byFile) {
+    if (new Set(es.map(e => e.charId)).size > 1) { es.forEach(e => picks.get(e.id).drop = 'group image shared with another character'); continue; }
+    if (es.length < 2) continue;
+    const pw = e => ENG.score(e).power || 0;
+    const keep = es.slice().sort((a, b) => RANK[picks.get(b.id).match] - RANK[picks.get(a.id).match] || pw(b) - pw(a))[0];
+    es.forEach(e => { if (e !== keep) picks.get(e.id).drop = 'same image as ' + keep.id; });
+  }
+  const versions = new Map(); for (const e of out) versions.set(e.charId, (versions.get(e.charId) || 0) + 1);
+  for (const e of out) {
+    const p = picks.get(e.id), ii = p && !p.drop && info[p.file];
+    const portrait = e.img;                                   // original AniList portrait, if any
+    if (ii) Object.assign(e, { img: ii.thumb, imgSource: 'vsbattles', imgMatch: p.match, imgFile: p.file, imgPage: ii.page, imgTab: p.tab || null });
+    else if (portrait && versions.get(e.charId) === 1) Object.assign(e, { imgSource: 'anilist', imgMatch: 'portrait', imgFile: null, imgPage: null, imgTab: null });
+    else Object.assign(e, { img: null, imgSource: null, imgMatch: null, imgFile: p ? p.file : null, imgPage: null, imgTab: null, imgIssue: p ? (p.drop || 'file not found') : 'no form-specific gallery image' });
+  }
+}
+
 /* ---------- validate + write ---------- */
 const built = ENG.build(out);
 if (built.errors.length) { console.error('VALIDATION ERRORS (' + built.errors.length + ')\n' + built.errors.slice(0, 40).join('\n')); process.exit(1); }
 for (const f of readdirSync(OUT)) rmSync(join(OUT, f));
-const header = '/* GENERATED by tools/build-data.mjs — edit tools/spec/* or re-import, never hand-edit.\n   Source: VS Battles Wiki (CC BY-SA 3.0) — each entry links its page and revision. Images: AniList (hotlinked, existing entries only). */\n';
+const header = '/* GENERATED by tools/build-data.mjs — edit tools/spec/* or re-import, never hand-edit.\n   Source: VS Battles Wiki (CC BY-SA 3.0 text) — each entry links its page and revision. Images: hotlinked from VS Battles\n   (fan uploads, licence not confirmed; imgPage links each file) or AniList (original roster portraits). */\n';
 for (const sid of SIDS) {
   const list = out.filter(e => e.series === sid);
   writeFileSync(join(OUT, sid + '.js'), header + `(function (g) { const A = g.ABC = g.ABC || {}; A.characters = (A.characters || []).concat(${JSON.stringify(list)}); })(typeof window !== "undefined" ? window : globalThis);\n`);

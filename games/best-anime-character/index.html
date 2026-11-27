@@ -866,7 +866,9 @@ const SLUG='best-anime-character', KEY='recess-anime-auction-match', OLD_KEY='re
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ini=n=>n.replace(/^The /,'').replace(/["']/g,'').split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
-const av=(c,cls='',big=false)=>`<span class="ini ${cls}" style="--ac:${SER[c.a].color}"><i>${ini(c.n)}</i>${c.img?`<img src="${big?c.img:c.img.replace('/large/','/medium/')}" alt="" ${big?'':'loading="lazy" '}decoding="async" onerror="this.remove()">`:''}</span>`;
+/* image sizes: card = stored 400px thumbnail, small = 120px (VS Battles) / medium (AniList); lazy except the live card */
+const thumb=(u,big)=>!u?'':big?u:u.replace('/large/','/medium/').replace(/scale-to-width-down\/\d+/,'scale-to-width-down/120');
+const av=(c,cls='',big=false)=>`<span class="ini ${cls}" style="--ac:${SER[c.a].color}"><i>${ini(c.n)}</i>${c.img?`<img src="${thumb(c.img,big)}" alt="" ${big?'fetchpriority="high" ':'loading="lazy" '}decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">`:''}</span>`;
 const stars=s=>'<span class="on">'+'★'.repeat(s)+'</span><span class="off">'+'★'.repeat(7-s)+'</span>';
 const rv=c=>`--rc:${c.rc};--ac:${SER[c.a].color}`;
 const dis=why=>why?` aria-disabled="true" data-why="${esc(AU.REASONS[why]||why)}"`:'';
@@ -1029,6 +1031,7 @@ function statsHTML(c,inDialog){
       ${row('Version',`${esc(e.form||'Base')} &middot; ${esc(e.continuity)}${v.key?` &middot; VS key “${esc(v.key)}”`:''}<br><small>${MEDIUM[e.medium]} &middot; ${{shown:'Shown in the anime','anime-only':'Anime-original form','not-shown':'Not in the anime yet',unknown:'Anime appearance not confirmed'}[e.anime]}</small>`)}
       ${row('Verification',`<b class="vf ${rv_.status}">${esc(vlabel(rv_))}</b>${rv_.date?` &middot; ${esc(rv_.date)}`:''}${v.revid?` &middot; rev ${v.revid}`:''}${(rv_.notes||[]).length?`<ul class="notes">${rv_.notes.slice(0,3).map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:''}`)}
       ${row('Source',v.url?`<a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.title||'VS Battles Wiki')} ↗</a><br><small>Community power-scaling assessment, not official canon. Text CC BY-SA.</small>`:NA)}
+      ${row('Artwork',e.imgSource==='vsbattles'?`<a href="${esc(e.imgPage)}" target="_blank" rel="noopener">VS Battles file ↗</a><br><small>${{key:'Gallery tab for this version',single:'Only image on a single-version profile',latest:'Strongest look in the gallery (probable match)',base:'Base look in the gallery (probable match)'}[e.imgMatch]||''}${e.imgTab?' · '+esc(e.imgTab):''}</small>`:e.imgSource==='anilist'?'AniList character portrait':'<span class="na">No form-specific image found (flagged for review)</span>')}
       ${(e.canon&&e.canon.refs&&e.canon.refs.length)?row('Canon cited',`<ul class="notes">${e.canon.refs.slice(0,4).map(r=>`<li>${esc(r)}</li>`).join('')}</ul>`):''}
     </dl>
     <p class="game-note">Game rating: ${c.s}★ ${esc(c.rar)}, ${c.p}/100 power &mdash; this game's conversion of the VS Battles tier, not a VS Battles rating.</p>
@@ -1211,7 +1214,7 @@ function render(){
     S.players.forEach((P,p)=>{const el=$('pl'+p),st=AU.status(S,p);el.classList.toggle('lead',S.bid.by===p);el.classList.toggle('complete',st==='complete');
       el.classList.toggle('flash',!!(fx&&fx.t==='bid'&&fx.p===p))});
   }
-  if(S&&!S.over&&VIS().identity){const nx=C[S.order[S.pos+1]];if(nx&&nx.img)new Image().src=nx.img}
+  if(S&&!S.over&&VIS().identity){const nx=C[S.order[S.pos+1]];if(nx&&nx.img){const im=new Image();im.referrerPolicy='no-referrer';im.src=nx.img}}   // one upcoming portrait, never shown
   if(!playing)renderResume();
   tick();
   listDirty=true;if(listVisible)renderList();
@@ -1247,7 +1250,7 @@ function infoOf(id){const c=C[id],e=c.e;return {charId:c.cid,name:c.n,series:c.a
 const END_TXT={'teams-complete':'Both teams are complete','pool-exhausted':'Every character has been drawn','no-buyers':'Nobody could afford another character'};
 function rcardHTML(c,live){
   const col=STARS[c.star]?STARS[c.star].color:'#888';
-  const av2=`<span class="ini" style="--ac:${SER[c.series]?SER[c.series].color:'#555'}"><i>${ini(c.name)}</i>${c.img?`<img src="${c.img.replace('/large/','/medium/')}" alt="" loading="lazy" onerror="this.remove()">`:''}</span>`;
+  const av2=`<span class="ini" style="--ac:${SER[c.series]?SER[c.series].color:'#555'}"><i>${ini(c.name)}</i>${c.img?`<img src="${thumb(c.img,false)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">`:''}</span>`;
   return `<button type="button" class="rcard" style="--rc:${col}" data-rinspect="${esc(c.id)}"${live?'':` data-past="1"`} aria-label="${esc(c.name)}, ${c.star} star, power ${c.power}, ${c.gift?'gift':'$'+c.price}. Show details">
     ${av2}<span class="nm">${esc(c.name)}<small>${esc(c.seriesName)}${c.form?' · '+esc(c.form):''}</small><small><span style="color:${col}">${'★'.repeat(c.star)}</span>${c.tier?' · VS '+esc(c.tier):''}</small></span>
     <span class="rv"><b>${c.power}</b><span class="pr${c.gift?' gift':''}">${c.gift?'GIFT':'$'+c.price}</span></span></button>`;

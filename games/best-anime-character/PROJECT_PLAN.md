@@ -293,10 +293,27 @@ Measured load (local preview): DOMContentLoaded 162 ms, 26 data files ≈ 3 MB r
 build 27.5 ms, match start 12 ms, setup change ≈ 1 ms; only the current card's portrait and one upcoming portrait
 (never in Mystery) load eagerly, list thumbnails are lazy and the 1,300-row list renders only when visible.
 
+## Artwork (form-specific)
+- `tools/images.mjs` reads each profile's image gallery (tabber at the top of the VS Battles page) from the cached
+  wikitext and resolves files through the MediaWiki `imageinfo` API (400 px thumbnails; cached in
+  `tools/cache/imageinfo.json`). No URL is guessed. Match levels stored per version (`imgMatch`): `key` (gallery tab
+  named after the version), `single` (single-version profile with one image), `latest` (strongest/last gallery image for
+  the latest version — probable), `base` (first image for a "Base" version — probable), `portrait` (original AniList
+  portrait, single-version characters only). Anime-shown versions use a profile's Anime gallery subtree, manga-only
+  versions its Manga subtree. Group pictures shared by two characters and images reused across versions of one
+  character are dropped (only the best-matched version keeps it); dropped/unmatched versions get fallback art and an
+  `imgIssue` note. Each card's stats panel links the file page.
+- Loading: the live card loads its 400 px image with high priority; rosters, history, results and the list use 120 px
+  thumbnails, lazily; one upcoming portrait is preloaded (never in Mystery); images use `referrerpolicy=no-referrer`.
+  Setup screen loads 0 images.
+- Audit: `node tools/check-images.mjs` (coverage, missing, duplicates, manga art on anime-eligible versions) and
+  `--online` (HEAD-checks every playable image URL).
+
 ## Known limitations
 - Machine-verified entries (1,309 characters) were checked by rules, not by a person; 306 versions need manual review.
 - 967 playable characters have unconfirmed anime status, so Anime only has 359 characters.
-- Artwork exists for only the original roster (AniList hotlinks, licence unconfirmed); new characters use fallback art.
+- Artwork is hotlinked from VS Battles (fan uploads under fair use on the wiki) and AniList: reuse rights are not
+  confirmed — clear them before a public release. "Probable" images (strongest/base look) need a person to confirm.
 - Within a VS subtier scores barely differ (integer 1–100 scale; see score audit). Changing it rescores everything.
 - Only each profile's latest key (+ "Base") is imported; earlier versions can be added per character.
 - Hidden-information modes don't protect against reading the page data in developer tools.
