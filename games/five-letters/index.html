@@ -8,14 +8,14 @@
 <meta name="theme-color" content="#07080d">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%233fd39a'/%3E%3Ctext x='8' y='12.5' font-family='Arial Black,Arial' font-weight='900' font-size='12' text-anchor='middle' fill='%2307080d'%3Er%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800&family=JetBrains+Mono:wght@500;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/shell.css">
 <style>
 /*
 VOICE: a word nerd at the back of study hall, quietly smug
 IDEA: one hidden five-letter word, six tries, the tiles tell you how close you are
 COLOUR and TYPE: site night palette; mint = right spot, gold = in the word, slate = not in it. Anton for tiles, Archivo for reading
-LAYOUT: one centered column: board, message line, keyboard; stats in a dialog
+LAYOUT: a stage like the other Recess games: Recess splash, tile preloader, start menu over an animated backdrop, then board, message line and keyboard
 */
 .gt{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin:6px 0 16px}
 .gt h1{margin:0;font:400 clamp(44px,6vw,72px)/.9 var(--disp);letter-spacing:.5px;text-transform:uppercase}
@@ -24,8 +24,84 @@ LAYOUT: one centered column: board, message line, keyboard; stats in a dialog
 .fav{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;box-shadow:inset 0 0 0 2px var(--line);background:transparent;color:var(--bone);font:700 14px var(--body);cursor:pointer}
 .fav .h{color:var(--dim)}.fav[aria-pressed=true] .h{color:var(--ember)}
 
+/* stage: the game lives inside it, like the other Recess games */
+.fstage{--M:#3fd39a;--G:#ffc94a;--S:#2a2d40;--INK:#0b0814;position:relative;max-width:980px;margin:0 auto;border-top:6px solid #3fd39a;overflow:hidden;isolation:isolate;
+  background:radial-gradient(ellipse 70% 60% at 50% 38%,#1c5a47 0,#0e3329 40%,#071310 82%),#071310;padding:16px 14px 22px}
+.fstage:fullscreen{max-width:none;display:grid;align-content:center;overflow:auto}
+.fbg{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.fbg::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px),radial-gradient(ellipse at 50% 45%,transparent 50%,rgba(0,0,0,.6))}
+.fbg .rays{position:absolute;left:50%;top:36%;width:1600px;height:1600px;transform:translate(-50%,-50%);background:repeating-conic-gradient(rgba(63,211,154,.12) 0 4deg,transparent 4deg 14deg);-webkit-mask:radial-gradient(closest-side,#000 10%,transparent 62%);mask:radial-gradient(closest-side,#000 10%,transparent 62%);animation:fSpin 70s linear infinite}
+@keyframes fSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.fbg .floor{position:absolute;left:-40%;right:-40%;bottom:-4%;height:38%;transform:perspective(300px) rotateX(64deg);transform-origin:50% 100%;
+  background:linear-gradient(90deg,rgba(63,211,154,.45) 2px,transparent 2px) 0 0/60px 60px,linear-gradient(rgba(63,211,154,.45) 2px,transparent 2px) 0 0/60px 60px;-webkit-mask:linear-gradient(transparent,#000 75%);mask:linear-gradient(transparent,#000 75%);animation:fFloor 2.6s linear infinite}
+@keyframes fFloor{to{background-position:0 60px,0 60px}}
+.fbg .drift i{position:absolute;bottom:-70px;width:46px;height:46px;display:grid;place-items:center;font:400 26px var(--disp);font-style:normal;color:var(--c,#3fd39a);opacity:.0;box-shadow:inset 0 0 0 2px currentColor;animation:fUp linear infinite}
+@keyframes fUp{0%{transform:translateY(0) rotate(-10deg);opacity:0}12%{opacity:.35}80%{opacity:.25}100%{transform:translateY(-900px) rotate(12deg);opacity:0}}
+.fbar{display:flex;align-items:center;gap:8px;max-width:560px;margin:0 auto 12px}
+.fbar .btn{min-height:36px;font-size:16px;padding:0 12px;background:rgba(7,8,13,.7);color:var(--bone);box-shadow:inset 0 0 0 2px var(--line)}
+.fbar .btn:hover{box-shadow:inset 0 0 0 2px var(--bone);background:rgba(7,8,13,.7)}
+.fbar .mode{flex:1;text-align:center;font:700 13px "Silkscreen",var(--mono),monospace;letter-spacing:2px;color:var(--M);text-transform:uppercase}
+.fstage.at-menu .fbar,.fstage.at-menu #game{visibility:hidden}
+
+/* splash + preloader */
+#fsplash{position:absolute;inset:0;z-index:40;background:#000;display:grid;place-items:center;cursor:pointer}
+.sting{animation:ring .9s cubic-bezier(.3,1.6,.5,1) both}
+.sting .rlogo svg{height:110px;width:auto;display:block}
+.sting-sub{text-align:center;color:#868aa3;font:700 12px Archivo,sans-serif;letter-spacing:6px;margin-top:16px;opacity:0;animation:fade .3s .8s forwards}
+@keyframes ring{0%{transform:scale(.2) rotate(-12deg);opacity:0}45%{transform:scale(1.08) rotate(6deg);opacity:1}60%{transform:rotate(-5deg)}75%{transform:rotate(3deg)}90%{transform:rotate(-1deg)}100%{transform:none}}
+@keyframes fade{to{opacity:1}}
+.fpre{text-align:center;display:grid;justify-items:center;gap:18px}
+.fpre .ttl{font:700 30px/1 "Silkscreen",monospace;letter-spacing:3px;color:var(--G);text-shadow:4px 4px 0 #1f8a62}
+.fpre .ttl span{color:var(--M);text-shadow:4px 4px 0 #b8861a}
+.ptiles{display:flex;gap:8px}
+.ptiles i{width:52px;height:52px;display:grid;place-items:center;font:400 30px var(--disp);font-style:normal;color:transparent;border:3px solid #2a2d40;transition:background .15s}
+.ptiles i.on{background:var(--M);border-color:var(--INK);color:var(--INK);box-shadow:inset 4px 4px 0 rgba(255,255,255,.35),inset -4px -4px 0 rgba(0,0,0,.25);animation:pflip .35s ease both}
+@keyframes pflip{0%{transform:rotateX(90deg)}100%{transform:none}}
+.fpre .pct{font:400 12px "Silkscreen",monospace;letter-spacing:2px;color:#9aa0bb;min-height:14px}
+.pbtn{min-width:240px;min-height:50px;border:3px solid var(--INK);background:var(--G);color:var(--INK);font:700 18px "Silkscreen",monospace;letter-spacing:3px;cursor:pointer;
+  box-shadow:inset -5px -5px 0 rgba(0,0,0,.2),inset 4px 4px 0 rgba(255,255,255,.35),0 5px 0 #000;transition:transform .05s}
+.pbtn:active{transform:translateY(4px);box-shadow:inset -5px -5px 0 rgba(0,0,0,.2),inset 4px 4px 0 rgba(255,255,255,.35)}
+.pbtn:focus-visible{outline:2px dashed var(--G);outline-offset:5px}
+
+/* start menu */
+#fmenu{position:absolute;inset:0;z-index:20;display:grid;place-items:center;padding:18px;overflow:auto}
+.fpanel{width:min(560px,100%);background:rgba(9,11,16,.9);border:1px solid var(--line);box-shadow:0 30px 60px -20px rgba(0,0,0,.8),0 0 0 1px rgba(63,211,154,.08);padding:30px 30px 22px;text-align:center;display:grid;gap:16px;backdrop-filter:blur(3px);animation:panelIn .45s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes panelIn{from{transform:translateY(24px) scale(.96);opacity:0}}
+.wm{display:grid;justify-items:center;gap:8px;filter:drop-shadow(0 6px 0 #000) drop-shadow(0 0 24px rgba(63,211,154,.3));transform:rotate(-2deg)}
+.wm .w{display:flex;gap:6px}
+.wm .t{--s:62px;width:var(--s);height:var(--s);display:grid;place-items:center;background:var(--c);border:3px solid var(--INK);box-shadow:inset 4px 4px 0 rgba(255,255,255,.38),inset -4px -4px 0 rgba(0,0,0,.28);animation:pflip .5s cubic-bezier(.3,1.6,.5,1) both,wHop 6s ease-in-out infinite;animation-delay:calc(var(--i)*80ms),calc(1.5s + var(--i)*110ms)}
+.wm .w.sm .t{--s:36px;border-width:2px;box-shadow:inset 3px 3px 0 rgba(255,255,255,.38),inset -3px -3px 0 rgba(0,0,0,.28)}
+.wm .t svg{width:56%;height:auto;shape-rendering:crispEdges}
+@keyframes wHop{0%,86%,100%{transform:none}90%{transform:translateY(-22%)}94%{transform:translateY(4%)}}
+.ftag{font:700 17px/1.35 var(--body);margin:2px 0 0}
+.fstats{display:flex;justify-content:center;gap:28px}
+.fstats div{display:grid;gap:4px}
+.fstats span{font:700 11px var(--mono);letter-spacing:2px;color:#9aa0bb;text-transform:uppercase}
+.fstats b{font:400 38px/1 var(--disp);letter-spacing:1px;color:var(--G)}
+.fstats b.m{color:var(--M)}
+.mbtn{display:grid;gap:3px;width:100%;padding:13px 16px;border:0;cursor:pointer;text-align:center;color:var(--bone);background:#181b29;box-shadow:inset 0 0 0 1px #2c3048;transition:transform .08s,box-shadow .15s,background .15s}
+.mbtn b{font:700 19px/1.1 "Silkscreen",monospace;letter-spacing:2px;text-transform:uppercase}
+.mbtn small{font:500 13px var(--body);color:#aab0c8}
+.mbtn:hover{background:#20243a;box-shadow:inset 0 0 0 2px var(--M)}
+.mbtn:active{transform:translateY(2px)}
+.mbtn:focus-visible{outline:2px solid var(--G);outline-offset:3px}
+.mbtn.main{background:var(--M);color:var(--INK);box-shadow:0 0 0 2px var(--INK),0 0 0 4px var(--M),0 6px 22px -6px rgba(63,211,154,.7)}
+.mbtn.main small{color:#0e3a2c}
+.mbtn.main:hover{background:#5fe3b0}
+.mbtn.vsm b::after{content:"ONLINE";margin-left:10px;vertical-align:3px;font:700 10px var(--mono);letter-spacing:1px;color:#fff;background:#ff4d2e;padding:2px 6px}
+.flinks{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;margin-top:6px}
+.flinks button{border:0;background:none;color:#aab0c8;font:700 13px var(--mono);letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:6px 2px}
+.flinks button:hover{color:var(--bone)}
+.flinks button:focus-visible{outline:2px solid var(--G);outline-offset:3px}
+.hx{display:flex;gap:4px;justify-content:center;margin:10px 0 4px}
+.hx i{width:38px;height:38px;display:grid;place-items:center;font:400 22px var(--disp);font-style:normal;color:var(--bone);border:2px solid #3a3e55}
+.hx i.h{background:#3fd39a;border-color:transparent;color:#0a0a0a}.hx i.n{background:#ffc94a;border-color:transparent;color:#0a0a0a}.hx i.m{background:#2a2d40;border-color:transparent}
+#howto p{margin:0 0 10px;color:#c9cbd8;font-size:14px}
+#howto p b{color:var(--bone)}
+
 #game{--hit:#3fd39a;--near:#ffc94a;--miss:#2a2d40;--tile:clamp(48px,13vw,62px);
-  max-width:560px;margin:0 auto;border-top:6px solid #3fd39a;background:var(--bg2);border-left:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 14px 20px}
+  max-width:560px;margin:0 auto;background:rgba(9,11,16,.86);border:1px solid var(--line);padding:18px 14px 20px;backdrop-filter:blur(3px)}
+#game .modes{display:none}
 .modes{display:flex;justify-content:center;gap:6px;margin-bottom:16px}
 .modes button{min-height:36px;padding:0 14px;border:0;background:transparent;color:var(--dim);font:700 13px var(--body);cursor:pointer;box-shadow:inset 0 0 0 2px var(--line)}
 .modes button[aria-pressed=true]{background:var(--bone);color:#0a0a0a;box-shadow:none}
@@ -107,6 +183,8 @@ dialog h2{margin:0 0 14px;font:400 28px/1 var(--disp);letter-spacing:1px;text-tr
 .dist i{display:block;min-width:24px;padding:2px 6px;background:var(--miss,#2a2d40);font-style:normal;text-align:right}
 .dist i.now{background:#3fd39a;color:#0a0a0a}
 dialog .row2{display:flex;gap:8px}.row2 .btn{flex:1}
+@media(max-width:560px){.wm .t{--s:50px}.wm .w.sm .t{--s:29px}.fpanel{padding:22px 16px 16px}.fstats{gap:16px}.ptiles i{width:44px;height:44px}}
+@media(prefers-reduced-motion:reduce){.fbg .rays,.fbg .floor,.fbg .drift i,.wm .t,.fpanel,.sting,.ptiles i.on{animation:none!important}.sting-sub{opacity:1;animation:none}}
 @media(max-width:420px){.key{height:50px;font-size:14px}.kb .kr{gap:4px}#game{padding:14px 6px 16px}}
 </style>
 </head>
@@ -123,6 +201,32 @@ dialog .row2{display:flex;gap:8px}.row2 .btn{flex:1}
     <div class="tools"><button class="fav" id="favBtn" aria-pressed="false"><span class="h">&#9829;</span><span id="favTxt">Add to My Recess</span></button><button class="btn alt" id="statsBtn">Stats</button></div>
   </div>
 
+  <div class="fstage at-menu" id="fstage">
+  <div class="fbg" aria-hidden="true"><span class="rays"></span><span class="floor"></span><span class="drift" id="fdrift"></span></div>
+
+  <div id="fsplash">
+    <div id="fsting"><div class="sting"><span class="rlogo"></span></div><div class="sting-sub">PRESENTS</div></div>
+    <div class="fpre hide" id="fpre">
+      <div class="ttl">FIVE <span>LETTERS</span></div>
+      <div class="ptiles" id="ptiles"><i>R</i><i>E</i><i>A</i><i>D</i><i>Y</i></div>
+      <div class="pct" id="ppct">LOADING 0%</div>
+      <button class="pbtn hide" id="pbtn">PLAY</button>
+    </div>
+  </div>
+
+  <div id="fmenu" class="hide">
+    <div class="fpanel">
+      <div class="wm" id="fwm" aria-label="Five Letters"></div>
+      <p class="ftag">One hidden word. Six tries. How fast can you crack it?</p>
+      <div class="fstats"><div><span>Daily streak</span><b id="sStreak">0</b></div><div><span>Best endless</span><b id="sBest" class="m">0</b></div><div><span>Wins</span><b id="sWins">0</b></div></div>
+      <button class="mbtn main" id="goDaily"><b id="dTitle">Daily word #1</b><small id="dSub">Same word for everyone today</small></button>
+      <button class="mbtn" id="goEnd"><b>Endless</b><small id="eSub">Keep solving until you miss. Fewer guesses, more points.</small></button>
+      <button class="mbtn vsm" id="goVs"><b>VS Mode</b><small>Host a lobby or join your friends with a code</small></button>
+      <div class="flinks"><button id="lHow">How to play</button><button id="lStats">Statistics</button><button id="lFs">Full screen</button></div>
+    </div>
+  </div>
+
+  <div class="fbar"><button class="btn" id="toMenu">&#9664; Menu</button><span class="mode" id="modeName">Daily word</span><button class="btn" id="fsBtn">Full screen</button></div>
   <section id="game" aria-label="Five Letters game">
     <div class="modes" role="group" aria-label="Mode">
       <button id="mDaily" aria-pressed="true">Daily</button><button id="mEnd" aria-pressed="false">Endless</button><button id="mVs" aria-pressed="false">VS Mode</button>
@@ -151,6 +255,7 @@ dialog .row2{display:flex;gap:8px}.row2 .btn{flex:1}
     <div class="kb" id="kb"></div>
     <ul class="vscore hide" id="vsScore" aria-label="Scoreboard" style="margin-top:16px"></ul>
   </section>
+  </div>
 
   <p class="how"><b>How to play:</b> guess the hidden word in six tries. Type any real five-letter word and press Enter.
     <span class="sw" style="background:#3fd39a"></span>right letter, right spot.
@@ -160,6 +265,19 @@ dialog .row2{display:flex;gap:8px}.row2 .btn{flex:1}
 </main>
 
 <footer class="foot"><h6>Every game on Recess</h6><div class="az" id="allgames"></div><p>&copy; <span id="yr"></span> Recess &middot; someone coming? <span class="kbd">`</span></p></footer>
+
+<dialog id="howto" aria-labelledby="htTitle">
+  <h2 id="htTitle">How to play</h2>
+  <p>Guess the hidden <b>five-letter word</b> in six tries. Type any real word and press Enter. After each guess the tiles change color:</p>
+  <div class="hx"><i class="h">W</i><i>O</i><i>R</i><i>D</i><i>S</i></div>
+  <p><b>Mint</b>: W is in the word and in the right spot.</p>
+  <div class="hx"><i>C</i><i class="n">R</i><i>A</i><i>N</i><i>E</i></div>
+  <p><b>Gold</b>: R is in the word but in a different spot.</p>
+  <div class="hx"><i>S</i><i>T</i><i>O</i><i class="m">M</i><i>P</i></div>
+  <p><b>Slate</b>: M is not in the word at all.</p>
+  <p><b>Daily</b> is the same word for everyone. <b>Endless</b> keeps going until you miss: 600 points for 1 guess down to 100 for 6, plus a bonus for every word in a row. <b>VS Mode</b> is online: host a lobby, share the code, and race through the same words.</p>
+  <div class="row2"><button class="btn" id="closeHow">Got it</button></div>
+</dialog>
 
 <dialog id="stats" aria-labelledby="stTitle">
   <h2 id="stTitle">Daily stats</h2>
@@ -196,6 +314,7 @@ $('kb').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b){
 addEventListener('keydown',e=>{
   if(e.ctrlKey||e.metaKey||e.altKey||document.querySelector('dialog[open]')||document.getElementById('teacher'))return;
   if(e.target&&/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(e.target.tagName)&&e.target.closest('.vs'))return;
+  if(!$('fmenu').classList.contains('hide')||!$('fsplash').classList.contains('hide'))return;
   if(e.key==='Enter'||e.key==='Backspace'||/^[a-zA-Z]$/.test(e.key)){e.preventDefault();press(e.key==='Enter'||e.key==='Backspace'?e.key:e.key.toLowerCase())}
 });
 
@@ -315,6 +434,7 @@ function endFinish(won,r,quiet){
 function setMode(m){
   if(mode==='vs'&&m!=='vs')vsLeave(true);
   mode=m;[['mDaily','daily'],['mEnd','end'],['mVs','vs']].forEach(([id,x])=>$(id).setAttribute('aria-pressed',x===m));
+  $('modeName').textContent=m==='daily'?'Daily word #'+(dayNo()+1):m==='end'?'Endless':'VS Mode';
   $('endBar').classList.toggle('hide',m!=='end');endNext=null;
   m==='daily'?startDaily():m==='end'?startEndless():vsOpen()}
 $('mDaily').onclick=()=>{$('mDaily').blur();setMode('daily')};
@@ -529,7 +649,68 @@ $('shareBtn').onclick=()=>{
 
 {const fb=$('favBtn');const draw=()=>{const on=Recess.isFav(SLUG);fb.setAttribute('aria-pressed',String(on));$('favTxt').textContent=on?'In My Recess':'Add to My Recess'};draw();fb.onclick=()=>{Recess.toggleFav(SLUG);draw()}}
 $('yr').textContent=new Date().getFullYear();
-{const q=new URLSearchParams(location.search),j=q.get('vs'),m=q.get('mode');if(j){$('vsCode').value=j.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);setMode('vs')}else setMode(m==='vs'?'vs':m==='endless'?'end':'daily')}
+// ---------- intro + start menu
+const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+{ // tile wordmark, same letters as the cover art
+  const GL={F:['11111','10000','10000','11110','10000','10000','10000'],I:['11111','00100','00100','00100','00100','00100','11111'],V:['10001','10001','10001','10001','01010','01010','00100'],E:['11111','10000','10000','11110','10000','10000','11111'],L:['10000','10000','10000','10000','10000','10000','11111'],T:['11111','00100','00100','00100','00100','00100','00100'],R:['11110','10001','10001','11110','10100','10010','10001'],S:['01111','10000','10000','01110','00001','00001','11110']};
+  const M='#3fd39a',G='#ffc94a',S='#2a2d40';let k=0;
+  const glyph=(ch,ink)=>`<svg viewBox="0 0 5 7" aria-hidden="true">${GL[ch].map((r,y)=>[...r].map((b,x)=>b==='1'?`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${ink}"/>`:'').join('')).join('')}</svg>`;
+  const row=(w,cols,sm)=>`<div class="w${sm?' sm':''}">${[...w].map((ch,i)=>`<span class="t" style="--c:${cols[i]};--i:${k++}">${glyph(ch,cols[i]===S?'#f1ede6':'#0b0814')}</span>`).join('')}</div>`;
+  $('fwm').innerHTML=row('FIVE',[M,G,S,M])+row('LETTERS',Array(7).fill(M),1);
+  const L='QWERTYUIOPASDFGHJKLZXCVBNM',C=['#3fd39a','#ffc94a','#8a8fa8'];
+  $('fdrift').innerHTML=Array.from({length:14},(_,d)=>`<i style="left:${(d*7.3+3)%96}%;--c:${C[d%3]};animation-duration:${11+(d*37%7)}s;animation-delay:-${(d*1.7%11).toFixed(1)}s">${L[(d*7)%26]}</i>`).join('');
+}
+function menuStats(){
+  const s=store.get('fl-stats',{}),b=store.get('fl-best',{score:0}),d=dayNo(),sv=store.get('fl-daily',null);
+  $('sStreak').textContent=s.streak||0;$('sBest').textContent=fmt(b.score||0);$('sWins').textContent=s.wins||0;
+  $('dTitle').textContent='Daily word #'+(d+1);
+  const g=sv&&sv.day===d?sv.guesses:[];
+  $('dSub').textContent=s.last===d?(s.lastRow!=null?`Solved in ${s.lastRow+1}/6. Come back at midnight for the next one`:'Missed it today. New word at midnight'):g.length?`In progress: ${g.length} of 6 guesses used`:'Same word for everyone today';
+  $('eSub').textContent=b.score?`Keep solving until you miss. Your best: ${fmt(b.score)} points`:'Keep solving until you miss. Fewer guesses, more points.';
+}
+function showMenu(){
+  if(mode==='vs'&&vs.state!=='off'&&!confirm('Leave the VS lobby?'))return;
+  if(mode==='vs')vsLeave(true);
+  menuStats();$('fstage').classList.add('at-menu');$('fmenu').classList.remove('hide');
+  setTimeout(()=>$('goDaily').focus(),50);
+}
+function play(m){$('fmenu').classList.add('hide');$('fstage').classList.remove('at-menu');setMode(m)}
+$('goDaily').onclick=()=>play('daily');
+$('goEnd').onclick=()=>play('end');
+$('goVs').onclick=()=>play('vs');
+$('toMenu').onclick=showMenu;
+$('lHow').onclick=()=>$('howto').showModal();
+$('closeHow').onclick=()=>$('howto').close();
+$('howto').addEventListener('click',e=>{if(e.target===$('howto'))$('howto').close()});
+$('lStats').onclick=openStats;
+const fs=()=>{const st=$('fstage');if(document.fullscreenElement)document.exitFullscreen();else if(st.requestFullscreen)st.requestFullscreen().catch(()=>{})};
+$('fsBtn').onclick=fs;$('lFs').onclick=fs;
+document.addEventListener('fullscreenchange',()=>{const on=!!document.fullscreenElement;$('fsBtn').textContent=on?'Exit full screen':'Full screen';$('lFs').textContent=on?'Exit full screen':'Full screen'});
+
+// Recess splash, then the tile preloader, then the menu
+function intro(){
+  let stage2=false;
+  const toPre=()=>{
+    if(stage2)return;stage2=true;
+    $('fsting').classList.add('hide');$('fpre').classList.remove('hide');
+    const tiles=[...$('ptiles').children];let p=0;
+    const iv=setInterval(()=>{
+      p=Math.min(100,p+5+Math.random()*13|0);
+      tiles.forEach((t,i)=>t.classList.toggle('on',p>=(i+1)*20));
+      $('ppct').textContent='LOADING '+p+'%';
+      if(p>=100){clearInterval(iv);$('ppct').textContent='LOADED';$('pbtn').classList.remove('hide');$('pbtn').focus()}
+    },calm?20:80);
+  };
+  const tm=setTimeout(toPre,calm?150:1900);
+  $('fsplash').addEventListener('click',e=>{if(e.target.closest('#pbtn'))return;clearTimeout(tm);toPre()});
+  $('pbtn').onclick=()=>{$('fsplash').classList.add('hide');showMenu()};
+}
+
+{const q=new URLSearchParams(location.search),j=q.get('vs'),m=q.get('mode');
+  if(j){$('vsCode').value=j.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);$('fsplash').classList.add('hide');play('vs')}
+  else if(m==='vs'||m==='endless'){$('fsplash').classList.add('hide');play(m==='vs'?'vs':'end')}
+  else{setMode('daily');intro()}
+}
 }
 </script>
 </body>
