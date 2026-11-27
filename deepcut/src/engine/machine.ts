@@ -1,5 +1,5 @@
 import { GAME, RARITY, type RarityId } from '../config/game.ts';
-import { matchAnswer } from './match.ts';
+import { autoCorrect, matchDetail } from './match.ts';
 import type { Question } from './types.ts';
 
 /**
@@ -16,6 +16,8 @@ export interface RoundRecord {
   outcome: Outcome;
   guess?: string;
   answer?: string;
+  /** The guess was misspelled and auto-corrected to `answer`. */
+  corrected?: boolean;
   rarity?: RarityId;
   points: number;
 }
@@ -97,11 +99,13 @@ export function reduce(s: GameState, e: GameEvent): GameState {
       const guess = e.text.trim();
       if (!guess) return s;
       const q = s.questions[s.round];
-      const a = matchAnswer(q, guess);
+      const m = matchDetail(q, guess);
+      const a = m?.answer ?? autoCorrect(q, guess);
       if (!a) return { ...s, wrong: [...s.wrong, guess] };
+      const exact = m?.exact ?? false;
       return endRound(
         s,
-        { questionId: q.id, outcome: 'correct', guess, answer: a.name, rarity: a.rarity, points: pointsFor(a.rarity) },
+        { questionId: q.id, outcome: 'correct', guess, answer: a.name, ...(exact ? {} : { corrected: true }), rarity: a.rarity, points: pointsFor(a.rarity) },
         e.now,
       );
     }

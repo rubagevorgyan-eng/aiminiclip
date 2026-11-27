@@ -123,7 +123,7 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
             <h1 className="question">{q.text}</h1>
           </div>
         ) : last?.outcome === 'correct' && last.rarity ? (
-          <RoundResult rarity={last.rarity} answer={last.answer!} />
+          <RoundResult rarity={last.rarity} answer={last.answer!} correctedFrom={last.corrected ? last.guess : undefined} />
         ) : (
           <div className="result result--miss panel" aria-live="assertive">
             <div>
@@ -187,7 +187,7 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
 
 const BURST = { rare: 6, legendary: 10, mythic: 16 } as Partial<Record<RarityId, number>>;
 
-function RoundResult({ rarity, answer }: { rarity: RarityId; answer: string }) {
+function RoundResult({ rarity, answer, correctedFrom }: { rarity: RarityId; answer: string; correctedFrom?: string }) {
   const t = rarityOf(rarity);
   const pts = useCountUp(t.points, 450);
   const sparks = BURST[rarity] ?? 0;
@@ -204,6 +204,7 @@ function RoundResult({ rarity, answer }: { rarity: RarityId; answer: string }) {
       <div className="result-text">
         <p className="result-title">{t.mineral} discovered</p>
         <p className="result-answer">{answer}</p>
+        {correctedFrom && <p className="result-corrected dim">Auto-corrected from “{correctedFrom}”</p>}
         <p className="eyebrow">{t.label} answer</p>
       </div>
       <p className="result-meta num">+{pts}m</p>

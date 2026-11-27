@@ -146,13 +146,42 @@ export function matchAnswer(q: Question, guess: string): Answer | null {
 }
 
 /**
+ * Auto-correct for a guess `matchDetail` did not accept: a misspelling close enough to count by
+ * itself (1 edit from 5 letters, 2 from 8), same first letter and numbers, exactly one closest
+ * answer, and never a known-wrong answer. Looser near misses only get a "Did you mean…?".
+ */
+export function autoCorrect(q: Question, guess: string): Answer | null {
+  if (matchDetail(q, guess)) return null;
+  const k = normalize(guess, q.ignore);
+  const c = compact(k);
+  const { keys, reject } = index(q);
+  if (c.length < 5 || reject.has(k) || reject.has(c)) return null;
+  const budget = (n: number) => (n < 5 ? 0 : n < 8 ? 1 : 2);
+  const max = budget(c.length);
+  let best = max + 1;
+  let found = new Set<Answer>();
+  for (const [key, a] of keys) {
+    if (!a || key.includes(' ') || key[0] !== c[0] || digits(key) !== digits(c)) continue;
+    const allowed = Math.min(max, budget(key.length));
+    if (!allowed) continue;
+    const d = editDistance(c, key, allowed);
+    if (d > allowed) continue;
+    if (d < best) {
+      best = d;
+      found = new Set([a]);
+    } else if (d === best) found.add(a);
+  }
+  return best <= max && found.size === 1 ? [...found][0] : null;
+}
+
+/**
  * "Did you mean…?" for a guess that was NOT accepted: a looser search than `matchDetail`, used only
  * to offer a suggestion the player must confirm. Never used to score an answer by itself.
  * Allows more typos (1 edit from 4 letters, 2 from 6, 3 from 10), a first-letter slip on longer
  * words, and unambiguous prefixes ("tyranno" -> Tyrannosaurus rex). Ties or known-wrong answers: null.
  */
 export function suggestAnswer(q: Question, guess: string): Answer | null {
-  if (matchDetail(q, guess)) return null;
+  if (matchDetail(q, guess) || autoCorrect(q, guess)) return null;
   const k = normalize(guess, q.ignore);
   const c = compact(k);
   const { keys, reject } = index(q);

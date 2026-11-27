@@ -140,10 +140,8 @@ test('no known name from another question is accepted as a typo', () => {
 test('suggestAnswer offers "did you mean" for near misses, never for accepted or far-off guesses', async () => {
   const { suggestAnswer } = await import('./match.ts');
   const s = (id: string, g: string) => suggestAnswer(q(id), g)?.name ?? null;
-  assert.equal(s('vg-gen1-pokemon', 'Bulbasor'), 'Bulbasaur');
-  assert.equal(s('vg-gen1-pokemon', 'Pikchu'), 'Pikachu');
+  assert.equal(s('vg-gen1-pokemon', 'Bulbasor'), null, 'auto-corrected instead');
   assert.equal(s('geo-largest-countries', 'Austria'), 'Australia');
-  assert.equal(s('sci-noble-gases', 'Xenom'), 'Xenon');
   assert.equal(s('mov-pixar', 'ratatoui'), 'Ratatouille'); // prefix
   assert.equal(s('mov-mcu-films', 'thorr'), 'Thor', 'a one-letter slip beats a longer title that starts the same');
   assert.equal(s('vg-gen1-pokemon', 'Charizard'), null, 'already accepted: no suggestion');
@@ -152,4 +150,18 @@ test('suggestAnswer offers "did you mean" for near misses, never for accepted or
   assert.equal(s('mov-pixar', 'Toy Story 5'), null, 'numbers must match');
   assert.equal(s('his-20th-century-presidents', 'Rosevelt'), null, 'ambiguous: two Roosevelts');
   assert.equal(s('sci-noble-gases', 'Neo'), null, 'too short');
+});
+
+test('autoCorrect accepts close misspellings by itself, but not a different real word', async () => {
+  const { autoCorrect } = await import('./match.ts');
+  const a = (id: string, g: string) => autoCorrect(q(id), g)?.name ?? null;
+  assert.equal(a('vg-gen1-pokemon', 'Bulbasor'), 'Bulbasaur');
+  assert.equal(a('vg-gen1-pokemon', 'Pikchu'), 'Pikachu');
+  assert.equal(a('sci-noble-gases', 'Xenom'), 'Xenon');
+  assert.equal(a('vg-gen1-pokemon', 'Charizard'), null, 'already exact');
+  assert.equal(a('geo-largest-countries', 'Austria'), null, 'two letters off a 7-letter word: only a suggestion');
+  assert.equal(a('his-roman-emperors', 'Julius Caesar'), null, 'known wrong answers are never accepted');
+  assert.equal(a('his-20th-century-presidents', 'Rosevelt'), null, 'ambiguous: two Roosevelts');
+  assert.equal(a('sci-noble-gases', 'Neo'), null, 'too short');
+  assert.equal(a('mov-pixar', 'Toy Story 5'), null, 'numbers must match');
 });
