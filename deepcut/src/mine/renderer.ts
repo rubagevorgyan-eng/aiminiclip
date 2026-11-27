@@ -1,13 +1,17 @@
 import { RARITY, ZONES } from '../config/game.ts';
 import { HAND, LAMP, BOB_ROWS, MINER, MINER_H, MINER_PALETTE, MINER_W, PICK } from './sprites.ts';
 import { MINE, ZONE_LOOK, easeInOutCubic, yForDepth, zoneIndexAt } from './terrain.ts';
-import { buildWorld, type World } from './world.ts';
+import { FORE_SPEED, FORE_W, buildWorld, type World } from './world.ts';
 
 interface Particle { x: number; y: number; vx: number; vy: number; life: number; max: number; color: string; size: number; glow: boolean }
 interface Tween { from: number; to: number; start: number; dur: number }
 interface Swing { start: number; tier: number; target: number; struck: boolean }
+interface Mote { x: number; y: number; vy: number; vx: number; a: number; size: number }
 
 const SWING = { windup: 150, strike: 110, hold: 120, recover: 260 };
+/** Faint ambient tint per zone (warm topsoil, copper, cool silver, amber gold, green emerald, violet abyss). */
+const ZONE_TINT = ['#c9a27a', '#d08a5a', '#8fa6c4', '#d9a441', '#3fbf8f', '#7a6cd9'];
+const MOTES = 34;
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 export interface MineHud { depth: (m: number) => void; zone: (index: number) => void }
@@ -29,6 +33,8 @@ export class MineRenderer {
   private swing: Swing | null = null;
   private parts: Particle[] = [];
   private flash = { until: 0, color: '#fff', strength: 0 };
+  private cam: number | null = null; // smoothed camera row
+  private motes: Mote[] = [];
   private shake = { until: 0, amp: 0 };
   private raf = 0;
   private last = 0;
@@ -88,6 +94,7 @@ export class MineRenderer {
 
   /** Jump without animation (new game, resume). */
   reset(depth: number) {
+    this.cam = null;
     this.tween = null;
     this.swing = null;
     this.parts = [];
@@ -174,6 +181,14 @@ export class MineRenderer {
     if (z !== this.lastZone) { this.lastZone = z; this.hud.zone(z); }
   }
 
+  private lastDraw = 0;
+  private lastMote = 0;
+  private moteDt(now: number) {
+    const d = (now - (this.lastMote || now)) / 1000;
+    this.lastMote = now;
+    return d;
+  }
+
   private feetY() { return Math.round(yForDepth(this.depth)); }
   private minerX() { return Math.round(MINE.width / 2 - MINER_W / 2); }
 
@@ -221,7 +236,13 @@ export class MineRenderer {
     const fy = this.feetY();
     // Camera follows the exact (fractional) depth; the buffer is drawn at whole pixels and the
     // remainder is applied when scaling up, so scrolling is smooth instead of stepping per pixel.
-    const camF = Math.max(0, Math.min(this.world.height - H - 1, yForDepth(this.depth) - H * 0.58));
+    const target = Math.max(0, Math.min(this.world.height - H - 1, yForDepth(this.depth) - H * 0.58));
+    // The camera trails the miner slightly (eased follow), so descents feel like travel, not a cut.
+    const prev = this.cam ?? target;
+    this.cam = this.reduced ? target : prev + (target - prev) * Math.min(1, (now - (this.lastDraw || now)) / 1000 * 7);
+    this.lastDraw = now;
+    const camF = this.cam;
+    const camDelta = camF - prev;
     let camY = Math.floor(camF);
     const frac = camF - camY;
     if (!this.reduced && now < this.shake.until) camY += Math.round((Math.random() - 0.5) * 2 * this.shake.amp);
@@ -249,14 +270,17 @@ export class MineRenderer {
       }
     }
 
-    // twinkles
+    // twinkles: gems near the headlamp catch the light more often
+    const lampX = this.minerX() + LAMP.x, lampY = fy - MINER_H + LAMP.y - camY;
     if (!this.reduced)
       for (const t of this.world.twinkles) {
         const yy = t.y - camY;
         if (yy < -2 || yy > H + 2) continue;
-        const a = Math.max(0, Math.sin(now / 520 + t.phase));
-        if (a < 0.55) continue;
-        b.globalAlpha = (a - 0.55) * 2.2;
+        const near = Math.hypot(t.x - lampX, yy - lampY) < 36;
+        const a = Math.max(0, Math.sin(now / (near ? 380 : 520) + t.phase));
+        const cut = near ? 0.3 : 0.6;
+        if (a < cut) continue;
+        b.globalAlpha = Math.min(1, (a - cut) * 2.4);
         b.fillStyle = t.color;
         b.fillRect(t.x, yy - 1, 1, 3);
         b.fillRect(t.x - 1, yy, 3, 1);
@@ -269,6 +293,12 @@ export class MineRenderer {
     const angle = this.pickAngle(now);
     const behind = angle < -1.6;
     if (behind) this.drawPick(angle, camY, bob);
+    // thin dark outline so the miner reads against any rock
+    b.fillStyle = 'rgba(0,0,0,0.55)';
+    for (let y = 0; y < MINER_H; y++) {
+      const row = MINER[y], dy = y < BOB_ROWS ? bob : 0;
+      for (let x = 0; x < MINER_W; x++) if (MINER_PALETTE[row[x]]) b.fillRect(mx + x - 1, my + y + dy - 1, 3, 3);
+    }
     for (let y = 0; y < MINER_H; y++) {
       const row = MINER[y], dy = y < BOB_ROWS ? bob : 0;
       for (let x = 0; x < MINER_W; x++) {
@@ -291,6 +321,36 @@ export class MineRenderer {
     }
     b.globalAlpha = 1;
 
+    // dust motes: a slower layer than the rock (they trail behind on descents), only underground
+    if (!this.reduced) {
+      if (this.motes.length < MOTES)
+        for (let i = this.motes.length; i < MOTES; i++)
+          this.motes.push({ x: Math.random() * W, y: Math.random() * H, vy: 1.5 + Math.random() * 4, vx: (Math.random() - 0.5) * 1.5, a: 0.15 + Math.random() * 0.35, size: Math.random() < 0.2 ? 2 : 1 });
+      const dt = Math.min(0.05, this.moteDt(now));
+      const tint = ZONE_TINT[zoneIndexAt(this.depth)];
+      for (const m of this.motes) {
+        m.y += m.vy * dt - camDelta * 0.55;
+        m.x += m.vx * dt + Math.sin(now / 1300 + m.a * 40) * 0.02;
+        if (m.y > H + 2) { m.y = -2; m.x = Math.random() * W; }
+        if (m.y < -2) { m.y = H + 2; m.x = Math.random() * W; }
+        if (m.y + camY < MINE.sky + 6) continue;
+        const lit = Math.hypot(m.x - lampX, m.y - lampY) < 30 ? 1.8 : 1;
+        b.globalAlpha = Math.min(0.8, m.a * lit);
+        b.fillStyle = lit > 1 ? '#ffe2b0' : tint;
+        b.fillRect(Math.round(m.x), Math.round(m.y), m.size, 1);
+      }
+      b.globalAlpha = 1;
+    }
+
+    // foreground outcrops at the view edges, scrolling faster than the world (parallax)
+    {
+      const c0 = Math.max(0, yForDepth(0) - H * 0.58);
+      const fy0 = Math.round(camF * FORE_SPEED - c0 * (FORE_SPEED - 1));
+      const inset = this.viewW < 150 ? 12 : 0; // narrow screens: only the outer part shows
+      b.drawImage(this.world.fore, 0, fy0, FORE_W, H + 1, this.xOff - inset, 0, FORE_W, H + 1);
+      b.drawImage(this.world.fore, FORE_W, fy0, FORE_W, H + 1, this.xOff + this.viewW - FORE_W + inset, 0, FORE_W, H + 1);
+    }
+
     // upscale to the display canvas
     const c = this.ctx, cw = this.canvas.width, ch = this.canvas.height, k = cw / this.viewW, ky = ch / H;
     c.imageSmoothingEnabled = false;
@@ -298,15 +358,28 @@ export class MineRenderer {
 
     // lighting: darkness grows with depth, headlamp pool and beam around the miner
     const lx = (mx + LAMP.x + 0.5 - this.xOff) * k, ly = (my + LAMP.y + bob + 0.5 - frac) * ky;
-    const dark = 0.28 + 0.5 * Math.min(1, this.depth / ZONES[ZONES.length - 1].to);
-    const g = c.createRadialGradient(lx, ly, 6 * k, lx, ly, Math.max(cw, ch) * 0.75);
+    const progress = Math.min(1, this.depth / ZONES[ZONES.length - 1].to);
+    const dark = 0.22 + 0.62 * progress; // deeper = darker, and the lamp's pool of light shrinks
+    const g = c.createRadialGradient(lx, ly, 6 * k, lx, ly, Math.max(cw, ch) * lerp(0.8, 0.5, progress));
     g.addColorStop(0, 'rgba(6,7,9,0)');
+    g.addColorStop(0.55, `rgba(6,7,9,${dark * 0.55})`);
     g.addColorStop(1, `rgba(6,7,9,${dark})`);
     c.fillStyle = g;
     c.fillRect(0, 0, cw, ch);
+    if (this.depth > 2) {
+      c.globalAlpha = 0.07;
+      c.fillStyle = ZONE_TINT[zoneIndexAt(this.depth)];
+      c.fillRect(0, 0, cw, ch);
+      c.globalAlpha = 1;
+    }
     c.globalCompositeOperation = 'lighter';
-    const beam = c.createRadialGradient(lx + 14 * k, ly + 2 * k, 0, lx + 14 * k, ly + 2 * k, 22 * k);
-    beam.addColorStop(0, 'rgba(255,214,140,0.16)');
+    const halo = c.createRadialGradient(lx, ly, 0, lx, ly, 10 * k);
+    halo.addColorStop(0, 'rgba(255,224,160,0.22)');
+    halo.addColorStop(1, 'rgba(255,224,160,0)');
+    c.fillStyle = halo;
+    c.fillRect(0, 0, cw, ch);
+    const beam = c.createRadialGradient(lx + 14 * k, ly + 2 * k, 0, lx + 14 * k, ly + 2 * k, 24 * k);
+    beam.addColorStop(0, 'rgba(255,214,140,0.18)');
     beam.addColorStop(1, 'rgba(255,214,140,0)');
     c.fillStyle = beam;
     c.fillRect(0, 0, cw, ch);

@@ -13,7 +13,13 @@ export interface World {
   width: number;
   height: number;
   twinkles: Twinkle[];
+  /** Foreground rock silhouettes for the screen edges (left half / right half), scrolled faster for parallax. */
+  fore: HTMLCanvasElement;
 }
+
+/** Foreground parallax: rows of `fore` advance this many times faster than the world. */
+export const FORE_SPEED = 1.35;
+export const FORE_W = 30;
 
 function hex(c: string): [number, number, number] {
   const n = parseInt(c.slice(1), 16);
@@ -63,15 +69,36 @@ function generate(): World {
   }
 
   // ---- rock: per-zone shades from smooth noise + grain, faint strata
+  // Two octaves of noise give boulder-sized lumps; comparing with the up-left neighbour lights
+  // their upper faces and shades the lower ones, so the rock reads as relief rather than a flat fill.
+  const rockN = (x: number, y: number, z: number) => valueNoise(x, y, 9, S + z) * 0.65 + valueNoise(x, y, 3.5, S + 20 + z) * 0.35;
   for (let y = MINE.sky; y < H; y++)
     for (let x = 0; x < W; x++) {
       const z = zoneAtPixel(x, y);
       const look = ZONE_LOOK[z];
-      const n = valueNoise(x, y, 7, S + z) * 0.75 + hash2(x, y, S) * 0.25;
-      const shade = n < 0.38 ? 2 : n < 0.68 ? 0 : 1;
+      const n = rockN(x, y, z) * 0.9 + hash2(x, y, S) * 0.1;
+      const shade = n < 0.4 ? 2 : n < 0.63 ? 0 : 1;
       set(x, y, look.rock[shade]);
-      if (valueNoise(x * 0.3, y * 2.2, 6, S + 40) > 0.86) set(x, y, '#000000', 0.18); // strata lines
+      const relief = n - rockN(x - 1, y - 1, z) * 0.9;
+      if (relief > 0.04) set(x, y, '#ffffff', 0.07);
+      else if (relief < -0.04) set(x, y, '#000000', 0.16);
+      const crack = valueNoise(x, y, 15, S + 60); // irregular cracks outline the boulders
+      if (Math.abs(crack - 0.5) < 0.011) set(x, y, '#000000', 0.38);
+      if (valueNoise(x * 0.3, y * 2.2, 6, S + 40) > 0.88) set(x, y, '#000000', 0.12); // faint strata
       if (hash2(x, y, S + 5) > 0.992) set(x, y, '#000000', 0.45); // pits
+      // caverns: dark hollows with a shadowed rim, more of them deeper down
+      if (z >= 1) {
+        const cave = valueNoise(x, y * 1.6, 28, S + 80);
+        const cut = 0.86 - z * 0.015;
+        if (cave > cut) set(x, y, '#050608', Math.min(0.78, (cave - cut) * 9));
+        else if (cave > cut - 0.02) set(x, y, '#000000', 0.25);
+      }
+    }
+  // topsoil: darker band and pebbles under the grass
+  for (let y = MINE.sky + 2; y < MINE.sky + 16; y++)
+    for (let x = 0; x < W; x++) {
+      set(x, y, '#20140c', 0.28 * (1 - (y - MINE.sky) / 16));
+      if (hash2(x, y, S + 77) > 0.985) set(x, y, '#8b7a66', 0.8);
     }
 
   // ---- grass line
@@ -87,15 +114,15 @@ function generate(): World {
   const twinkles: Twinkle[] = [];
 
   // ---- surface roots
-  for (let r = 0; r < 10 * dens; r++) {
-    let x = Math.floor(rand() * W), y = MINE.sky + 2;
-    const len = 8 + rand() * 26;
+  const root = (x: number, y: number, len: number, depth: number) => {
     for (let i = 0; i < len; i++) {
-      if (!inShaft(x)) set(x, y, i < 4 ? '#6b4a2a' : '#4e3520');
+      if (!inShaft(x)) set(x, y, i < 4 && depth === 0 ? '#6b4a2a' : '#4e3520', depth ? 0.75 : 1);
       y += 1;
       if (rand() < 0.35) x += rand() < 0.5 ? -1 : 1;
+      if (depth < 2 && rand() < 0.07) root(x + (rand() < 0.5 ? -1 : 1), y, len * 0.4, depth + 1);
     }
-  }
+  };
+  for (let r = 0; r < 14 * dens; r++) root(Math.floor(rand() * W), MINE.sky + 2, 8 + rand() * 26, 0);
 
   // ---- deposits per zone (clusters), more and richer deeper down
   ZONES.forEach((_, z) => {
@@ -113,6 +140,20 @@ function generate(): World {
       if (z >= 3 && rand() < 0.5) twinkles.push({ x: cx - 1, y: cy - 1, color: look.glint, phase: rand() * 6.28 });
     }
   });
+
+  // ---- thin mineral veins in every zone below the surface
+  for (let z = 1; z < ZONES.length; z++) {
+    const [y0, y1] = zoneRange(z);
+    for (let v = 0; v < 6 * dens; v++) {
+      let x = Math.floor(rand() * W), y = Math.floor(y0 + rand() * (y1 - y0));
+      const dir = rand() < 0.5 ? -1 : 1;
+      for (let i = 0; i < 18 + rand() * 20; i++) {
+        if (!inShaft(x)) set(x, y, ZONE_LOOK[z].ore, 0.45);
+        x += rand() < 0.7 ? dir : 0;
+        y += rand() < 0.45 ? 1 : rand() < 0.2 ? -1 : 0;
+      }
+    }
+  }
 
   // ---- gold veins: glowing random walks
   {
@@ -152,7 +193,7 @@ function generate(): World {
     for (let d = 0; d < 26 * dens; d++) {
       const x = Math.floor(rand() * W), y = Math.floor(y0 + rand() * (y1 - y0));
       if (inShaft(x)) continue;
-      for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) set(x + dx, y + dy, '#67e8f9', 0.08);
+      for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) if (dx * dx + dy * dy <= 10) set(x + dx, y + dy, '#67e8f9', 0.06);
       set(x, y - 1, '#67e8f9'); set(x - 1, y, '#67e8f9'); set(x + 1, y, '#2bb5c9'); set(x, y + 1, '#2bb5c9');
       set(x, y, '#ffffff');
       twinkles.push({ x, y, color: '#ffffff', phase: rand() * 6.28 });
@@ -177,5 +218,29 @@ function generate(): World {
   ctx.fillStyle = '#e6b65c';
   ctx.fillRect(cx - 1, top - 1, 2, 2);
 
-  return { canvas, width: W, height: H, twinkles };
+  return { canvas, width: W, height: H, twinkles, fore: buildFore(H) };
+}
+
+/**
+ * Jagged near-black rock outcrops for the left (x < FORE_W) and right (x >= FORE_W) screen edges.
+ * Row r lines up with world row r at the surface and scrolls FORE_SPEED times faster.
+ */
+function buildFore(worldH: number): HTMLCanvasElement {
+  const H = Math.ceil(worldH * FORE_SPEED + 200), S = MINE.seed + 300;
+  const c = document.createElement('canvas');
+  c.width = FORE_W * 2;
+  c.height = H;
+  const ctx = c.getContext('2d')!;
+  for (let side = 0; side < 2; side++)
+    for (let y = MINE.sky + 4; y < H; y++) {
+      const ramp = Math.min(1, (y - MINE.sky - 4) / 30); // grows out of the ground
+      const w = Math.round(ramp * (3 + valueNoise(side * 500, y, 22, S) * 18 + valueNoise(side * 500, y, 5, S + 1) * 6));
+      if (w <= 0) continue;
+      const x0 = side ? FORE_W * 2 - w : 0;
+      ctx.fillStyle = '#060507';
+      ctx.fillRect(x0, y, w, 1);
+      ctx.fillStyle = 'rgba(120,110,100,0.18)'; // faint rim catching the lamp
+      ctx.fillRect(side ? x0 : x0 + w - 1, y, 1, 1);
+    }
+  return c;
 }
