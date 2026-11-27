@@ -56,7 +56,13 @@ function endRound(s: GameState, rec: RoundRecord, now: number): GameState {
     ...s,
     phase: 'ROUND_RESULT',
     // A find lasts as long as its dig animation (rarer = longer descent); a miss uses the base pause.
-    phaseEndsAt: now + (rec.rarity ? Math.max(GAME.roundResultMs, digDurationMs(rarityIndex(rec.rarity))) : GAME.roundResultMs),
+    phaseEndsAt:
+      now +
+      (rec.rarity
+        ? Math.max(GAME.roundResultMs, digDurationMs(rarityIndex(rec.rarity)))
+        : rec.outcome === 'skipped'
+          ? GAME.skipResultMs
+          : GAME.roundResultMs),
     records: [...s.records, rec],
     score: Math.min(GAME.maxScore, s.score + rec.points),
   };

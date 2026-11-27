@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from 'react';
-import { GAME, RARITY, rarityOf, type RarityId } from '../../config/game.ts';
+import { GAME, RARITY, impactAtMs, rarityOf, type RarityId } from '../../config/game.ts';
+import { useSettings } from '../../storage/settings.ts';
 import { timeLeft, type GameState } from '../../engine/machine.ts';
 import { suggestAnswer } from '../../engine/match.ts';
 import { playFind, playMiss, playTick, playWrong } from '../../audio/sfx.ts';
@@ -61,14 +62,21 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
   }, [resolved]);
 
   // Sound: a find or a miss when a round ends, ticks in the last seconds.
+  // The find sound lands with the pickaxe strike (not on submit), so sound and impact are one beat.
+  const { reduceMotion } = useSettings();
   const prevRounds = useRef(state.records.length);
   useEffect(() => {
+    let id: ReturnType<typeof setTimeout> | undefined;
     if (state.records.length > prevRounds.current) {
       const r = state.records[state.records.length - 1];
-      if (r.rarity) playFind(RARITY.findIndex((t) => t.id === r.rarity));
-      else playMiss();
+      if (r.rarity) {
+        const tier = RARITY.findIndex((t) => t.id === r.rarity);
+        const still = reduceMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        id = setTimeout(() => playFind(tier), still ? 0 : impactAtMs());
+      } else playMiss();
     }
     prevRounds.current = state.records.length;
+    return () => clearTimeout(id);
   }, [state.records]);
   const tickSec = warn ? secs : null;
   useEffect(() => {
@@ -136,7 +144,7 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
           <div className="result result--miss panel" aria-live="assertive">
             <div>
               <p className="result-title">{last?.outcome === 'skipped' ? 'Skipped' : "Time's up"}</p>
-              <p className="dim">Nothing found this round.</p>
+              <p className="dim">No mineral this round.</p>
             </div>
             <p className="result-meta num">+0m</p>
           </div>
@@ -175,7 +183,9 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
           </div>
 
           <form className="answer" onSubmit={submit}>
-            <span className={`dock-secs num${warn ? ' is-warn' : ''}`} aria-hidden="true">{asking ? secs : 0}</span>
+            <span className={`dock-secs num${warn ? ' is-warn' : ''}`} aria-hidden="true">
+              {asking ? secs : accepted ? <MineralIcon rarity={last!.rarity!} size={22} /> : '–'}
+            </span>
             <input
               ref={input}
               className={`field${shaking ? ' is-error' : ''}${accepted ? ' is-accepted' : ''}`}
@@ -213,6 +223,7 @@ function RoundResult({ rarity, answer, correctedFrom }: { rarity: RarityId; answ
   const t = rarityOf(rarity);
   const pts = useCountUp(t.points, 450);
   const sparks = BURST[rarity] ?? 0;
+  const earned = RARITY.findIndex((x) => x.id === rarity);
   return (
     <div className="result panel" data-tier={t.id} style={{ '--r': t.color } as CSSProperties} aria-live="assertive">
       <span className="result-gem">
@@ -224,12 +235,22 @@ function RoundResult({ rarity, answer, correctedFrom }: { rarity: RarityId; answ
         {t.id === 'mythic' && <i className="spark spark--2" aria-hidden="true" />}
       </span>
       <div className="result-text">
-        <p className="result-title">{t.mineral} discovered</p>
         <p className="result-answer">{answer}</p>
+        <p className="result-title">
+          {t.mineral} <span className="result-tier">{t.label}</span>
+        </p>
         {correctedFrom && <p className="result-corrected dim">Auto-corrected from “{correctedFrom}”</p>}
-        <p className="eyebrow">{t.label} answer</p>
       </div>
       <p className="result-meta num">+{pts}m</p>
+      {/* the value of rarity at a glance: every mineral and its depth, the one found lit */}
+      <ol className="result-scale" aria-label={`${t.mineral} is ${earned + 1} of ${RARITY.length} rarity tiers`}>
+        {RARITY.map((x, i) => (
+          <li key={x.id} className={i === earned ? 'is-earned' : i < earned ? 'is-below' : ''} style={{ '--r': x.color } as CSSProperties}>
+            <MineralIcon rarity={x.id} size={14} />
+            <span className="num">{x.points}</span>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }

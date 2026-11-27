@@ -4,7 +4,8 @@ export const GAME = {
   roundsPerGame: 7,
   secondsPerQuestion: 25,
   timerWarningSeconds: 5,
-  roundResultMs: 1000,
+  roundResultMs: 1000, // pause after a timeout (finds last their whole dig; see DIG)
+  skipResultMs: 700, // a skip is the player's choice: move on quickly
   countdownMs: 3000,
   tickMs: 100,
   maxScore: 700,
