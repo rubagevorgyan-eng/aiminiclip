@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%2307080d'/%3E%3Ctext x='8' y='13' text-anchor='middle' font-family='Arial Black,Arial' font-weight='900' font-size='13' fill='%23ff4d2e'%3ER%3C/text%3E%3C/svg%3E">
 <title>Recess</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@500;700&family=DotGothic16&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@500;700&family=DotGothic16&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /*
 VOICE: the room goes quiet right before someone hits a 0.5s guess on stream
@@ -72,6 +72,14 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
 .tags span{font:700 13px var(--body);padding:4px 8px;background:#0a0a0f}
 .tags .lv{background:var(--ember);color:#0a0a0a}
 .viewers{display:none}
+/* hero rotates through the whole catalog */
+.screen .hart{position:absolute;inset:0;border:0;background:none;z-index:0}
+.screen .hart .s{position:absolute!important;inset:0;aspect-ratio:auto;height:auto}
+.screen .hart::after{display:none}
+.screen .hart .fl .row{gap:clamp(8px,1.2vw,18px)}
+.screen .hart .fl .row b{width:clamp(56px,8.5vw,130px);font-size:clamp(28px,4.2vw,64px);border-width:3px;box-shadow:6px 6px 0 #0b0814}
+.cap h1.long{font-size:clamp(34px,4.4vw,64px);line-height:.95}
+
 .cap{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap;padding:18px 22px 22px}
 .cap h1{margin:0;font:400 clamp(54px,7vw,96px)/.85 var(--disp);letter-spacing:.5px;text-transform:uppercase}
 .cap p{margin:8px 0 0;color:var(--dim);max-width:44ch}
@@ -100,6 +108,20 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
 .sec h3{margin:0;font:400 30px/1 var(--disp);letter-spacing:1px;text-transform:uppercase}
 .sec .r{margin-left:auto;font:400 14px var(--body);color:var(--dim)}
 
+/* Deep Cut feature */
+.dcf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);text-decoration:none;background:var(--panel);border:1px solid var(--line);overflow:hidden;transition:border-color .15s}
+.dcf:hover{border-color:var(--ember)}
+.dcf .art{position:relative;min-height:260px;display:grid;place-items:start center;overflow:hidden;background:#0d0f12 url(/games/deep-cut/cover.jpg) center/cover no-repeat;image-rendering:pixelated}
+.dcf .art::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(7,8,10,.35),transparent 40%)}
+.dc-logo{position:relative;z-index:1;display:block;width:70%;max-width:360px;height:auto;margin-top:8%;image-rendering:pixelated;filter:drop-shadow(0 4px 0 rgba(0,0,0,.45))}
+.dcf .art .tags{z-index:2}
+.dcf .txt{display:flex;flex-direction:column;justify-content:center;gap:12px;padding:22px 24px}
+.dcf h2{margin:0;font:400 clamp(44px,5vw,68px)/.88 var(--disp);letter-spacing:.5px;text-transform:uppercase}
+.dcf p{margin:0;color:var(--dim);max-width:46ch}
+.dcf .tiers{display:flex;flex-wrap:wrap;gap:6px}
+.dcf .tiers span{font:700 12px var(--body);padding:3px 8px;color:#0a0a0a}
+.dcf .btn{align-self:flex-start}
+@media(max-width:800px){.dcf{grid-template-columns:1fr}.dcf .art{min-height:180px}.dcf .btn{align-self:stretch}}
 .prow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:22px}
 .card{background:var(--panel);border:1px solid var(--line);overflow:hidden}
 .banner{height:110px;position:relative;transition:background .3s}
@@ -151,6 +173,37 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
 .g h4{margin:0;font:400 20px var(--disp);letter-spacing:1px;text-transform:uppercase}
 .g .tg{font:400 13px var(--body);color:var(--dim);margin-top:2px}
 .g.lock .s{background:repeating-linear-gradient(135deg,#0f1119 0 8px,#0c0e15 8px 16px)}
+/* Needle Drop cover: sunset stage, spinning record, equalizer, pixel wordmark */
+.g .s.nd{display:block;background:linear-gradient(180deg,#1a0f2e 0%,#3a1440 38%,#a8302a 72%,#ff7a2e 100%)}
+.nd .sun{position:absolute;left:50%;top:58%;width:62%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:repeating-linear-gradient(180deg,#ffc94a 0 9%,#ff8a3d 9% 12%);opacity:.55;-webkit-mask:linear-gradient(#000 0 55%,transparent 56%);mask:linear-gradient(#000 0 55%,transparent 56%)}
+.nd .grid{position:absolute;left:-20%;right:-20%;bottom:0;height:36%;background:linear-gradient(transparent,rgba(10,6,20,.9)),repeating-linear-gradient(90deg,rgba(255,201,74,.28) 0 2px,transparent 2px 9%),repeating-linear-gradient(0deg,rgba(255,201,74,.28) 0 2px,transparent 2px 22%);transform:perspective(180px) rotateX(48deg);transform-origin:bottom}
+.nd .vinyl{position:absolute;right:4%;top:52%;width:40%!important;transform:translateY(-50%);filter:drop-shadow(6px 6px 0 rgba(0,0,0,.45));animation:ndspin 6s steps(24) infinite}
+.g:hover .nd .vinyl{animation-duration:1.6s}
+@keyframes ndspin{to{transform:translateY(-50%) rotate(360deg)}}
+.nd .arm{position:absolute;right:5%;top:12%;width:4px;height:36%;background:#f1ede6;transform-origin:top;transform:rotate(26deg);box-shadow:2px 2px 0 rgba(0,0,0,.4)}
+.nd .arm::after{content:"";position:absolute;left:-5px;bottom:-8px;width:14px;height:12px;background:#ff4d2e;border:2px solid #0b0814}
+.nd .eq{position:absolute;left:6%;bottom:8%;display:flex;align-items:flex-end;gap:4px;height:22%}
+.nd .eq i{width:8px;height:100%;background:linear-gradient(0deg,#3fd39a 0 40%,#ffc94a 40% 75%,#ff4d2e 75%);transform-origin:bottom;animation:ndeq .9s steps(4) infinite alternate}
+.nd .eq i:nth-child(2){animation-delay:-.3s}.nd .eq i:nth-child(3){animation-delay:-.6s}.nd .eq i:nth-child(4){animation-delay:-.15s}.nd .eq i:nth-child(5){animation-delay:-.45s}.nd .eq i:nth-child(6){animation-delay:-.75s}
+@keyframes ndeq{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
+.nd .mark{position:absolute;left:6%;top:12%;font:700 clamp(24px,3.6vw,46px)/.95 "Silkscreen",monospace;letter-spacing:2px;text-shadow:4px 4px 0 #0b0814}
+.nd .mark b{display:block;font-weight:700;color:#ffc94a}.nd .mark span{display:block;color:#f1ede6}
+.nd .chip{position:absolute;left:6%;top:calc(12% + clamp(56px,8vw,98px));font:700 11px "Silkscreen",monospace;color:#0b0814;background:#ffc94a;border:2px solid #0b0814;padding:3px 7px;box-shadow:3px 3px 0 #0b0814}
+.g .t .desc{font:400 14px/1.45 var(--body);color:var(--bone);margin:6px 0 10px;max-width:52ch}
+.g .t .tags2{display:flex;flex-wrap:wrap;gap:6px}
+.g .t .tags2 span{font:600 11px var(--mono);color:var(--dim);border:1px solid var(--line);padding:2px 7px}
+@media(prefers-reduced-motion:reduce){.nd .vinyl,.nd .eq i{animation:none}}
+/* lineup logos: Five Letters, Deep Cut, $20 Anime */
+.g .s.fl{background:linear-gradient(180deg,#0e2a24 0%,#14463a 100%);display:grid;place-items:center}
+.fl .row{display:flex;gap:6px;position:relative;z-index:1}
+.fl .row b{width:clamp(26px,3.4vw,44px);aspect-ratio:1;display:grid;place-items:center;font:700 clamp(15px,2vw,26px) "Silkscreen",monospace;color:#0b0814;border:2px solid #0b0814;box-shadow:3px 3px 0 #0b0814}
+.fl .row .g1{background:#3fd39a}.fl .row .y1{background:#ffc94a}.fl .row .d1{background:#2a3350;color:#f1ede6}
+.fl .row b{animation:flflip 3.2s steps(2) infinite}.fl .row b:nth-child(2){animation-delay:.15s}.fl .row b:nth-child(3){animation-delay:.3s}.fl .row b:nth-child(4){animation-delay:.45s}.fl .row b:nth-child(5){animation-delay:.6s}
+@keyframes flflip{0%,88%,100%{transform:none}94%{transform:translateY(-4px)}}
+.g .s.dc{display:block;background:#0d0f12 url(/games/deep-cut/cover.jpg) center/cover no-repeat;image-rendering:pixelated}
+.g .s.dc .dc-logo{position:absolute;left:15%;top:10%;width:70%;margin:0}
+@keyframes abbob{from{transform:translate(-50%,-50%)}to{transform:translate(-50%,-58%)}}
+@media(prefers-reduced-motion:reduce){.fl .row b,.dc svg.pick{animation:none}}
 .g.lock .s b{font:400 44px var(--disp);color:#20243a}
 .g.lock h4{color:#3a3f5c}
 
@@ -255,7 +308,7 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
         <div class="pins" id="pins"></div>
       </div>
     </section>
-    <!-- $20 Anime Battle: its own section, self-contained (styles, markup, vector logo) -->
+    <!-- $20 Anime Battle: lineup tile styles -->
     <style>
     .ab-sec{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);background:#0b0d12;border:1px solid var(--line);border-top:6px solid #d5ae5e;overflow:hidden}
     .ab-art{position:relative;min-height:280px;display:grid;place-items:center;overflow:hidden;text-decoration:none;isolation:isolate;
@@ -294,51 +347,54 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
     @keyframes abSway{to{transform:translateX(-44%)}}
     @media(prefers-reduced-motion:reduce){.ab .fc,.ab .ab-spot{animation:none}}
     </style>
-    <div class="sec" id="anime"><h3>Anime night</h3><span class="r">2 players, one screen</span></div>
-    <section class="ab-sec">
-      <a class="ab-art" href="/games/best-anime-character/" aria-label="Play $20 Anime Battle">
-        <div class="tags"><span class="lv">New</span><span>Anime</span><span>2 players + a host</span></div>
-        <i class="fc" style="--c:#9098A5;--x:7%;--d:19s;--t:-3s;--r:-12deg"></i><i class="fc" style="--c:#58B87B;--x:20%;--d:23s;--t:-14s;--r:9deg"></i>
-        <i class="fc" style="--c:#55A5EE;--x:78%;--d:18s;--t:-8s;--r:-7deg"></i><i class="fc" style="--c:#E96878;--x:90%;--d:25s;--t:-19s;--r:12deg"></i>
-        <svg viewBox="0 0 320 210" role="img" aria-label="$20 Anime Battle logo">
-          <defs>
-            <linearGradient id="abGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6DC9A"/><stop offset=".55" stop-color="#D5AE5E"/><stop offset="1" stop-color="#9C7A36"/></linearGradient>
-            <linearGradient id="abCard" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1c212b"/><stop offset="1" stop-color="#0b0d12"/></linearGradient>
-          </defs>
-          <g transform="translate(160 112)">
-            <g transform="rotate(-36) translate(-24 -92)"><rect width="48" height="68" rx="6" fill="url(#abCard)" stroke="#9098A5" stroke-width="2.5"/><text x="24" y="42" text-anchor="middle" font-size="22" fill="#9098A5">&#9733;</text></g>
-            <g transform="rotate(-18) translate(-24 -96)"><rect width="48" height="68" rx="6" fill="url(#abCard)" stroke="#55A5EE" stroke-width="2.5"/><text x="24" y="42" text-anchor="middle" font-size="22" fill="#55A5EE">&#9733;</text></g>
-            <g transform="rotate(18) translate(-24 -96)"><rect width="48" height="68" rx="6" fill="url(#abCard)" stroke="#E96878" stroke-width="2.5"/><text x="24" y="42" text-anchor="middle" font-size="22" fill="#E96878">&#9733;</text></g>
-            <g transform="rotate(36) translate(-24 -92)"><rect width="48" height="68" rx="6" fill="url(#abCard)" stroke="#B18AF4" stroke-width="2.5"/><text x="24" y="42" text-anchor="middle" font-size="22" fill="#B18AF4">&#9733;</text></g>
-            <g transform="translate(-26 -100)"><rect width="52" height="74" rx="6" fill="url(#abCard)" stroke="#E8CB79" stroke-width="3"/><text x="26" y="47" text-anchor="middle" font-size="26" fill="#E8CB79">&#9733;</text></g>
-          </g>
-          <text x="160" y="160" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="92" letter-spacing="2" fill="url(#abGold)" stroke="#0b0d12" stroke-width="6" paint-order="stroke">$20</text>
-          <text x="160" y="196" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="27" letter-spacing="9" fill="#F1F2F5">ANIME BATTLE</text>
-        </svg>
-      </a>
-      <div class="ab-cap">
-        <h2><em>$20</em> Anime Battle</h2>
-        <p>Two players, one host, <b>twenty bucks each</b>. Characters from anime, manga and manhwa hit the auction block one at a time, from ordinary humans to <b>7&#9733; God Tier</b>. Bid, skip, beg the host for a gift, and fill five slots with the <b>strongest team</b> you can afford.</p>
-        <ul class="ab-facts"><li><b>1,300+</b> characters</li><li><b>19</b> series</li><li>Ranked <b>1&ndash;7&#9733;</b> with VS Battles tiers</li><li>Classic, Chaos, Blind &amp; Mystery</li></ul>
-        <div class="cta"><a class="btn" href="/games/best-anime-character/">Play</a></div>
-      </div>
-    </section>
-    
-
-    <section id="five-letters-home" aria-label="Five Letters"></section>
 
     <div class="sec" id="lineup"><h3>The lineup</h3><span class="r">new one every other Friday</span></div>
     <section class="shelf">
-      <a class="g" href="/games/needle-drop/"><div class="s"><span class="lv">346 playing</span><svg viewBox="0 0 24 24" data-rec aria-hidden="true"></svg></div><div class="t"><h4>Needle Drop</h4><div class="tg">Music. The charts or your own playlist.</div></div></a>
-      <a class="g" href="/games/cipher/" aria-label="CIPHER: word association in private rooms"><div class="s" style="background:#0b0d0c"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="3.5" height="3.5" fill="#2b3a32"/><rect x="5.5" y="1" width="3.5" height="3.5" fill="#2b3a32"/><rect x="10" y="1" width="3.5" height="3.5" fill="#39ff88"/><rect x="14.5" y="1" width="3.5" height="3.5" fill="#2b3a32"/><rect x="19" y="1" width="3.5" height="3.5" fill="#2b3a32"/><rect x="1" y="5.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="5.5" y="5.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="10" y="5.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="14.5" y="5.5" width="3.5" height="3.5" fill="#39ff88"/><rect x="19" y="5.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="1" y="10" width="3.5" height="3.5" fill="#2b3a32"/><rect x="5.5" y="10" width="3.5" height="3.5" fill="#2b3a32"/><rect x="10" y="10" width="3.5" height="3.5" fill="#39ff88"/><rect x="14.5" y="10" width="3.5" height="3.5" fill="#2b3a32"/><rect x="19" y="10" width="3.5" height="3.5" fill="#2b3a32"/><rect x="1" y="14.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="5.5" y="14.5" width="3.5" height="3.5" fill="#39ff88"/><rect x="10" y="14.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="14.5" y="14.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="19" y="14.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="1" y="19" width="3.5" height="3.5" fill="#2b3a32"/><rect x="5.5" y="19" width="3.5" height="3.5" fill="#2b3a32"/><rect x="10" y="19" width="3.5" height="3.5" fill="#2b3a32"/><rect x="14.5" y="19" width="3.5" height="3.5" fill="#2b3a32"/><rect x="19" y="19" width="3.5" height="3.5" fill="#39ff88"/></svg></div><div class="t"><h4>Cipher</h4><div class="tg">Words &middot; spies &middot; in development</div></div></a>
-      <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tg">Soon</div></div></div>
-      <div class="g lock"><div class="s"><b>?</b></div><div class="t"><h4>Locked</h4><div class="tg">Soon</div></div></div>
+      <a class="g" href="/games/needle-drop/" aria-label="Needle Drop: play now">
+        <div class="s nd" aria-hidden="true">
+          <span class="sun"></span><span class="grid"></span>
+          <svg class="vinyl" viewBox="0 0 24 24" data-rec></svg><span class="arm"></span>
+          <span class="eq"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <span class="mark"><b>NEEDLE</b><span>DROP</span></span>
+          <span class="chip">0.5 SEC TO NAME IT</span>
+        </div>
+        <div class="t">
+          <h4>Needle Drop</h4>
+          <div class="tg">Music &middot; 1 to 8 players</div>
+          <p class="desc">Hear half a second of a song and name it. Stuck? Stretch the clip to 1, 3, 5 or 10 seconds, but every extra second is worth less and wrong guesses cost you.</p>
+          <div class="tags2"><span>Top charts or your playlist</span><span>One screen, pass the guess</span><span>~10 min</span></div>
+        </div>
+      </a>
+      <a class="g" href="/games/five-letters/" aria-label="Five Letters: play now">
+        <div class="s fl" aria-hidden="true"><div class="row"><b class="g1">F</b><b class="d1">I</b><b class="y1">V</b><b class="g1">E</b><b class="d1">?</b></div></div>
+        <div class="t">
+          <h4>Five Letters</h4>
+          <div class="tg">Words &middot; 1 player or VS</div>
+          <p class="desc">Guess the hidden five-letter word in six tries. Green is the right spot, yellow is the wrong spot. Daily word, endless mode, or an online VS match.</p>
+        </div>
+      </a>
+      <a class="g" href="/games/deep-cut/" aria-label="DEEPCUT: play now">
+        <div class="s dc" aria-hidden="true"><img class="dc-logo" src="/games/deep-cut/logo.svg" alt="" width="624" height="192"></div>
+        <div class="t">
+          <h4>DEEPCUT</h4>
+          <div class="tg">Trivia &middot; daily + unlimited</div>
+          <p class="desc">Name what nobody else would. Rarer answers send your miner deeper, from coal down to the Diamond Abyss.</p>
+        </div>
+      </a>
       <a class="g" href="/games/best-anime-character/" aria-label="$20 Anime Battle: play now">
         <div class="s ab" aria-hidden="true"><span class="ab-spot"></span><span class="ab-floor"></span><i class="fc" style="--c:#9098A5;--x:6%;--d:19s;--t:-3s;--r:-12deg"></i><i class="fc" style="--c:#58B87B;--x:18%;--d:23s;--t:-14s;--r:9deg"></i><i class="fc" style="--c:#EBA34D;--x:30%;--d:21s;--t:-9s;--r:-6deg"></i><i class="fc" style="--c:#55A5EE;--x:72%;--d:18s;--t:-8s;--r:-7deg"></i><i class="fc" style="--c:#E96878;--x:84%;--d:25s;--t:-19s;--r:12deg"></i><i class="fc" style="--c:#E8CB79;--x:93%;--d:22s;--t:-5s;--r:8deg"></i><svg class="ab-logo" viewBox="0 0 320 210"><defs><linearGradient id="abGold2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6DC9A"/><stop offset=".55" stop-color="#D5AE5E"/><stop offset="1" stop-color="#9C7A36"/></linearGradient><linearGradient id="abCard2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1c212b"/><stop offset="1" stop-color="#0b0d12"/></linearGradient></defs><g transform="translate(160 112)"><g transform="rotate(-36) translate(-24 -92)"><rect width="48" height="68" rx="6" fill="url(#abCard2)" stroke="#9098A5" stroke-width="2.5"/><text x="24" y="42" text-anchor="middle" font-size="22" fill="#9098A5">&#9733;</text></g><g transform="rotate(-18) translate(-24 -96)"><rect width="48" height="68" rx="6" fill="url(#abCard2)" stroke="#55A5EE" stroke-width="2.5"/><text x="24" y="42" text-anchor="middle" font-size="22" fill="#55A5EE">&#9733;</text></g><g transform="rotate(18) translate(-24 -96)"><rect width="48" height="68" rx="6" fill="url(#abCard2)" stroke="#E96878" stroke-width="2.5"/><text x="24" y="42" text-anchor="middle" font-size="22" fill="#E96878">&#9733;</text></g><g transform="rotate(36) translate(-24 -92)"><rect width="48" height="68" rx="6" fill="url(#abCard2)" stroke="#B18AF4" stroke-width="2.5"/><text x="24" y="42" text-anchor="middle" font-size="22" fill="#B18AF4">&#9733;</text></g><g transform="rotate(0) translate(-26 -100)"><rect width="52" height="74" rx="6" fill="url(#abCard2)" stroke="#E8CB79" stroke-width="3"/><text x="26" y="45" text-anchor="middle" font-size="26" fill="#E8CB79">&#9733;</text></g></g><text x="160" y="160" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="92" letter-spacing="2" fill="url(#abGold2)" stroke="#0b0d12" stroke-width="6" paint-order="stroke">$20</text><text x="160" y="196" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="27" letter-spacing="9" fill="#F1F2F5">ANIME BATTLE</text></svg></div>
         <div class="t">
           <h4>$20 Anime Battle</h4>
           <div class="tg">Anime &middot; 2 players + a host</div>
           <p class="desc">Two players, one host, $20 each. Bid on 1,300+ anime, manga and manhwa characters, from ordinary humans to 7&#9733; gods, and build the strongest team.</p>
+        </div>
+      </a>
+      <a class="g" href="/games/cipher/" aria-label="Cipher: play now">
+        <div class="s" style="background:#0b0d0c"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="3.5" height="3.5" fill="#2b3a32"/><rect x="5.5" y="1" width="3.5" height="3.5" fill="#2b3a32"/><rect x="10" y="1" width="3.5" height="3.5" fill="#45f08a"/><rect x="14.5" y="1" width="3.5" height="3.5" fill="#2b3a32"/><rect x="19" y="1" width="3.5" height="3.5" fill="#2b3a32"/><rect x="1" y="5.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="5.5" y="5.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="10" y="5.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="14.5" y="5.5" width="3.5" height="3.5" fill="#45f08a"/><rect x="19" y="5.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="1" y="10" width="3.5" height="3.5" fill="#2b3a32"/><rect x="5.5" y="10" width="3.5" height="3.5" fill="#2b3a32"/><rect x="10" y="10" width="3.5" height="3.5" fill="#45f08a"/><rect x="14.5" y="10" width="3.5" height="3.5" fill="#2b3a32"/><rect x="19" y="10" width="3.5" height="3.5" fill="#2b3a32"/><rect x="1" y="14.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="5.5" y="14.5" width="3.5" height="3.5" fill="#45f08a"/><rect x="10" y="14.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="14.5" y="14.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="19" y="14.5" width="3.5" height="3.5" fill="#2b3a32"/><rect x="1" y="19" width="3.5" height="3.5" fill="#2b3a32"/><rect x="5.5" y="19" width="3.5" height="3.5" fill="#2b3a32"/><rect x="10" y="19" width="3.5" height="3.5" fill="#2b3a32"/><rect x="14.5" y="19" width="3.5" height="3.5" fill="#2b3a32"/><rect x="19" y="19" width="3.5" height="3.5" fill="#45f08a"/></svg></div>
+        <div class="t">
+          <h4>Cipher</h4>
+          <div class="tg">Words &middot; 2 teams or 2 partners</div>
+          <p class="desc">Handlers send one-word clues, operatives decode the board. Classic, cooperative Duet, or Custom boards up to 10&times;10, in private rooms with no sign-up. Online rooms open soon.</p>
         </div>
       </a>
     </section>
@@ -353,7 +409,7 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
 <script src="/assets/logo.js"></script>
 <script src="/assets/teacher.js"></script>
 <script src="/assets/recess.js"></script>
-<script src="/games/five-letters/home.js"></script>
+<script src="/games/five-letters/cover.js"></script>
 <script>
 {
   const P={o:'#0b0814',g1:'#2a2340',g2:'#1a1528',r:'#ff4b3e',rd:'#b3261d',y:'#ffcc33'};let out='';const c=11.5;
@@ -377,6 +433,26 @@ body::after{display:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='
   const tick=()=>{const n=new Date(),m=new Date(n);m.setDate(n.getDate()+((8-n.getDay())%7||7));m.setHours(0,0,0,0);let s=Math.floor((m-n)/1000);const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;cd.textContent=`${d}D ${String(h).padStart(2,'0')}H ${String(Math.floor(s/60)).padStart(2,'0')}M`};
   tick();setInterval(tick,30000);
 }
+</script>
+<script>
+/* hero: show the next game from the lineup on every load, with its lineup art and description */
+(function(){
+  var cards=[].slice.call(document.querySelectorAll('.shelf a.g'));
+  var screen=document.querySelector('.feat .screen'),cap=document.querySelector('.feat .cap');
+  if(!cards.length||!screen||!cap)return;
+  var i=0;
+  try{i=(parseInt(localStorage.getItem('recess-hero'),10)||0);localStorage.setItem('recess-hero',String((i+1)%cards.length))}catch(e){i=Math.floor(Math.random()*cards.length)}
+  var c=cards[i%cards.length],href=c.getAttribute('href');
+  var text=function(sel){var e=c.querySelector(sel);return e?e.textContent:''};
+  var title=text('h4'),tg=text('.tg').split(/\s*\u00b7\s*/),desc=text('.desc');
+  var old=screen.querySelector('svg.rec');if(old)old.remove();
+  var art=document.createElement('div');art.className='g hart';art.setAttribute('aria-hidden','true');art.appendChild(c.querySelector('.s').cloneNode(true));
+  screen.insertBefore(art,screen.querySelector('.tags'));
+  var tags=screen.querySelector('.tags').children;tags[0].textContent='Featured game';tags[1].textContent=tg[0]||'';tags[2].textContent=tg[1]||'';
+  var h=cap.querySelector('h1');h.textContent=title;h.className=title.length>14?'long':'';
+  cap.querySelector('p').textContent=desc;
+  var btns=cap.querySelector('.cta');btns.innerHTML='<a class="btn" href="'+href+'">Play</a>'+(href.indexOf('needle-drop')>-1?'<a class="btn alt" href="#">Host a room</a>':'');
+})();
 </script>
 </body>
 </html>

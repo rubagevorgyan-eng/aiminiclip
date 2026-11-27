@@ -24,6 +24,7 @@ window.Recess=(function(){
     var f=document.getElementById('allgames');if(!f)return;
     GAMES.slice().sort(function(a,b){return a.title.localeCompare(b.title)}).forEach(function(g){f.appendChild(link(g))});
   }
+  GAMES.push({slug:'deep-cut',title:'DEEPCUT',cat:'Trivia',color:'grape',blurb:'The deeper your knowledge, the deeper you go'});
   document.addEventListener('DOMContentLoaded',footer);
   return {GAMES:GAMES,played:played,isFav:isFav,toggleFav:toggleFav,recent:function(){return get('recess-recent')},mine:function(){return get('recess-mine')},list:list};
 })();
