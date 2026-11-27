@@ -25,12 +25,12 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
   const total = state.questions.length;
   const asking = state.phase === 'QUESTION';
   const resolved = state.phase === 'ROUND_RESULT';
-  const ms = asking ? timeLeft(state, now) : 0;
+  const qms = GAME.secondsPerQuestion * 1000;
+  const ms = asking ? Math.min(qms, timeLeft(state, now)) : 0; // the reveal grace before the clock is not shown
   const secs = Math.ceil(ms / 1000);
   const warn = asking && secs <= GAME.timerWarningSeconds;
   const lastWrong = state.wrong[state.wrong.length - 1];
   const last = state.records[state.records.length - 1];
-  const qms = GAME.secondsPerQuestion * 1000;
   // The bar drains via one CSS animation started at the right offset (smooth, no per-tick layout).
   const offset = useMemo(() => (asking ? qms - timeLeft(state, Date.now()) : 0), [state.round, state.phaseEndsAt, asking]);
   const found = state.records.filter((r) => r.rarity).map((r) => r.rarity as RarityId);
@@ -108,7 +108,7 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
         <i
           key={`${state.round}-${asking}`}
           className={`${asking ? 'is-running' : ''}${warn ? ' is-warn' : ''}`}
-          style={{ animationDuration: `${qms}ms`, animationDelay: `-${offset}ms`, '--left': ms / qms } as CSSProperties}
+          style={{ animationDuration: `${qms}ms`, animationDelay: `${-offset}ms`, '--left': ms / qms } as CSSProperties}
         />
       </div>
 

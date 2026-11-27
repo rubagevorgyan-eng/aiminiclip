@@ -1,4 +1,4 @@
-import { GAME, RARITY, type RarityId } from '../config/game.ts';
+import { DIG, GAME, RARITY, digDurationMs, rarityIndex, type RarityId } from '../config/game.ts';
 import { matchDetail } from './match.ts';
 import type { Question } from './types.ts';
 
@@ -55,14 +55,16 @@ function endRound(s: GameState, rec: RoundRecord, now: number): GameState {
   return {
     ...s,
     phase: 'ROUND_RESULT',
-    phaseEndsAt: now + GAME.roundResultMs,
+    // A find lasts as long as its dig animation (rarer = longer descent); a miss uses the base pause.
+    phaseEndsAt: now + (rec.rarity ? Math.max(GAME.roundResultMs, digDurationMs(rarityIndex(rec.rarity))) : GAME.roundResultMs),
     records: [...s.records, rec],
     score: Math.min(GAME.maxScore, s.score + rec.points),
   };
 }
 
 function startQuestion(s: GameState, round: number, now: number): GameState {
-  return { ...s, phase: 'QUESTION', round, phaseEndsAt: now + GAME.secondsPerQuestion * 1000, wrong: [] };
+  // The clock starts once the question card has appeared (DIG.revealMs), not while it fades in.
+  return { ...s, phase: 'QUESTION', round, phaseEndsAt: now + DIG.revealMs + GAME.secondsPerQuestion * 1000, wrong: [] };
 }
 
 export function reduce(s: GameState, e: GameEvent): GameState {

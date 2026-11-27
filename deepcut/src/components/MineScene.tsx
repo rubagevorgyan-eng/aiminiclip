@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { RARITY, ZONES } from '../config/game.ts';
+import { RARITY, ZONES, impactAtMs } from '../config/game.ts';
 import { MineRenderer } from '../mine/renderer.ts';
 import { useSettings } from '../storage/settings.ts';
 
@@ -73,12 +73,12 @@ export function MineScene({ depth, digs, tier, ambient = false, hud = false, dim
     if (digs < prevDigs.current) r.reset(depth);
     else if (digs > prevDigs.current && tier !== null) {
       r.dig(depth, tier);
-      // "+85m" rises from the miner as the pickaxe strikes.
+      // "+85m" rises from the miner as the pickaxe strikes (timed with the impact).
       const gain = depth - prevDepth.current;
       const id = Date.now();
       timers.current.push(
-        setTimeout(() => setFloats((f) => [...f, { id, text: `+${gain}m`, tier }]), 260),
-        setTimeout(() => setFloats((f) => f.filter((x) => x.id !== id)), 1700),
+        setTimeout(() => setFloats((f) => [...f, { id, text: `+${gain}m`, tier }]), reduceMotion ? 0 : impactAtMs()),
+        setTimeout(() => setFloats((f) => f.filter((x) => x.id !== id)), impactAtMs() + 1500),
       );
     }
     prevDigs.current = digs;

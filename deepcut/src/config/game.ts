@@ -68,3 +68,20 @@ export const rarityOf = (id: RarityId): RarityTier => RARITY.find((t) => t.id ==
  * letters, 2 up to `ratioFrom - 1`, then `ratio` of the length (capped at `maxEdits`).
  */
 export const TYPO = { exactBelow: 4, twoEditsFrom: 8, ratioFrom: 13, ratio: 0.18, maxEdits: 3 } as const;
+
+/**
+ * Dig sequence after a correct answer (design targets, ms): the accepted answer shows, the miner
+ * winds up and strikes, rock breaks, the miner descends (longer for rarer finds) and the camera
+ * settles. The result phase lasts the whole sequence so the next question never starts mid-dig.
+ * `revealMs`: the next question's timer starts only after its card has appeared.
+ */
+export const DIG = {
+  acceptMs: 200,
+  windupMs: 150,
+  strikeMs: 110,
+  descentMs: [450, 550, 650, 800, 950, 1100], // Coal .. Diamond
+  settleMs: 150,
+  revealMs: 250,
+} as const;
+export const impactAtMs = () => DIG.acceptMs + DIG.windupMs + DIG.strikeMs;
+export const digDurationMs = (tier: number) => impactAtMs() + 60 + DIG.descentMs[tier] + DIG.settleMs;

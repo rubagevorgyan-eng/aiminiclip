@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { GAME } from '../config/game.ts';
+import { DIG, GAME, digDurationMs } from '../config/game.ts';
 import { QUESTIONS } from '../data/questions.ts';
 import { RARITY } from '../config/game.ts';
 import { initialState, pointsFor, reduce, type GameEvent, type GameState } from './machine.ts';
@@ -9,7 +9,7 @@ const run = (s: GameState, ...es: GameEvent[]) => es.reduce(reduce, s);
 const byId = (id: string) => QUESTIONS.find((q) => q.id === id)!;
 // Fixed set: first is the planets question; every one has a mythic answer.
 const Q = ['sci-planets-dwarf-planets', 'geo-largest-countries', 'sci-one-letter-elements', 'spo-world-cup-winners', 'car-japanese-makers', 'vg-gen1-pokemon', 'his-ancient-wonders'].map(byId);
-const QMS = GAME.secondsPerQuestion * 1000;
+const QMS = DIG.revealMs + GAME.secondsPerQuestion * 1000;
 
 /** Start a game at t=0 and pass the countdown; first question starts at t=countdownMs. */
 function started(): { s: GameState; t: number } {
@@ -19,7 +19,7 @@ function started(): { s: GameState; t: number } {
   return { s, t };
 }
 /** From ROUND_RESULT at time t, advance to the next phase. */
-const advance = (s: GameState, t: number) => reduce(s, { type: 'TICK', now: t + GAME.roundResultMs });
+const advance = (s: GameState, _t?: number) => reduce(s, { type: 'TICK', now: s.phaseEndsAt! });
 
 
 
@@ -31,8 +31,8 @@ test('full seven-round loop: mythic every round scores exactly 700', () => {
     s = reduce(s, { type: 'SUBMIT', text: mythic.name, now: t });
     assert.equal(s.phase, 'ROUND_RESULT');
     assert.equal(s.records[i].points, 100);
-    s = advance(s, t);
-    t += GAME.roundResultMs;
+    t = s.phaseEndsAt!;
+    s = advance(s);
   }
   assert.equal(s.phase, 'FINAL_RESULTS');
   assert.equal(s.score, GAME.maxScore);
@@ -60,8 +60,8 @@ test('timeout and skip award zero points', () => {
   s = reduce(s, { type: 'TICK', now: t + QMS });
   assert.equal(s.phase, 'ROUND_RESULT');
   assert.equal(s.records[0].outcome, 'timeout');
-  s = advance(s, t + QMS);
-  t = t + QMS + GAME.roundResultMs;
+  t = s.phaseEndsAt!;
+  s = advance(s);
   s = reduce(s, { type: 'SKIP', now: t + 500 });
   assert.equal(s.records[1].outcome, 'skipped');
   assert.equal(s.score, 0);
@@ -100,4 +100,18 @@ test('rarity scoring: each tier awards its configured points, 1 point = 1 meter'
   s = reduce(s, { type: 'SUBMIT', text: coal.name, now: t + 100 });
   assert.equal(s.score, 10);
   assert.equal(s.records[0].rarity, 'common');
+});
+
+test('a find holds the result for its whole dig animation; the next clock starts after the reveal', () => {
+  let { s, t } = started();
+  const mythic = s.questions[0].answers.find((a) => a.rarity === 'mythic')!;
+  s = reduce(s, { type: 'SUBMIT', text: mythic.name, now: t + 1000 });
+  assert.equal(s.phaseEndsAt, t + 1000 + digDurationMs(5));
+  assert.ok(digDurationMs(5) > digDurationMs(0), 'rarer finds descend longer');
+  const end = s.phaseEndsAt!;
+  assert.equal(reduce(s, { type: 'TICK', now: end - 1 }).phase, 'ROUND_RESULT', 'no early next question');
+  s = reduce(s, { type: 'TICK', now: end });
+  assert.equal(s.phase, 'QUESTION');
+  assert.equal(s.phaseEndsAt, end + DIG.revealMs + GAME.secondsPerQuestion * 1000);
+  assert.equal(s.score, 100, 'points come from the engine once, not from the animation');
 });

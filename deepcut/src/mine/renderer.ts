@@ -1,4 +1,4 @@
-import { RARITY, ZONES } from '../config/game.ts';
+import { DIG, RARITY, ZONES } from '../config/game.ts';
 import { HAND, LAMP, BOB_ROWS, MINER, MINER_H, MINER_PALETTE, MINER_W, PICK } from './sprites.ts';
 import { MINE, ZONE_LOOK, easeInOutCubic, yForDepth, zoneIndexAt } from './terrain.ts';
 import { FORE_SPEED, FORE_W, buildWorld, type World } from './world.ts';
@@ -6,9 +6,10 @@ import { FORE_SPEED, FORE_W, buildWorld, type World } from './world.ts';
 interface Particle { x: number; y: number; vx: number; vy: number; life: number; max: number; color: string; size: number; glow: boolean }
 interface Tween { from: number; to: number; start: number; dur: number }
 interface Swing { start: number; tier: number; target: number; struck: boolean }
+interface Ring { x: number; y: number; start: number; dur: number; r: number; color: string }
 interface Mote { x: number; y: number; vy: number; vx: number; a: number; size: number }
 
-const SWING = { windup: 150, strike: 110, hold: 120, recover: 260 };
+const SWING = { windup: DIG.windupMs, strike: DIG.strikeMs, hold: 120, recover: 260 };
 /** Faint ambient tint per zone (warm topsoil, copper, cool silver, amber gold, green emerald, violet abyss). */
 const ZONE_TINT = ['#c9a27a', '#d08a5a', '#8fa6c4', '#d9a441', '#3fbf8f', '#7a6cd9'];
 const MOTES = 34;
@@ -35,6 +36,7 @@ export class MineRenderer {
   private flash = { until: 0, color: '#fff', strength: 0 };
   private cam: number | null = null; // smoothed camera row
   private motes: Mote[] = [];
+  private rings: Ring[] = [];
   private shake = { until: 0, amp: 0 };
   private raf = 0;
   private last = 0;
@@ -53,6 +55,7 @@ export class MineRenderer {
   /** Home-screen mode: slowly tour the mine with occasional swings. */
   setAmbient(on: boolean) {
     this.ambient = on;
+    if (on) this.cancelEffects(); // back to the menu: drop any dig still playing
     this.nextAmbientSwing = performance.now() + 1200;
   }
 
@@ -89,14 +92,22 @@ export class MineRenderer {
       this.tween = { from: this.depth, to: target, start: now, dur: 250 };
       return;
     }
-    this.swing = { start: now, tier, target, struck: false };
+    // The accepted answer shows first (DIG.acceptMs), then the swing; see DIG in config/game.ts.
+    this.swing = { start: now + DIG.acceptMs, tier, target, struck: false };
+  }
+
+  private cancelEffects() {
+    this.swing = null;
+    this.tween = null;
+    this.rings = [];
+    this.flash.until = 0;
+    this.shake.until = 0;
   }
 
   /** Jump without animation (new game, resume). */
   reset(depth: number) {
     this.cam = null;
-    this.tween = null;
-    this.swing = null;
+    this.cancelEffects();
     this.parts = [];
     this.depth = depth;
   }
@@ -154,7 +165,8 @@ export class MineRenderer {
         this.impact(now, s.tier);
         if (!this.ambient) {
           const dist = Math.max(0, s.target - this.depth);
-          this.tween = { from: this.depth, to: s.target, start: now + 60, dur: 520 + dist * 9 + s.tier * 90 };
+          // Descent length is set by rarity (DIG.descentMs), not distance: rarer feels bigger, never slow.
+          if (dist > 0) this.tween = { from: this.depth, to: s.target, start: now + 60, dur: DIG.descentMs[s.tier] };
         }
       }
       if (now - s.start > tStrike + SWING.hold + SWING.recover) this.swing = null;
@@ -194,7 +206,7 @@ export class MineRenderer {
 
   private pickAngle(now: number): number {
     const s = this.swing;
-    if (!s) return PICK.rest + (this.reduced ? 0 : Math.sin(now / 700) * 0.06);
+    if (!s || now < s.start) return PICK.rest + (this.reduced ? 0 : Math.sin(now / 700) * 0.06);
     const t = now - s.start;
     if (t < SWING.windup) return lerp(PICK.rest, PICK.windup, easeInOutCubic(t / SWING.windup));
     if (t < SWING.windup + SWING.strike) return lerp(PICK.windup, PICK.strike, (t - SWING.windup) / SWING.strike);
@@ -207,20 +219,34 @@ export class MineRenderer {
     return { hx, hy, tx: hx + Math.cos(angle) * PICK.handle, ty: hy + Math.sin(angle) * PICK.handle };
   }
 
+  /**
+   * Rock breaks at the pickaxe tip. Every tier adds a little more: Coal a dark puff, Copper warm
+   * sparks, Silver bright white glints, Gold a golden ring and falling glitter, Emerald a green ring
+   * and rising crystal shards, Diamond a double prism ring, the most sparkle and a short flash.
+   * Shake stays small (max 2 px) and is skipped on the menu backdrop.
+   */
   private impact(now: number, tier: number) {
     const { tx, ty } = this.tip(PICK.strike);
     const zone = ZONE_LOOK[zoneIndexAt(this.depth)];
-    const rock = 8 + tier * 6, gems = 3 + tier * 7;
-    for (let i = 0; i < rock; i++)
-      this.parts.push({ x: tx, y: ty, vx: (Math.random() - 0.3) * 70, vy: -30 - Math.random() * 60, life: 0.5 + Math.random() * 0.5, max: 1, color: zone.rock[i % 3], size: Math.random() < 0.5 ? 2 : 1, glow: false });
     const color = RARITY[tier].color;
+    const P = (x: number, y: number, vx: number, vy: number, life: number, c: string, size: number, glow: boolean) =>
+      this.parts.push({ x, y, vx, vy, life, max: life, color: c, size, glow });
+    const rock = [6, 9, 12, 14, 16, 20][tier], gems = [2, 6, 10, 16, 22, 30][tier];
+    for (let i = 0; i < rock; i++)
+      P(tx, ty, (Math.random() - 0.3) * (60 + tier * 6), -30 - Math.random() * (50 + tier * 6), 0.45 + Math.random() * 0.45, zone.rock[i % 3], Math.random() < 0.5 ? 2 : 1, false);
+    const palette = tier === 5 ? ['#67e8f9', '#ffffff', '#c4b5fd', '#a5f3fc'] : tier === 2 ? [color, '#ffffff'] : [color];
     for (let i = 0; i < gems; i++) {
-      const a = Math.random() * Math.PI * 2, sp = 15 + Math.random() * (25 + tier * 8);
-      this.parts.push({ x: tx, y: ty, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 10, life: 0.7 + Math.random() * (0.5 + tier * 0.15), max: 1.2 + tier * 0.15, color, size: tier >= 3 && Math.random() < 0.4 ? 2 : 1, glow: true });
+      const a = Math.random() * Math.PI * 2, sp = 15 + Math.random() * (25 + tier * 9);
+      P(tx, ty, Math.cos(a) * sp, Math.sin(a) * sp - 10, 0.6 + Math.random() * (0.5 + tier * 0.15), palette[i % palette.length], tier >= 3 && Math.random() < 0.4 ? 2 : 1, true);
     }
+    if (tier === 0) for (let i = 0; i < 6; i++) P(tx, ty, (Math.random() - 0.5) * 20, -5 - Math.random() * 10, 0.6, '#2a2b30', 2, true); // coal dust puff
+    if (tier === 3) for (let i = 0; i < 10; i++) P(tx + (Math.random() - 0.5) * 16, ty - 6 - Math.random() * 8, (Math.random() - 0.5) * 8, 5, 0.9 + Math.random() * 0.5, '#fff0c4', 1, false); // falling glitter
+    if (tier === 4) for (let i = 0; i < 8; i++) P(tx + (Math.random() - 0.5) * 6, ty, (Math.random() - 0.5) * 14, -45 - Math.random() * 30, 0.7, i % 2 ? '#b6f5d9' : color, 2, true); // crystal shards
+    if (tier >= 3) this.rings.push({ x: tx, y: ty, start: now, dur: 420 + tier * 60, r: 8 + tier * 3, color });
+    if (tier === 5) this.rings.push({ x: tx, y: ty, start: now + 90, dur: 620, r: 26, color: '#ffffff' });
     if (this.ambient) return; // backdrop: no shake or flash
-    if (tier >= 3) this.shake = { until: now + 140 + tier * 50, amp: tier - 2 };
-    if (tier >= 4) this.flash = { until: now + 380, color, strength: tier === 5 ? 0.35 : 0.22 };
+    if (tier >= 3) this.shake = { until: now + 110 + (tier - 3) * 50, amp: tier === 5 ? 2 : 1 };
+    if (tier >= 4) this.flash = { until: now + 380, color, strength: tier === 5 ? 0.24 : 0.14 };
   }
 
   private debris(n: number, tier: number) {
@@ -239,7 +265,7 @@ export class MineRenderer {
     const target = Math.max(0, Math.min(this.world.height - H - 1, yForDepth(this.depth) - H * 0.58));
     // The camera trails the miner slightly (eased follow), so descents feel like travel, not a cut.
     const prev = this.cam ?? target;
-    this.cam = this.reduced ? target : prev + (target - prev) * Math.min(1, (now - (this.lastDraw || now)) / 1000 * 7);
+    this.cam = this.reduced ? target : prev + (target - prev) * Math.min(1, (now - (this.lastDraw || now)) / 1000 * 13); // settles in ~150ms
     this.lastDraw = now;
     const camF = this.cam;
     const camDelta = camF - prev;
@@ -318,6 +344,20 @@ export class MineRenderer {
       b.fillStyle = p.color;
       b.fillRect(Math.round(p.x), Math.round(yy), p.size, p.size);
       if (p.glow) { b.globalAlpha *= 0.25; b.fillRect(Math.round(p.x) - 1, Math.round(yy) - 1, 3, 3); }
+    }
+    b.globalAlpha = 1;
+
+    // discovery rings (gold and up)
+    this.rings = this.rings.filter((r) => now < r.start + r.dur);
+    for (const r of this.rings) {
+      if (now < r.start) continue;
+      const t = (now - r.start) / r.dur, e = 1 - Math.pow(1 - t, 3);
+      b.globalAlpha = (1 - t) * 0.8;
+      b.strokeStyle = r.color;
+      b.lineWidth = 1;
+      b.beginPath();
+      b.arc(r.x, r.y - camY, 2 + e * r.r, 0, Math.PI * 2);
+      b.stroke();
     }
     b.globalAlpha = 1;
 
