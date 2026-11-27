@@ -27,7 +27,7 @@ export function normalize(s: string, ignore: readonly string[] = []): string {
     .trim()
     .split(' ')
     .filter(Boolean)
-    .map((w) => roman(WORD_MAP[w] ?? w));
+    .map((w) => roman(Object.prototype.hasOwnProperty.call(WORD_MAP, w) ? WORD_MAP[w] : w));
   if (words[0] === 'the' && words.length > 1) words.shift();
   const kept = words.filter((w) => !ignore.includes(w) && !(w.endsWith('s') && ignore.includes(w.slice(0, -1))));
   return (kept.length ? kept : words).join(' ');

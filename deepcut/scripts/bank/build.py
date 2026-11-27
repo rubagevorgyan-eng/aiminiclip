@@ -213,7 +213,7 @@ def broad_pattern(spec, L, T):
     if not q: raise KeyError(body)
     # Walk at most one or two subclass levels from the class: full class trees time out on big classes.
     return {'K:': f'?c wdt:P279?/wdt:P279? wd:{q} . ?item wdt:P31|wdt:P279 ?c .', 'I:': f'?c wdt:P279? wd:{q} . ?item wdt:P31 ?c .',
-            'S:': f'?item wdt:P279/wdt:P279?/wdt:P279? wd:{q} .'}[kind]
+            'S:': f'?item wdt:P279+ wd:{q} .'}[kind]
 
 def build_broad():
     from broad import BROAD

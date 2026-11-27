@@ -39,21 +39,44 @@ def sparql(query, retries=2):
                 print('  ! query failed:', str(e)[:120]); return None
             time.sleep(4 * (attempt + 1))
 
+def cached(query):
+    path = os.path.join(CACHE, hashlib.sha1(query.encode()).hexdigest() + '.json')
+    if not os.path.exists(path): return None
+    with open(path) as f: return json.load(f)
+
 def qid(uri): return uri.rsplit('/', 1)[-1]
 
 # Standard answer-pool wrapper: distinct items matching PATTERN (which binds ?item),
 # English label, up to a few English aliases, sitelink count.
-def pool(pattern, min_links=2, limit=350):
-    q = f'''SELECT ?item ?label (GROUP_CONCAT(DISTINCT ?alt; separator="|") AS ?alts) ?links WHERE {{
+def _pool_old(pattern, min_links, limit):
+    return f'''SELECT ?item ?label (GROUP_CONCAT(DISTINCT ?alt; separator="|") AS ?alts) ?links WHERE {{
   hint:Query hint:optimizer "None" .
   {{ SELECT DISTINCT ?item WHERE {{ {pattern} }} }}
   ?item wikibase:sitelinks ?links . FILTER(?links >= {min_links})
   ?item rdfs:label ?label . FILTER(lang(?label) = "en")
   OPTIONAL {{ ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }}
 }} GROUP BY ?item ?label ?links ORDER BY DESC(?links) LIMIT {limit}'''
-    rows = sparql(q)
+
+def pool(pattern, min_links=2, limit=350):
+    """Best-known items matching PATTERN (binds ?item), with English label and aliases.
+    Ranks by sitelinks first and fetches labels only for the top LIMIT items; the optimizer
+    hint must sit inside the ranking subquery too, or big classes time out."""
+    old = _pool_old(pattern, min_links, limit)
+    rows = cached(old)  # results from the earlier query shape are still valid
+    if rows is None:
+        rows = sparql(f'''SELECT ?item ?label (GROUP_CONCAT(DISTINCT ?alt; separator="|") AS ?alts) ?links WHERE {{
+  hint:Query hint:optimizer "None" .
+  {{ SELECT ?item ?links WHERE {{
+      hint:Query hint:optimizer "None" .
+      {{ SELECT DISTINCT ?item WHERE {{ {pattern} }} }}
+      ?item wikibase:sitelinks ?links . FILTER(?links >= {min_links})
+    }} ORDER BY DESC(?links) LIMIT {limit} }}
+  ?item rdfs:label ?label . FILTER(lang(?label) = "en")
+  OPTIONAL {{ ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }}
+}} GROUP BY ?item ?label ?links''')
     if rows is None: return None
-    return [{'qid': qid(r['item']), 'label': r['label'], 'alts': [a for a in r.get('alts', '').split('|') if a], 'links': int(r['links'])} for r in rows]
+    out = [{'qid': qid(r['item']), 'label': r['label'], 'alts': [a for a in r.get('alts', '').split('|') if a], 'links': int(r['links'])} for r in rows]
+    return sorted(out, key=lambda r: -r['links'])
 
 # Parameter lists: items with a label, ordered by sitelinks.
 def params(pattern, limit, min_links=20):
