@@ -1,0 +1,309 @@
+{
+ "generated": "2026-11-27",
+ "apiCallsThisRun": 0,
+ "removed": {
+  "same page and key as a reviewer entry": 11,
+  "duplicate id": 0
+ },
+ "legacy": {
+  "kept": 18,
+  "replaced": 103
+ },
+ "series": {
+  "nar": {
+   "category": "Naruto",
+   "imported": "2026-11-27",
+   "listed": 186,
+   "characterPages": 170,
+   "excluded": {
+    "non-canonical origin: Naruto: Ultimate Ninja Series": 7,
+    "no tier (not a character profile)": 5,
+    "non-canonical origin: Naruto the Movie: Ninja Clash in the Land of Snow": 2,
+    "non-canonical origin: none": 2
+   },
+   "uniqueCharacters": 163,
+   "versions": 179,
+   "playableCharacters": 124,
+   "needsReview": 43
+  },
+  "ble": {
+   "category": "Bleach",
+   "imported": "2026-11-27",
+   "listed": 147,
+   "characterPages": 137,
+   "excluded": {
+    "no tier (not a character profile)": 7,
+    "non-canonical origin: Granblue Fantasy, Originally from Bleach": 1,
+    "non-canonical continuity (live action, stage, games)": 1,
+    "non-canonical origin: Bleach: Spirits Are Forever With You": 1
+   },
+   "uniqueCharacters": 137,
+   "versions": 141,
+   "playableCharacters": 105,
+   "needsReview": 32
+  },
+  "hxh": {
+   "category": "Hunter X Hunter",
+   "imported": "2026-11-27",
+   "listed": 77,
+   "characterPages": 72,
+   "excluded": {
+    "no tier (not a character profile)": 2,
+    "non-canonical origin: Hunter X Hunter: The Last Mission": 2,
+    "non-canonical origin: Hunter x Hunter: Phantom Rouge": 1
+   },
+   "uniqueCharacters": 75,
+   "versions": 77,
+   "playableCharacters": 61,
+   "needsReview": 15
+  },
+  "bc": {
+   "category": "Black Clover",
+   "imported": "2026-11-27",
+   "listed": 64,
+   "characterPages": 61,
+   "excluded": {
+    "no tier (not a character profile)": 3
+   },
+   "uniqueCharacters": 57,
+   "versions": 63,
+   "playableCharacters": 42,
+   "needsReview": 17
+  },
+  "sl": {
+   "category": "Solo Leveling",
+   "imported": "2026-11-27",
+   "listed": 5,
+   "characterPages": 3,
+   "excluded": {
+    "no tier (not a character profile)": 2
+   },
+   "uniqueCharacters": 13,
+   "versions": 17,
+   "playableCharacters": 3,
+   "needsReview": 11
+  },
+  "sds": {
+   "category": "Nanatsu no Taizai",
+   "imported": "2026-11-27",
+   "listed": 101,
+   "characterPages": 96,
+   "excluded": {
+    "non-canonical origin: Nanatsu no Taizai: Prisoners of the Sky": 1,
+    "no tier (not a character profile)": 4
+   },
+   "uniqueCharacters": 96,
+   "versions": 111,
+   "playableCharacters": 86,
+   "needsReview": 15
+  },
+  "jjk": {
+   "category": "Jujutsu Kaisen",
+   "imported": "2026-11-27",
+   "listed": 53,
+   "characterPages": 51,
+   "excluded": {
+    "no tier (not a character profile)": 2
+   },
+   "uniqueCharacters": 53,
+   "versions": 54,
+   "playableCharacters": 42,
+   "needsReview": 11
+  },
+  "ft": {
+   "category": "Fairy Tail",
+   "imported": "2026-11-27",
+   "listed": 198,
+   "characterPages": 187,
+   "excluded": {
+    "not a character (item, technique, species…)": 7,
+    "no tier (not a character profile)": 2,
+    "non-canonical origin: none": 2
+   },
+   "uniqueCharacters": 186,
+   "versions": 192,
+   "playableCharacters": 165,
+   "needsReview": 21
+  },
+  "op": {
+   "category": "One Piece",
+   "imported": "2026-11-27",
+   "listed": 213,
+   "characterPages": 203,
+   "excluded": {
+    "no tier (not a character profile)": 4,
+    "non-canonical origin: One Piece Film: Z.": 1,
+    "non-canonical origin: One Piece Film: Gold": 1,
+    "non-canonical origin: One Piece: Baron Omatsuri and the Secret Island.": 1,
+    "not a character (item, technique, species…)": 1,
+    "non-canonical origin: One Piece: Unlimited World Red": 1,
+    "non-canonical origin: One Piece, Monsters": 1
+   },
+   "uniqueCharacters": 199,
+   "versions": 214,
+   "playableCharacters": 173,
+   "needsReview": 29
+  },
+  "db": {
+   "category": "Dragon Ball",
+   "imported": "2026-11-27",
+   "listed": 308,
+   "characterPages": 250,
+   "excluded": {
+    "non-canonical origin: Dragon Ball: Yo! Son Goku and His Friends Return!!": 1,
+    "non-canonical origin: Dragon Ball Z: Super Android 13!": 1,
+    "non-canonical origin: Dr. Slump": 2,
+    "non-canonical origin: Dragon Ball GT": 18,
+    "non-canonical origin: Dragon Ball Minus": 1,
+    "non-canonical origin: Dragon Ball Z: Bardock - The Father of Goku": 1,
+    "non-canonical origin: Dragon Ball Z: Bojack Unbound": 2,
+    "non-canonical origin: Dragon Ball Z: Broly – The Legendary Super Saiyan": 1,
+    "non-canonical origin: Dragon Ball Z: The Tree of Might": 2,
+    "non-canonical origin: Dragon Ball: Episode of Bardock": 1,
+    "no tier (not a character profile)": 11,
+    "non-canonical origin: Dragon Ball Z: Cooler's Revenge": 1,
+    "non-canonical origin: Dragon Ball Z: The Return of Cooler": 1,
+    "non-canonical origin: Dragon Ball Z: Fusion Reborn": 2,
+    "non-canonical origin: Dragon Ball Z: The World's Strongest": 1,
+    "non-canonical origin: Dragon Ball Xenoverse 2": 1,
+    "non-canonical origin: Dragon Ball Z: Dead Zone": 1,
+    "non-canonical origin: Dragonball Evolution": 2,
+    "non-canonical origin: Dragon Ball Z: Wrath of the Dragon": 2,
+    "non-canonical origin: Neko Majin Z": 2,
+    "non-canonical origin: Dragon Ball.": 1,
+    "not a character (item, technique, species…)": 1,
+    "non-canonical origin: Dragon Ball Heroes": 1,
+    "non-canonical origin: Dragon Ball: That Time I Got Reincarnated as Yamcha": 1
+   },
+   "uniqueCharacters": 201,
+   "versions": 265,
+   "playableCharacters": 177,
+   "needsReview": 57
+  },
+  "ds": {
+   "category": "Demon Slayer: Kimetsu No Yaiba",
+   "imported": "2026-11-27",
+   "listed": 47,
+   "characterPages": 45,
+   "excluded": {
+    "no tier (not a character profile)": 2
+   },
+   "uniqueCharacters": 45,
+   "versions": 46,
+   "playableCharacters": 42,
+   "needsReview": 3
+  },
+  "aot": {
+   "category": "Attack on Titan",
+   "imported": "2026-11-27",
+   "listed": 21,
+   "characterPages": 18,
+   "excluded": {
+    "no tier (not a character profile)": 1,
+    "non-canonical origin: Attack on Titan 2": 1,
+    "not a character (item, technique, species…)": 1
+   },
+   "uniqueCharacters": 18,
+   "versions": 18,
+   "playableCharacters": 18,
+   "needsReview": 0
+  },
+  "fma": {
+   "category": "Fullmetal Alchemist",
+   "imported": "2026-11-27",
+   "listed": 36,
+   "characterPages": 34,
+   "excluded": {
+    "no tier (not a character profile)": 2
+   },
+   "uniqueCharacters": 33,
+   "versions": 34,
+   "playableCharacters": 32,
+   "needsReview": 1
+  },
+  "ff": {
+   "category": "Enen no Shouboutai",
+   "imported": "2026-11-27",
+   "listed": 18,
+   "characterPages": 17,
+   "excluded": {
+    "no tier (not a character profile)": 1
+   },
+   "uniqueCharacters": 17,
+   "versions": 18,
+   "playableCharacters": 16,
+   "needsReview": 2
+  },
+  "mha": {
+   "category": "My Hero Academia",
+   "imported": "2026-11-27",
+   "listed": 127,
+   "characterPages": 126,
+   "excluded": {
+    "no tier (not a character profile)": 1
+   },
+   "uniqueCharacters": 123,
+   "versions": 130,
+   "playableCharacters": 96,
+   "needsReview": 31
+  },
+  "vin": {
+   "category": "Vinland Saga",
+   "imported": "2026-11-27",
+   "listed": 9,
+   "characterPages": 8,
+   "excluded": {
+    "no tier (not a character profile)": 1
+   },
+   "uniqueCharacters": 8,
+   "versions": 8,
+   "playableCharacters": 7,
+   "needsReview": 1
+  },
+  "opm": {
+   "category": "One-Punch Man",
+   "imported": "2026-11-27",
+   "listed": 123,
+   "characterPages": 118,
+   "excluded": {
+    "no tier (not a character profile)": 1,
+    "non-canonical origin: Dangan Tenshi Fan Club/Monster of the Earth": 1,
+    "non-canonical origin: none": 1,
+    "non-canonical origin: Monster of Earth": 1,
+    "non-canonical origin: Dangan Tenshi Fan Club": 1
+   },
+   "uniqueCharacters": 118,
+   "versions": 124,
+   "playableCharacters": 112,
+   "needsReview": 8
+  },
+  "dn": {
+   "category": "Death Note",
+   "imported": "2026-11-27",
+   "listed": 15,
+   "characterPages": 11,
+   "excluded": {
+    "no tier (not a character profile)": 1,
+    "non-canonical continuity (live action, stage, games)": 2,
+    "not a character (item, technique, species…)": 1
+   },
+   "uniqueCharacters": 11,
+   "versions": 11,
+   "playableCharacters": 9,
+   "needsReview": 2
+  },
+  "cote": {
+   "category": "Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e",
+   "imported": "2026-11-27",
+   "listed": 25,
+   "characterPages": 23,
+   "excluded": {
+    "no tier (not a character profile)": 2
+   },
+   "uniqueCharacters": 23,
+   "versions": 23,
+   "playableCharacters": 16,
+   "needsReview": 7
+  }
+ }
+}

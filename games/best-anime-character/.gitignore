@@ -1,0 +1,3 @@
+tools/cache/
+tools/imports/*.json
+!tools/imports/manifest.json
