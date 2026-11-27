@@ -293,6 +293,16 @@ Measured load (local preview): DOMContentLoaded 162 ms, 26 data files ≈ 3 MB r
 build 27.5 ms, match start 12 ms, setup change ≈ 1 ms; only the current card's portrait and one upcoming portrait
 (never in Mystery) load eagerly, list thumbnails are lazy and the 1,300-row list renders only when visible.
 
+## Full-window shell, intro and start screen
+- The page runs full-window like Deep Cut: site header, page title, below-stage cards and footer are hidden
+  (`body.app`); a slim app bar holds the Recess logo, Sound, Settings and Exit game. A fixed backdrop (spotlight,
+  drifting rarity cards, arena floor) sits behind everything and dims during a match.
+- Intro (~2.5 s, once per browser session, any click/key skips, skipped with reduced motion or Animations off): five
+  rarity cards deal in, "$20" stamps, the title rises.
+- Start screen (`view='home'`): wordmark, tagline, matches played / best team power / playable characters, Resume match
+  (when saved), Quick match (Classic defaults with saved names), Set up a match (existing setup, with Back),
+  How to play, Previous matches, Characters (the character list now opens in a dialog). Full screen uses the whole page.
+
 ## Artwork (form-specific)
 - `tools/images.mjs` reads each profile's image gallery (tabber at the top of the VS Battles page) from the cached
   wikitext and resolves files through the MediaWiki `imageinfo` API (400 px thumbnails; cached in

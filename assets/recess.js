@@ -16,7 +16,7 @@ window.Recess=(function(){
     gs.forEach(function(g){var a=link(g);a.className='mini c-'+g.color;el.appendChild(a)});
   }
   // $20 Best Anime Character, added on its own line so other games' list edits don't collide with it
-  GAMES.push({slug:'best-anime-character',title:'$20 Best Anime Character',cat:'Anime',color:'tangerine',blurb:'Two players, $20 each: bid on anime characters and build the strongest team'});
+  GAMES.push({slug:'best-anime-character',title:'$20 Best Anime Character',cat:'Anime',color:'tangerine',blurb:'Two players, $20 each: bid on 1,300+ anime, manga and manhwa characters and build the strongest team'});
   function footer(){
     var f=document.getElementById('allgames');if(!f)return;
     GAMES.slice().sort(function(a,b){return a.title.localeCompare(b.title)}).forEach(function(g){f.appendChild(link(g))});
