@@ -7,7 +7,6 @@ import { useCountUp } from '../../hooks/useCountUp.ts';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset.ts';
 import { Button } from '../ui/Button.tsx';
 import { MineralIcon } from '../ui/MineralIcon.tsx';
-import { Wordmark } from '../ui/Wordmark.tsx';
 
 interface Props {
   state: GameState;
@@ -33,7 +32,6 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
   const last = state.records[state.records.length - 1];
   // The bar drains via one CSS animation started at the right offset (smooth, no per-tick layout).
   const offset = useMemo(() => (asking ? qms - timeLeft(state, Date.now()) : 0), [state.round, state.phaseEndsAt, asking]);
-  const found = state.records.filter((r) => r.rarity).map((r) => r.rarity as RarityId);
 
   // Wrong answer: shake and keep the text selected so the next keystroke replaces it. Timer keeps running.
   useEffect(() => {
@@ -57,7 +55,9 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
   }, [state.round, asking]);
   // Round resolved: show the accepted canonical answer in the field.
   useEffect(() => {
-    if (resolved) setText(last?.outcome === 'correct' ? last.answer ?? '' : '');
+    if (!resolved) return;
+    setText(last?.outcome === 'correct' ? last.answer ?? '' : '');
+    requestAnimationFrame(() => input.current?.setSelectionRange(0, 0)); // show a long answer from its start
   }, [resolved]);
 
   // Sound: a find or a miss when a round ends, ticks in the last seconds.
@@ -104,16 +104,7 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
 
   return (
     <section className={`round-stage${keyboard ? ' is-kb' : ''}`}>
-      <div className="timer" role="timer" aria-label={asking ? `${secs} seconds left` : undefined}>
-        <i
-          key={`${state.round}-${asking}`}
-          className={`${asking ? 'is-running' : ''}${warn ? ' is-warn' : ''}`}
-          style={{ animationDuration: `${qms}ms`, animationDelay: `${-offset}ms`, '--left': ms / qms } as CSSProperties}
-        />
-      </div>
-
       <header className="hud">
-        <Wordmark size="sm" />
         <div className="hud-round">
           <ol className="pips" aria-label={`Question ${state.round + 1} of ${total}`}>
             {state.questions.map((_, i) => {
@@ -129,24 +120,15 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
               );
             })}
           </ol>
-          <span className="eyebrow">Question <b className="num">{state.round + 1}</b> of {total}</span>
-          {found.length > 0 && (
-            <span className="hud-found" aria-label={`Found: ${found.map((r) => rarityOf(r).mineral).join(', ')}`}>
-              {found.map((r, i) => <MineralIcon key={i} rarity={r} size={14} />)}
-            </span>
-          )}
+          <span className="hud-count num" aria-hidden="true"><b>{state.round + 1}</b>/{total}</span>
         </div>
-        <span aria-hidden="true" />
       </header>
 
       <div className="stage-card">
         {asking ? (
-          <div key={state.round} className="qcard panel">
-            <div className="qcard-meta">
-              <span className="eyebrow">{q.category}</span>
-              <span className="eyebrow">Rarer answers dig deeper</span>
-            </div>
-            <h1 className="question">{q.text}</h1>
+          <div key={state.round} className="qcard">
+            <span className="eyebrow qcard-cat">{q.category}</span>
+            <h1 className={`question${q.text.length > 72 ? ' is-long' : ''}`}>{q.text}</h1>
           </div>
         ) : last?.outcome === 'correct' && last.rarity ? (
           <RoundResult rarity={last.rarity} answer={last.answer!} correctedFrom={last.corrected ? last.guess : undefined} />
@@ -166,15 +148,7 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
       {(asking || resolved) && (
         <div className="dock">
           <p className={`feedback${lastWrong && asking ? ' feedback--error' : ''}`} aria-live="polite">
-            {resolved ? (
-              accepted ? (
-                <>
-                  Accepted: <b>{last!.answer}</b> · {accepted.label} · +{accepted.points}m
-                </>
-              ) : (
-                'Next question coming up.'
-              )
-            ) : lastWrong ? (
+            {resolved ? null : lastWrong ? (
               suggestion ? (
                 <>
                   <b>“{lastWrong}”</b> isn't on the list. Did you mean{' '}
@@ -188,10 +162,18 @@ export function RoundScreen({ state, now, onSubmit, onSkip }: Props) {
                   <b>“{lastWrong}”</b> isn't on the list. Try another.
                 </>
               )
-            ) : (
+            ) : state.round === 0 ? (
               'Type any correct answer. Wrong guesses can be retried.'
-            )}
+            ) : null}
           </p>
+          <div className="timer" role="timer" aria-label={asking ? `${secs} seconds left` : undefined}>
+            <i
+              key={`${state.round}-${asking}`}
+              className={`${asking ? 'is-running' : ''}${warn ? ' is-warn' : ''}`}
+              style={{ animationDuration: `${qms}ms`, animationDelay: `${-offset}ms`, '--left': ms / qms } as CSSProperties}
+            />
+          </div>
+
           <form className="answer" onSubmit={submit}>
             <span className={`dock-secs num${warn ? ' is-warn' : ''}`} aria-hidden="true">{asking ? secs : 0}</span>
             <input

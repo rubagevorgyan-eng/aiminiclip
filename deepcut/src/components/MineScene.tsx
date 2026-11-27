@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { RARITY, ZONES, impactAtMs } from '../config/game.ts';
+import { useEffect, useRef, type CSSProperties } from 'react';
+import { RARITY, ZONES } from '../config/game.ts';
 import { MineRenderer } from '../mine/renderer.ts';
 import { useSettings } from '../storage/settings.ts';
 
@@ -27,12 +27,10 @@ export function MineScene({ depth, digs, tier, ambient = false, hud = false, dim
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const depthRef = useRef<HTMLSpanElement>(null);
   const zoneRef = useRef<HTMLSpanElement>(null);
+  const markRef = useRef<HTMLElement>(null);
   const renderer = useRef<MineRenderer | null>(null);
   const prevDigs = useRef(digs);
   const prevDepth = useRef(depth);
-  const [floats, setFloats] = useState<{ id: number; text: string; tier: number }[]>([]);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
   const startDepth = useRef(depth);
 
   useEffect(() => {
@@ -41,6 +39,7 @@ export function MineScene({ depth, digs, tier, ambient = false, hud = false, dim
       {
         depth: (m) => {
           if (depthRef.current) depthRef.current.textContent = `${m}m`;
+          if (markRef.current) markRef.current.style.top = `${Math.min(100, (m / ZONES[ZONES.length - 1].to) * 100)}%`;
         },
         zone: (i) => {
           const el = zoneRef.current;
@@ -73,13 +72,6 @@ export function MineScene({ depth, digs, tier, ambient = false, hud = false, dim
     if (digs < prevDigs.current) r.reset(depth);
     else if (digs > prevDigs.current && tier !== null) {
       r.dig(depth, tier);
-      // "+85m" rises from the miner as the pickaxe strikes (timed with the impact).
-      const gain = depth - prevDepth.current;
-      const id = Date.now();
-      timers.current.push(
-        setTimeout(() => setFloats((f) => [...f, { id, text: `+${gain}m`, tier }]), reduceMotion ? 0 : impactAtMs()),
-        setTimeout(() => setFloats((f) => f.filter((x) => x.id !== id)), impactAtMs() + 1500),
-      );
     }
     prevDigs.current = digs;
     prevDepth.current = depth;
@@ -88,17 +80,18 @@ export function MineScene({ depth, digs, tier, ambient = false, hud = false, dim
   return (
     <div className={`mine${ambient ? ' is-ambient' : ''}${hud ? ' has-hud' : ''}${dim ? ' is-dim' : ''}`}>
       <canvas ref={canvasRef} className="mine-canvas" aria-hidden="true" />
-      {floats.map((f) => (
-        <span key={f.id} className={`mine-float num${f.tier >= 4 ? ' is-big' : ''}`} style={{ '--r': RARITY[f.tier].color } as CSSProperties} aria-hidden="true">
-          {f.text}
-        </span>
-      ))}
       <div className="mine-hud">
         <span className="eyebrow">Depth</span>
         <span className="mine-depth num" aria-live="off">
           <span ref={depthRef}>0m</span>
         </span>
         <span ref={zoneRef} className="mine-zone eyebrow" />
+      </div>
+      <div className="mine-gauge" aria-hidden="true">
+        {ZONES.map((z, i) => (
+          <span key={z.name} style={{ '--len': z.to - z.from, '--r': RARITY[i].color } as CSSProperties} />
+        ))}
+        <i ref={markRef} />
       </div>
       {!ambient && <span className="sr-only" aria-live="polite">Depth {depth} meters</span>}
     </div>
