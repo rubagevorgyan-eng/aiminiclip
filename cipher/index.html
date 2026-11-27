@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,interactive-widget=resizes-content">
+  <script>
+    // Served from a folder (/games/cipher): relative asset paths need the trailing slash.
+    (function (l) { var p = l.pathname; if (!/\/$/.test(p) && !/\.[a-z0-9]+$/i.test(p)) l.replace(p + '/' + l.search + l.hash); })(location);
+  </script>
+  <title>CIPHER · Recess</title>
+  <meta name="description" content="CIPHER: a word-association game of handlers and operatives. Private online rooms, no sign-up.">
+  <meta name="theme-color" content="#111310">
+  <meta name="color-scheme" content="dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@600&family=Cinzel:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Recess site header: logo from the shared site script (/assets/logo.js), same as every Recess page. -->
+  <header class="site-header">
+    <a class="site-logo" href="/" aria-label="Recess home"><span class="rlogo"></span></a>
+    <a class="btn btn--ghost site-exit" href="/">Exit game</a>
+  </header>
+  <noscript>CIPHER needs JavaScript to run.</noscript>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+  <script src="/assets/logo.js"></script>
+  <script src="/assets/recess.js"></script>
+  <script>window.Recess && Recess.played('cipher');</script>
+</body>
+</html>

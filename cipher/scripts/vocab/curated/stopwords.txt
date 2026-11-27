@@ -1,0 +1,11 @@
+# Filler and function words never used as board words (also pronouns that appear as titles, e.g. "Her").
+the and for but nor yet not all any some each few many much more most other such own same than too very
+can will just don should now one two three four five six seven eight nine ten first second
+her him his hers its our ours their theirs them they she you your yours who whom whose what which this that these those
+thing things something anything everything nothing someone anyone everyone somebody anybody everybody nobody
+way ways kind sort type lot lots part bit piece stuff item matter fact case point instance example
+have has had having been being was were are get got gets getting make made makes making let lets
+say says said seem seems become becomes became use used uses using
+also etc per via
+left right outside inside somewhere anywhere everywhere nowhere here there elsewhere upside downside
+front back top bottom middle center centre side end beginning whereabouts hangout

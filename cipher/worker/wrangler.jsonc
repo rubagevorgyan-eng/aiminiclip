@@ -1,0 +1,19 @@
+// Cipher room server: one Durable Object per room (Cloudflare Workers, free-tier compatible).
+// Local: npm run server:dev (no account needed). Deploying needs a Cloudflare account; not done yet.
+{
+  "name": "cipher-rooms",
+  "main": "index.ts",
+  "compatibility_date": "2026-11-01",
+  "send_metrics": false,
+  "durable_objects": {
+    "bindings": [{ "name": "ROOMS", "class_name": "RoomObject" }]
+  },
+  // SQLite-backed Durable Objects are available on the Workers free plan.
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RoomObject"] }],
+  "vars": {
+    // Comma-separated origins allowed to open rooms (CORS + WebSocket Origin check).
+    "ALLOWED_ORIGINS": "http://localhost:5175,http://[::1]:5175,http://127.0.0.1:5175,http://localhost:4175,http://127.0.0.1:4175,http://localhost:8080,http://127.0.0.1:8080",
+    // Test-only override of the disconnect grace (ms). Empty = default.
+    "GRACE_OVERRIDE_MS": ""
+  }
+}

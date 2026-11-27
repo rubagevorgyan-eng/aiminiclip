@@ -1,0 +1,68 @@
+{
+  "version": "v1-10000",
+  "total": 10000,
+  "safe": 9830,
+  "sensitive": 170,
+  "byCategory": {
+    "general": {
+      "target": 4000,
+      "primary": 4000,
+      "packSize": 3933
+    },
+    "objects": {
+      "target": 1000,
+      "primary": 1000,
+      "packSize": 976
+    },
+    "nature": {
+      "target": 800,
+      "primary": 800,
+      "packSize": 796
+    },
+    "geography": {
+      "target": 700,
+      "primary": 700,
+      "packSize": 669
+    },
+    "science_history": {
+      "target": 700,
+      "primary": 700,
+      "packSize": 682
+    },
+    "advanced": {
+      "target": 1000,
+      "primary": 1000,
+      "packSize": 974
+    },
+    "anime": {
+      "target": 600,
+      "primary": 600,
+      "packSize": 699
+    },
+    "gaming": {
+      "target": 600,
+      "primary": 600,
+      "packSize": 842
+    },
+    "entertainment": {
+      "target": 600,
+      "primary": 600,
+      "packSize": 1053
+    }
+  },
+  "byDifficulty": {
+    "easy": 4150,
+    "medium": 3829,
+    "hard": 2021
+  },
+  "bySource": {
+    "wordnet": 8200,
+    "wikidata": 1620,
+    "cipher": 180
+  },
+  "candidates": {
+    "wordnetCandidates": 15267,
+    "wikidataCandidates": 2689,
+    "curatedCandidates": 388
+  }
+}

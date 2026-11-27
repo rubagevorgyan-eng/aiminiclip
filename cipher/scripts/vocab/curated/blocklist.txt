@@ -1,0 +1,16 @@
+# Words never imported (slurs, sexual, graphic, drug and other unsuitable defaults). Original list, extend as needed.
+# Matching is on the normalized word and on its root group.
+sex sexy sexual porn porno erotic nude naked nipple breast boob genital penis vagina testicle scrotum
+anus anal rectum buttock butt ass arse orgasm masturbate condom dildo bondage fetish brothel prostitute
+whore slut pimp rape rapist molest pedophile incest hooker stripper lust horny
+nazi hitler swastika genocide holocaust massacre lynch slave slavery terrorist jihad suicide
+cocaine heroin meth opium marijuana cannabis junkie overdose
+shit crap piss fuck damn bastard bitch dick cock pussy prick twat wank bollocks
+idiot moron retard cretin imbecile midget spastic tranny homo
+# Identity terms: excluded from default boards so they cannot be used to target players (not because they are offensive).
+gay lesbian queer
+negro nigger chink spic kike gook wetback paki jap redskin gypsy
+corpse cadaver gore decapitate torture mutilate abortion
+hentai ecchi yaoi yuri lolicon
+# Bodily functions: unpleasant on a party board.
+bowel bowels feces faeces excrement urine urinate vomit diarrhea menstruation semen sperm phlegm mucus pus snot fart

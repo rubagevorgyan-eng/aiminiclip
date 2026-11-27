@@ -1,0 +1,21 @@
+/* Design lab only (dev builds). */
+.lab { display: grid; gap: var(--s4); max-width: 1720px; margin: 0 auto; }
+.lab__banner { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3); padding: var(--s2) var(--s3); border: 1px dashed rgba(180, 154, 101, 0.6); border-radius: var(--r); font: 500 12px var(--f-mono); color: var(--c-brass-hi); }
+.lab__bar { display: flex; flex-wrap: wrap; gap: var(--s2); padding: var(--s2); }
+.kit { display: grid; gap: var(--s8); }
+.kit__section { display: grid; gap: var(--s3); }
+.kit__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3); }
+.kit__paper { padding: var(--s5); border-radius: var(--r); background: var(--c-ivory); }
+.kit__logo { font-size: 64px; }
+.kit__logo-sm { font-size: 24px; }
+.kit__cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s4); }
+.kit__fig { margin: 0; display: grid; gap: 6px; --ratio: 3 / 2; }
+.kit__fig figcaption { text-transform: uppercase; letter-spacing: 0.1em; }
+.kit__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s3); align-items: start; }
+.kit__pad { padding: var(--s3); --k: var(--c-crimson); }
+.kit__report { max-width: 560px; }
+.harness__bar { align-items: center; }
+.harness__seed { min-height: 32px; width: 16ch; font: 500 13px var(--f-mono); }
+.harness__rev { margin-left: auto; font-size: 12px; color: var(--c-text-dim); }
+.harness__log { padding: var(--s3) var(--s4); }
+.harness__log .log { margin-top: var(--s2); max-height: 260px; overflow: auto; }

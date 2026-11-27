@@ -1,0 +1,26 @@
+{
+  "target": 68,
+  "supplied": 0,
+  "families": {
+    "crimson": {
+      "target": 16,
+      "slots": {}
+    },
+    "cobalt": {
+      "target": 16,
+      "slots": {}
+    },
+    "civilian": {
+      "target": 12,
+      "slots": {}
+    },
+    "assassin": {
+      "target": 8,
+      "slots": {}
+    },
+    "duet": {
+      "target": 16,
+      "slots": {}
+    }
+  }
+}

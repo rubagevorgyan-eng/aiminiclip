@@ -1,0 +1,87 @@
+/*
+ * CIPHER design tokens. A premium espionage board game on a dark field desk:
+ * ivory cards, olive surfaces, antique brass. Terminal green (--term) is reserved for
+ * hacking / decryption animations only and is never part of the permanent colorway.
+ *
+ * Fonts (Google Fonts, loaded in index.html like other Recess pages) and fallbacks:
+ *   --f-display  Cinzel            -> Trajan Pro, Cormorant SC, Georgia, serif   (logo, major headings)
+ *   --f-card     Barlow Condensed 600 -> Arial Narrow, Roboto Condensed, sans-serif (word cards)
+ *   --f-mono     IBM Plex Mono     -> ui-monospace, SF Mono, Menlo, Consolas      (codes, numbers, logs)
+ *   --f-body     Inter             -> system-ui, -apple-system, Segoe UI, sans-serif (interface)
+ */
+:root {
+  /* Palette */
+  --c-bg: #111310;
+  --c-olive: #262b22;
+  --c-olive-2: #1c2019;
+  --c-olive-3: #31372c;
+  --c-ivory: #e8e1cf;
+  --c-ivory-2: #d8cfb8;
+  --c-brass: #b49a65;
+  --c-brass-hi: #d2b984;
+  --c-crimson: #a44040;
+  --c-cobalt: #3b6291;
+  --c-agent: #426b50;
+  --c-neutral: #969183;
+  --c-assassin: #080908;
+
+  --c-ink: #1e1c17;
+  --c-ink-dim: #545045;
+  --c-text: #e6e1d3;
+  --c-text-dim: #9c9a8d;
+  --c-line: rgba(232, 225, 207, 0.12);
+  --c-line-strong: rgba(232, 225, 207, 0.22);
+  --c-stamp: #9e3a2f;
+  --c-danger: #c8614f;
+
+  /* Reserved: terminal / decryption animations only. */
+  --term: #45f08a;
+  --term-dim: #1f6e41;
+
+  /* Type */
+  --f-display: 'Cinzel', 'Trajan Pro', 'Cormorant SC', Georgia, serif;
+  --f-card: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --f-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Space (4px grid), radius, elevation */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s8: 32px; --s10: 40px;
+  --r-sm: 3px;
+  --r: 5px;
+  --r-lg: 8px;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 6px 18px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ring: 0 0 0 2px var(--c-bg), 0 0 0 4px var(--c-brass);
+
+  --header: 60px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Paper grain: tiny tiled noise, used as an overlay on ivory and olive surfaces. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (max-width: 640px) { :root { --header: 52px; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  background: radial-gradient(120% 80% at 50% -20%, #1d2219 0%, var(--c-bg) 62%) fixed, var(--c-bg);
+  color: var(--c-text);
+  font: 400 15px/1.5 var(--f-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body::before { /* desk grain over the whole page */
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: var(--grain); opacity: 0.05; mix-blend-mode: overlay;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+h1, h2, h3, h4 { margin: 0; font-weight: 600; }
+p { margin: 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* Player setting "Reduce motion" (client/storage.ts) mirrors the system preference. */
+html[data-motion='reduced'] *, html[data-motion='reduced'] *::before, html[data-motion='reduced'] *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }

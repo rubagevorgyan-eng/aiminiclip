@@ -1,0 +1,34 @@
+{
+  "name": "cipher",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && tsc -p worker && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b && tsc -p worker",
+    "test": "node --test --experimental-strip-types --no-warnings \"src/**/*.test.ts\"",
+    "publish:site": "npm run build && node scripts/publish-site.mjs",
+    "vocab": "node --experimental-strip-types --no-warnings scripts/vocab/build.ts",
+    "server:dev": "WRANGLER_SEND_METRICS=false wrangler dev --config worker/wrangler.jsonc --port 8787",
+    "dev:live": "VITE_CIPHER_SERVER=http://localhost:8787 vite",
+    "server:test": "WRANGLER_SEND_METRICS=false wrangler dev --config worker/wrangler.jsonc --port 8788 --var GRACE_OVERRIDE_MS:3000 --persist-to .wrangler/test-state",
+    "test:live": "node --experimental-strip-types --no-warnings scripts/integration.ts",
+    "art": "node --experimental-strip-types --no-warnings scripts/art/build-manifest.ts"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261127.1",
+    "@types/node": "22.10.1",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.4",
+    "typescript": "5.6.3",
+    "vite": "5.4.11",
+    "wrangler": "4.169.0"
+  }
+}

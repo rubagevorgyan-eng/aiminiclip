@@ -18,6 +18,8 @@ window.Recess=(function(){
   }
   // $20 Anime Battle, added on its own line so other games' list edits don't collide with it
   GAMES.push({slug:'best-anime-character',title:'$20 Anime Battle',cat:'Anime',color:'tangerine',blurb:'Two players, $20 each: bid on 1,300+ anime, manga and manhwa characters and build the strongest team'});
+  // CIPHER, added on its own line so other games' list edits don't collide with it
+  GAMES.push({slug:'cipher',title:'Cipher',cat:'Words',color:'lime',blurb:'Word association for handlers and operatives in private online rooms'});
   function footer(){
     var f=document.getElementById('allgames');if(!f)return;
     GAMES.slice().sort(function(a,b){return a.title.localeCompare(b.title)}).forEach(function(g){f.appendChild(link(g))});
