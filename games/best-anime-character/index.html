@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>$20 Anime Battle - Recess</title>
+<meta name="description" content="Two players, $20 each, five slots. Bid on anime characters and build the strongest team. Free, in your browser.">
+<meta name="theme-color" content="#0B0D12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%23D5AE5E'/%3E%3Ctext x='8' y='12.5' font-family='Arial' font-weight='900' font-size='11' text-anchor='middle' fill='%230B0D12'%3E$%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/shell.css">
+<style>
+/*
+DIRECTION: Underground Arena. A dark, quiet card table: one character under the light, two players either side.
+TYPE: Archivo for everything you read or tap. Anton (the site's display face) only for character names, the title and the winner.
+COLOUR: tokens below. Gold = money and the auction, green = gift, red = skip, blue/pink = the two players.
+LAYOUT: grid areas. Desktop: player | lot + host | player. Tablet: lot + host on top, players below.
+        Phone: lot, then both players side by side (compact), then host.
+*/
+
+/* ---------- tokens ---------- */
+:root{
+  --bg:#0B0D12;--bg2:#131720;--panel:#131720;--line:#232835;--bone:#F1F2F5;--dim:#9299A8;--gold:#D5AE5E;
+  --s0:#0B0D12;--s1:#131720;--s2:#1C212B;--s3:#252B37;
+  --bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);
+  --tx:#F1F2F5;--tx2:#9299A8;--tx3:#868D9E;
+  --p0:#5DAAFA;--p1:#EE649B;--gold-d:#A8853F;
+  --green:#4FB47E;--green-d:#3C8E62;--red:#E0574F;--red-d:#B4413B;
+  --r1:6px;--r2:10px;--r3:14px;
+  --g1:4px;--g2:8px;--g3:12px;--g4:16px;--g5:24px;
+  --sh:0 1px 0 rgba(255,255,255,.03) inset,0 10px 28px -12px rgba(0,0,0,.6);
+  --ui:"Archivo",system-ui,sans-serif;--disp:"Anton",Impact,sans-serif;--num:"Archivo",system-ui,sans-serif;
+}
+body{background:var(--s0)}
+.top{background:rgba(11,13,18,.94)}
+main.page{max-width:1400px}
+.hide{display:none!important}
+
+/* ---------- page header (compact) ---------- */
+.gt{display:flex;justify-content:space-between;align-items:center;gap:var(--g3);flex-wrap:wrap;margin:0 0 var(--g3)}
+.gt h1{margin:0;font:400 clamp(30px,3.4vw,40px)/1 var(--disp);letter-spacing:.5px;text-transform:uppercase}
+.gt h1 em{font-style:normal;color:var(--gold)}
+.gt .meta{margin:4px 0 0;color:var(--tx2);font-size:14px}
+.fav{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:1px solid var(--bd2);border-radius:var(--r1);background:transparent;color:var(--tx);font:600 14px var(--ui);cursor:pointer}
+.fav:hover{background:var(--s2)}
+.fav .h{color:var(--tx3)}.fav[aria-pressed=true] .h{color:var(--p1)}
+
+/* ---------- stage ---------- */
+.stagebox{margin:0 0 var(--g5);scroll-margin-top:72px}
+#stage{position:relative;color:var(--tx);font:400 14px/1.45 var(--ui);background:var(--s0);border:1px solid var(--bd);border-radius:var(--r3);padding:0 var(--g4) var(--g4);box-shadow:var(--sh)}
+.stagebox:fullscreen{overflow:auto;background:var(--s0);padding:var(--g4)}
+.stagebox:fullscreen #stage{max-width:1600px;margin:0 auto;min-height:calc(100vh - 32px)}
+#stage input{user-select:text}
+
+/* ---------- shared components ---------- */
+.surface{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r2);box-shadow:var(--sh)}
+.lbl{font:600 11px/1 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:var(--tx2)}
+.pix{shape-rendering:crispEdges;display:block}
+
+.gb{display:inline-flex;align-items:center;justify-content:center;gap:var(--g2);width:100%;min-height:42px;padding:0 var(--g3);
+  border:1px solid transparent;border-radius:var(--r1);font:700 14px/1.1 var(--ui);letter-spacing:.01em;cursor:pointer;
+  color:var(--tx);background:var(--s2);border-color:var(--bd2);transition:background .12s,border-color .12s,transform .06s}
+.gb:hover:not(:disabled){background:var(--s3)}
+.gb:active:not(:disabled){transform:translateY(1px)}
+.gb:disabled{opacity:.38;cursor:not-allowed}
+.gb:focus-visible,.ib:focus-visible,.fav:focus-visible,.seg button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.g-gold{background:var(--gold);border-color:var(--gold);color:#16120A}
+.g-gold:hover:not(:disabled){background:#E2BE74}
+.g-mint{background:color-mix(in srgb,var(--green) 16%,var(--s1));border-color:color-mix(in srgb,var(--green) 55%,transparent);color:#BFEBD2}
+.g-mint:hover:not(:disabled){background:color-mix(in srgb,var(--green) 26%,var(--s1))}
+.g-red{background:color-mix(in srgb,var(--red) 15%,var(--s1));border-color:color-mix(in srgb,var(--red) 55%,transparent);color:#F7C4C0}
+.g-red:hover:not(:disabled){background:color-mix(in srgb,var(--red) 25%,var(--s1))}
+.g-p{background:color-mix(in srgb,var(--pc) 18%,var(--s1));border-color:var(--pc);color:var(--tx)}
+.gb.lg{min-height:52px;font-size:16px}
+
+.ib{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 10px;border:1px solid var(--bd);border-radius:var(--r1);background:transparent;color:var(--tx2);font:600 13px var(--ui);cursor:pointer}
+.ib:hover:not(:disabled){background:var(--s2);color:var(--tx)}
+.ib:disabled{opacity:.35;cursor:default}
+.ib svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.chip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:999px;background:var(--s1);border:1px solid var(--bd);font:600 12px var(--ui);color:var(--tx2)}
+.chip b{color:var(--tx);font-weight:800;font-variant-numeric:tabular-nums}
+.chip.gold b{color:var(--gold)}.chip.red b{color:var(--red)}
+
+.ini{flex:none;position:relative;overflow:hidden;width:36px;height:36px;display:grid;place-items:center;border-radius:var(--r1);
+  font:800 12px var(--ui);color:#0B0D12;background:var(--ac)}
+.ini i{font-style:normal}
+.ini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%;background:var(--s2)}
+.no-img .ini img{display:none}
+
+/* ---------- game header ---------- */
+.ghead{display:flex;align-items:center;justify-content:space-between;gap:var(--g3);flex-wrap:wrap;min-height:56px;margin:0 calc(-1 * var(--g4)) var(--g4);padding:var(--g2) var(--g4);border-bottom:1px solid var(--bd);background:var(--s1);border-radius:var(--r3) var(--r3) 0 0}
+.ghead .l,.ghead .r{display:flex;align-items:center;gap:var(--g2);flex-wrap:wrap}
+.round{display:flex;align-items:baseline;gap:6px;margin-right:var(--g2)}
+.round b{font:400 22px/1 var(--disp);letter-spacing:.5px}
+.round small{color:var(--tx2);font-size:12px}
+
+/* ---------- setup screen ---------- */
+.setup{padding:var(--g2) 0 0}
+.su-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:var(--g3)}
+.su-col{display:grid;gap:var(--g3);align-content:start}
+.su-card{margin:0;padding:var(--g3) var(--g4);background:var(--s1);border:1px solid var(--bd);border-radius:var(--r2);min-width:0}
+.su-card>.lbl{display:block;margin-bottom:8px}
+.su-two{display:grid;grid-template-columns:1fr 1fr;gap:var(--g4)}
+.su-two .lbl{display:block;margin-bottom:8px}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:var(--g3)}
+.names label{display:block;margin-bottom:6px}
+.names .p0{color:var(--p0)}.names .p1{color:var(--p1)}
+#n0{border-left:3px solid var(--p0)!important}#n1{border-left:3px solid var(--p1)!important}
+#stage input[type=text],#stage input[type=search],#stage input[type=number],#stage select{width:100%;font:500 15px var(--ui);color:var(--tx);background:var(--s0);border:1px solid var(--bd2);border-radius:var(--r1);padding:10px 12px}
+#stage input:focus,#stage select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 22%,transparent)}
+#stage input[aria-invalid=true]{border-color:var(--red)}
+.modes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.mode{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-height:64px;padding:8px 10px;border-radius:var(--r1);border:1px solid var(--bd2);background:var(--s0);color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.mode b{font:400 17px/1 var(--disp);letter-spacing:.5px;text-transform:uppercase}
+.mode small{color:var(--tx2);font-size:11px;line-height:1.3}
+.mode:hover{border-color:var(--tx3)}
+.mode[aria-checked=true]{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 10%,var(--s0))}
+.mode[aria-checked=true] b{color:var(--gold)}
+.mode:focus-visible,.pre:focus-visible,.seg button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.pre{min-width:48px;height:38px;padding:0 10px;border-radius:var(--r1);border:1px solid var(--bd2);background:var(--s0);color:var(--tx);font:700 14px var(--ui);font-variant-numeric:tabular-nums;cursor:pointer}
+.pre[aria-pressed=true]{border-color:var(--gold);color:#16120A;background:var(--gold)}
+.custom{display:flex;align-items:center;gap:8px;margin-top:8px;color:var(--tx2);font-size:12px;font-weight:600}
+.custom input{max-width:90px;padding:7px 9px!important;font-size:14px!important}
+.seg.wide{display:flex;width:100%}
+.seg.wide button{flex:1;min-height:38px}
+.seg button[aria-checked=true],.seg button.on{background:var(--s3);color:var(--tx)}
+.spoiler{margin:8px 0 0;font-size:12px;color:var(--tx2)}
+.spoiler.warn{color:#F2C46B}
+.sr-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.sr-count{color:var(--tx2);font-size:12px;font-weight:600}
+.sr-tools{display:flex;gap:6px;margin-bottom:8px}
+.sr-tools input{flex:1;padding:7px 10px!important;font-size:14px!important}
+.sr-list{display:grid;grid-template-columns:1fr 1fr;gap:4px;max-height:236px;overflow:auto}
+.srow{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:var(--r1);background:var(--s0);border:1px solid var(--bd);cursor:pointer;font-size:13px;font-weight:600}
+.srow:has(input:checked){border-color:color-mix(in srgb,var(--ac) 55%,var(--bd))}
+.srow input{accent-color:var(--gold);width:16px;height:16px;margin:0}
+.srow i{width:8px;height:8px;border-radius:50%;background:var(--ac);flex:none}
+.srow span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srow small{color:var(--tx2);font-variant-numeric:tabular-nums}
+.srow.zero small{color:var(--tx3)}
+.adv summary{display:flex;justify-content:space-between;align-items:center;cursor:pointer;list-style:none}
+.adv summary::-webkit-details-marker{display:none}
+.adv summary::after{content:"▾";color:var(--tx2);margin-left:8px}.adv[open] summary::after{content:"▴"}
+.adv-sum{margin-left:auto;color:var(--tx2);font-size:12px}
+.adv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.adv-grid>label:not(.opt){display:grid;gap:5px;color:var(--tx2);font-size:12px;font-weight:600}
+.adv-grid .span2{grid-column:1/-1}
+.adv-grid .opt{padding:6px 0;border-top:1px solid var(--bd)}
+.su-foot{position:sticky;bottom:0;z-index:5;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--g4);align-items:end;margin:var(--g3) calc(-1 * var(--g4)) 0;padding:var(--g3) var(--g4);background:var(--s0);box-shadow:0 -14px 18px -10px var(--s0),0 -1px 0 var(--bd);border-radius:0 0 var(--r3) var(--r3)}
+.su-msgs{display:grid;gap:6px;align-content:end}
+.msg{padding:8px 11px;border-radius:var(--r1);font-size:13px;font-weight:600}
+.msg.err{background:color-mix(in srgb,var(--red) 14%,transparent);border:1px solid color-mix(in srgb,var(--red) 45%,transparent);color:#F7C4C0}
+.msg.wrn{background:color-mix(in srgb,var(--gold) 10%,transparent);border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);color:#F2D9A2}
+.su-go{display:grid;justify-items:end;gap:8px}
+.su-sum{margin:0;color:var(--tx2);font-size:13px;text-align:right}
+.su-sum b{color:var(--tx)}
+.su-go .gb{min-width:300px;min-height:56px;font-size:17px}
+
+/* ---------- arena grid ---------- */
+.arena{display:grid;gap:var(--g4);align-items:start;
+  grid-template-columns:minmax(0,1fr) minmax(min(420px,40vw),1.32fr) minmax(0,1fr);
+  grid-template-areas:"p0 lot p1" "p0 host p1"}
+#pl0{grid-area:p0}#pl1{grid-area:p1}#centre{grid-area:lot}#host{grid-area:host}
+
+/* ---------- player panel ---------- */
+.pl{padding:var(--g4);border-top:3px solid var(--pc);transition:border-color .2s}
+.pl.lead{border-color:var(--pc);box-shadow:var(--sh),0 0 0 1px color-mix(in srgb,var(--pc) 45%,transparent)}
+.ph{display:flex;align-items:center;gap:var(--g2);min-height:28px}
+.ph h3{margin:0;flex:1;min-width:0;font:400 24px/1 var(--disp);letter-spacing:.5px;color:var(--pc);text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{flex:none;padding:3px 8px;border-radius:999px;font:700 10px/1.4 var(--ui);letter-spacing:.08em;text-transform:uppercase}
+.badge.full{background:color-mix(in srgb,var(--red) 18%,transparent);color:#F7C4C0}
+.badge.lead{background:color-mix(in srgb,var(--pc) 18%,transparent);color:var(--pc)}
+.badge.high{background:color-mix(in srgb,var(--gold) 18%,transparent);color:var(--gold)}
+.stats{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:var(--g2);margin:var(--g3) 0}
+.stat{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r1);padding:8px 10px}
+.stat b{display:block;font:800 22px/1.1 var(--num);font-variant-numeric:tabular-nums;margin-top:5px}
+.stat .money{color:var(--gold)}
+.slots{display:grid;gap:6px;margin-bottom:var(--g3)}
+.slot.empty{display:flex;align-items:center;min-height:46px;padding:5px 10px;background:var(--s0);border:1px solid var(--bd);border-radius:var(--r1)}
+.slot.empty{justify-content:center;border-style:dashed;color:var(--tx3);font-size:12px}
+.bids{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:var(--g2)}
+.bids .gb{padding:0 4px;font-size:14px;font-variant-numeric:tabular-nums}
+.pips{display:inline-flex;gap:3px}
+.pips i{width:6px;height:6px;border-radius:50%;background:currentColor}
+.pips i.off{opacity:.25}
+.note{color:var(--tx2);font-size:12px;margin:var(--g2) 0 0;min-height:17px;text-align:center}
+
+/* ---------- the lot: premium collectible card ---------- */
+.centre{display:grid;gap:var(--g3)}
+/* rarity palette (mirrors data/config.js stars) */
+.s1{--rc:#9098A5}.s2{--rc:#58B87B}.s3{--rc:#55A5EE}.s4{--rc:#B18AF4}.s5{--rc:#EBA34D}.s6{--rc:#E96878}.s7{--rc:#E8CB79}
+.pcard{position:relative;display:grid;grid-template-columns:minmax(160px,44%) minmax(0,1fr);gap:var(--g4);padding:var(--g3);
+  background:linear-gradient(160deg,color-mix(in srgb,var(--rc) 10%,var(--s1)),var(--s1) 55%);
+  border:1px solid color-mix(in srgb,var(--rc) 38%,var(--bd));border-radius:var(--r3);box-shadow:var(--sh),inset 0 0 0 1px rgba(255,255,255,.02)}
+.pcard::before{content:"";position:absolute;inset:0 0 auto;height:3px;border-radius:var(--r3) var(--r3) 0 0;background:var(--rc)}
+.pc-art{position:relative;align-self:start;overflow:hidden;border-radius:var(--r2);outline:1px solid color-mix(in srgb,var(--rc) 55%,transparent);outline-offset:-1px}
+.pc-art .ini{width:100%;height:auto;aspect-ratio:3/4;border-radius:var(--r2);font:400 54px var(--disp);
+  background:linear-gradient(150deg,color-mix(in srgb,var(--ac) 75%,#0B0D12),color-mix(in srgb,var(--ac) 25%,#0B0D12));color:rgba(11,13,18,.7)}
+.pc-art .ini img{object-position:50% 8%}
+.pc-art::after{content:"";position:absolute;inset:auto 0 0;height:42%;background:linear-gradient(180deg,transparent,rgba(11,13,18,.92));pointer-events:none}
+.pc-rar{position:absolute;z-index:1;left:8px;top:8px;padding:3px 8px;border-radius:999px;background:rgba(11,13,18,.82);border:1px solid color-mix(in srgb,var(--rc) 60%,transparent);
+  color:var(--rc);font:800 10px var(--ui);letter-spacing:.1em;text-transform:uppercase}
+.pc-stars{position:absolute;z-index:1;left:0;right:0;bottom:10px;text-align:center;font-size:21px;letter-spacing:3px;line-height:1}
+.pc-stars .on{color:var(--rc);text-shadow:0 1px 0 rgba(0,0,0,.6)}.pc-stars .off{color:rgba(255,255,255,.14)}
+.pc-body{display:flex;flex-direction:column;min-width:0;text-align:left;padding:4px 2px 2px}
+.pc-tags{display:flex;flex-wrap:wrap;gap:6px}
+.show{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;background:var(--s2);border:1px solid var(--bd);font:700 11px var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--tx2)}
+.show::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ac)}
+.med{padding:4px 9px;border-radius:999px;font:700 11px var(--ui);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--bd2);color:var(--tx)}
+.med.m-manga{background:rgba(255,255,255,.06)}.med.m-manhwa{background:rgba(107,140,255,.14)}.med.m-anime{background:rgba(238,100,155,.12)}
+.cname{margin:12px 0 0;font:400 clamp(30px,2.8vw,44px)/.98 var(--disp);letter-spacing:.5px;text-transform:uppercase;overflow-wrap:anywhere}
+.form{color:var(--tx2);font-size:14px;margin-top:6px;min-height:20px}
+.pwr{display:flex;align-items:baseline;gap:6px;margin-top:auto;padding-top:var(--g3)}
+.pwr b{font:800 44px/1 var(--num);font-variant-numeric:tabular-nums;color:var(--tx)}
+.pbar{height:6px;margin-top:8px;background:var(--s2);border-radius:99px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--rc);border-radius:99px}
+.tdesc{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-top:10px;color:var(--tx2);font-size:12px;line-height:1.4}
+.tdesc b{color:var(--tx);font-weight:700}
+.no-vs .tdesc{display:none}
+.spoilsafe{margin:8px 0 0;padding:8px 10px;border-radius:var(--r1);background:var(--s2);color:var(--tx2);font-size:12px}
+.vfb{padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:var(--s2);color:var(--tx2)}
+.vfb.needs-review{color:#F2C46B}
+.ib.sm{height:30px;padding:0 10px;font-size:12px}
+.pc-statsbtn{align-self:flex-start;margin-top:12px;color:var(--tx);border-color:var(--bd2)}
+.src{align-self:flex-start;padding:4px 9px;border-radius:999px;font:700 11px var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,transparent);border:1px solid color-mix(in srgb,var(--gold) 35%,transparent)}
+.r .src{padding:1px 6px;font-size:9px;margin-left:6px;vertical-align:1px}
+/* card back: statistics panel, same card size (height comes from the artwork column) */
+.back{position:absolute;z-index:3;inset:10px;overflow:auto;text-align:left;font-size:12.5px;padding:0 10px 8px;border-radius:var(--r2);
+  background:color-mix(in srgb,var(--rc) 5%,var(--s1));border:1px solid color-mix(in srgb,var(--rc) 30%,var(--bd));scrollbar-width:thin}
+.pcard.flipped .pc-art{filter:blur(2px) brightness(.5)}
+.bk-hd{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0 8px;background:color-mix(in srgb,var(--rc) 5%,var(--s1));z-index:1}
+.back dl{margin:0}
+.sr{display:grid;grid-template-columns:104px 1fr;gap:8px;padding:7px 0;border-top:1px solid var(--bd)}
+.sr dt{color:var(--tx2);font-weight:600}
+.sr dd{margin:0;color:var(--tx);overflow-wrap:anywhere}
+.sr small{color:var(--tx2)}
+.sr a{color:var(--tx);text-underline-offset:2px}
+.scs{display:flex;flex-wrap:wrap;gap:4px}
+.sc{padding:2px 7px;border-radius:5px;background:var(--s2);border:1px solid var(--bd);font-size:11px}
+.sc.more{color:var(--tx2)}
+.na{color:var(--tx3);font-style:italic}
+.vf.verified{color:var(--green)}.vf.legacy,.vf.imported{color:var(--tx2)}.vf.needs-review{color:#F2C46B}
+.notes{margin:4px 0 0;padding-left:16px;color:var(--tx2)}
+.game-note{margin:8px 0 0;color:var(--tx3);font-size:11px}
+/* reveals: longer and more distinctive as rarity rises; all 200–350ms; off with reduced motion */
+.pcard.reveal{animation:rvA .22s cubic-bezier(.2,.8,.3,1)}
+.pcard.reveal.s4,.pcard.reveal.s5{animation:rvA .28s cubic-bezier(.2,.8,.3,1),rvEdge .28s ease-out}
+.pcard.reveal.s6,.pcard.reveal.s7{animation:rvA .32s cubic-bezier(.2,.8,.3,1),rvEdge .32s ease-out}
+.pcard.reveal.s7{animation-duration:.35s}
+.pcard.reveal.s6 .pc-art::before,.pcard.reveal.s7 .pc-art::before{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.16) 50%,transparent 65%);transform:translateX(-100%);animation:rvSheen .35s ease-out .05s}
+.pcard.reveal.s7 .pc-stars{animation:rvStars .35s ease-out}
+@keyframes pop{from{transform:translateY(8px) scale(.985);opacity:0}}
+@keyframes rvA{from{transform:translateY(8px) scale(.985);opacity:0}}
+@keyframes rvEdge{from{border-color:transparent;box-shadow:var(--sh),0 0 0 0 transparent}50%{box-shadow:var(--sh),0 0 0 2px color-mix(in srgb,var(--rc) 45%,transparent)}}
+@keyframes rvSheen{to{transform:translateX(100%)}}
+@keyframes rvStars{from{letter-spacing:10px;opacity:.2}}
+
+/* compact character card: rosters, history, results */
+.cc{display:flex;align-items:center;gap:10px;min-height:46px;padding:5px 10px 5px 6px;background:var(--s0);border:1px solid var(--bd);border-left:3px solid var(--rc);border-radius:var(--r1)}
+.cc .ini{width:34px;height:34px}
+.cc .nm{flex:1;min-width:0;font-weight:700;font-size:14px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cc .nm small{display:block;font-weight:500;color:var(--tx2);font-size:11px;overflow:hidden;text-overflow:ellipsis}
+.cs{color:var(--rc);letter-spacing:1px}
+.cc .pr{font:800 13px var(--num);font-variant-numeric:tabular-nums;color:var(--gold)}
+.cc .pr.gift{color:var(--green);font-size:10px;letter-spacing:.08em}
+.cc .pr.sk{color:var(--red);font-size:10px;letter-spacing:.08em}
+.empty-tier{color:var(--tx3);font-size:13px;margin:0}
+
+.bidbox{display:grid;grid-template-columns:1fr minmax(0,1.25fr);gap:var(--g3);align-items:stretch;padding:var(--g3);border-radius:var(--r2)}
+.hb{display:flex;flex-direction:column;justify-content:center;min-width:0;padding:4px 6px}
+.hb b{font:800 40px/1 var(--num);font-variant-numeric:tabular-nums;color:var(--gold);margin:6px 0 4px}
+.hb span:last-child{font-weight:600;font-size:13px;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bidbox .gb{height:100%;min-height:64px;font-size:16px;text-transform:uppercase;letter-spacing:.04em}
+
+.host{padding:var(--g3) var(--g4) var(--g4)}
+.host .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--g3)}
+.host .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--g2)}
+.host .gb{font-size:13px;min-height:44px;padding:0 8px}
+.host .gb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- power bar ---------- */
+.power{margin-top:var(--g4);padding:var(--g3) var(--g4)}
+.power .hd{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:var(--g3);font-weight:700}
+.power .hd>span:last-child{text-align:right}
+.power .hd b{font:800 20px var(--num);font-variant-numeric:tabular-nums;margin:0 4px}
+.power .hd small{color:var(--tx2);font-weight:600}
+.bar{display:flex;height:8px;margin:var(--g2) 0;background:var(--s2);border-radius:99px;overflow:hidden;gap:2px}
+.bar i{display:block;height:100%;transition:width .4s ease}
+.verdict{text-align:center;font:700 12px var(--ui);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+
+
+/* ---------- dialogs ---------- */
+dialog.dlg{width:min(560px,calc(100vw - 32px));max-height:min(80vh,720px);padding:0;border:1px solid var(--bd2);border-radius:var(--r3);background:var(--s1);color:var(--tx);box-shadow:0 30px 80px -20px rgba(0,0,0,.8)}
+dialog.dlg::backdrop{background:rgba(5,6,9,.72)}
+.dlg .dh{display:flex;justify-content:space-between;align-items:center;padding:var(--g4) var(--g4) var(--g3);border-bottom:1px solid var(--bd)}
+.dlg .dh h2{margin:0;font:400 26px/1 var(--disp);letter-spacing:.5px;text-transform:uppercase}
+.dlg .db{padding:var(--g4);overflow:auto;font-size:14px;color:var(--tx2)}
+.dlg .db p{margin:0 0 var(--g3)}
+.dlg .db b{color:var(--tx)}
+.dlg .db a{color:var(--tx)}
+.opt{display:flex;justify-content:space-between;align-items:center;gap:var(--g4);padding:var(--g3) 0;border-top:1px solid var(--bd)}
+.opt:first-child{border-top:0;padding-top:0}
+.opt b{display:block;font-weight:700}
+.opt small{color:var(--tx2)}
+.tog{appearance:none;flex:none;width:42px;height:24px;border-radius:99px;background:var(--s3);position:relative;cursor:pointer;transition:background .15s}
+.tog::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--tx);transition:transform .15s}
+.tog:checked{background:var(--gold)}.tog:checked::after{transform:translateX(18px);background:#16120A}
+.tog:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* ---------- below the stage ---------- */
+.below{display:grid;grid-template-columns:2fr 1fr;gap:var(--g4);margin-bottom:var(--g4)}
+.card{border-radius:var(--r2);border-color:var(--bd)}
+.below p{margin:0 0 10px;color:var(--tx2)}
+.keys{border-collapse:collapse;width:100%;font-size:14px;margin-top:6px}
+.keys td{padding:9px 6px;border-top:1px solid var(--bd);vertical-align:top;color:var(--tx2)}
+.keys td:first-child{font-weight:700;white-space:nowrap;width:1%;padding-right:18px}
+.k-g{color:var(--green)!important}.k-r{color:var(--red)!important}.k-y{color:var(--gold)!important}
+.best{color:var(--tx2)}
+.best b{display:block;font:800 48px/1 var(--num);font-variant-numeric:tabular-nums;color:var(--gold)}
+.best .who{color:var(--tx);font-weight:700;margin-top:6px}
+
+/* character list */
+.list .hd{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:var(--g4)}
+.list .hd h2{margin:0}
+.seg{display:inline-flex;padding:3px;border:1px solid var(--bd);border-radius:var(--r2);background:var(--s0)}
+.seg button{border:0;border-radius:7px;background:transparent;color:var(--tx2);font:600 13px var(--ui);padding:0 12px;min-height:34px;cursor:pointer}
+.seg button.on{background:var(--s3);color:var(--tx)}
+.th{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:var(--g5) 0 var(--g2);font:400 20px var(--disp);letter-spacing:1px;text-transform:uppercase;color:var(--tc)}
+.th:first-child{margin-top:0}
+.th small{color:var(--tx2);font:400 13px var(--ui);letter-spacing:0;text-transform:none}
+.rows{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px}
+.r{display:flex;align-items:center;gap:10px;padding:7px 10px;background:var(--s0);border:1px solid var(--bd);border-left:3px solid var(--rc,var(--bd));border-radius:var(--r1);font-size:14px}
+.r .ini{width:30px;height:30px;font-size:10px;border-radius:5px}
+.r .nm{flex:1;min-width:0;line-height:1.2;font-weight:700}
+.r .nm small{display:block;font-weight:400;color:var(--tx2);font-size:12px}
+.r .k{font:600 11px var(--ui);font-variant-numeric:tabular-nums;color:var(--tx3);width:24px;text-align:right}
+.r .st{font:700 12px var(--ui);white-space:nowrap;text-align:right;color:var(--tx)}
+.r .st .vs{color:var(--tx2);font-weight:500;font-size:11px}
+.r.gone{opacity:.4}
+.r.now{border-color:var(--gold);box-shadow:inset 3px 0 0 var(--gold)}
+.tag{font:700 11px var(--ui);padding:3px 7px;border-radius:5px;white-space:nowrap;color:#0B0D12}
+.tag.p0{background:var(--p0)}.tag.p1{background:var(--p1)}.tag.sk{background:var(--red);color:#fff}.tag.now{background:var(--gold)}
+
+
+/* ---------- Step 4: dashboards, bidding, feedback, history ---------- */
+.gb[aria-disabled=true]{opacity:.38;cursor:not-allowed}
+.gb[aria-disabled=true]:hover{background:inherit}
+.shake{animation:shake .32s ease}
+@keyframes shake{20%,60%{transform:translateX(-3px)}40%,80%{transform:translateX(3px)}}
+.pl.lead{box-shadow:var(--sh),0 0 0 1px var(--pc),0 0 0 4px color-mix(in srgb,var(--pc) 16%,transparent)}
+.pl.flash{animation:leadPulse .45s ease-out}
+@keyframes leadPulse{from{box-shadow:var(--sh),0 0 0 1px var(--pc),0 0 0 10px color-mix(in srgb,var(--pc) 28%,transparent)}}
+.pl.complete{border-top-color:color-mix(in srgb,var(--pc) 55%,var(--s3))}
+.badge.st-leading{background:var(--pc);color:#0B0D12}
+.badge.st-can-bid{background:var(--s2);color:var(--tx2)}
+.badge.st-outbid{background:color-mix(in srgb,var(--pc) 16%,transparent);color:var(--pc)}
+.badge.st-cant-afford{background:color-mix(in srgb,var(--red) 16%,transparent);color:#F7C4C0}
+.badge.st-complete{background:color-mix(in srgb,var(--green) 18%,transparent);color:#BFEBD2}
+.badge.st-done{background:var(--s2);color:var(--tx2)}
+.bal{margin:var(--g3) 0 0;padding:10px 12px;border-radius:var(--r2);background:var(--s0);border:1px solid var(--bd);border-left:3px solid var(--pc)}
+.bal .money{display:block;font:800 40px/1 var(--num);font-variant-numeric:tabular-nums;color:var(--gold);margin:6px 0 4px}
+.bal .sub{color:var(--tx2);font-size:12px;font-weight:600}
+.bal.bump .money{animation:bump .3s ease-out}
+@keyframes bump{40%{transform:scale(1.06)}}
+.skp{display:flex;align-items:center;gap:8px}
+.skp .pips{color:var(--red)}
+.slots{grid-template-columns:1fr}
+.sn{flex:none;width:16px;font:700 11px var(--ui);color:var(--tx3);text-align:center;font-variant-numeric:tabular-nums}
+.slot.empty{gap:8px;justify-content:flex-start}
+.cc.slot{width:100%;text-align:left;color:inherit;font:inherit;cursor:pointer;gap:8px;padding-left:4px}
+.cc.slot:hover{background:var(--s1);border-color:var(--bd2)}
+.cc.slot:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.cc.slot .nm small{font-size:11px}
+.cc.slot .nm .meta{color:var(--tx)}
+.cc.slot.is-gift .ini{box-shadow:0 0 0 2px var(--green)}
+.slot-new{animation:slotIn .35s ease-out}
+@keyframes slotIn{from{transform:translateX(-6px);opacity:.2;background:color-mix(in srgb,var(--rc) 25%,var(--s0))}}
+.complete{margin-top:var(--g2);padding:12px;border-radius:var(--r1);text-align:center;font:800 13px var(--ui);letter-spacing:.16em;
+  color:#BFEBD2;background:color-mix(in srgb,var(--green) 12%,transparent);border:1px solid color-mix(in srgb,var(--green) 45%,transparent)}
+.bidb{flex-direction:column;gap:1px;min-height:46px;line-height:1}
+.bidb small{font:600 11px var(--ui);color:var(--tx2);font-variant-numeric:tabular-nums}
+.bidb.g-p small{color:var(--tx)}
+.bidbox{grid-template-columns:auto minmax(0,1fr) minmax(0,1.1fr);align-items:center;border-left:3px solid var(--bd2);transition:border-color .2s}
+.bidbox.has-lead{border-color:var(--lc);border-left-color:var(--lc);background:linear-gradient(90deg,color-mix(in srgb,var(--lc) 10%,var(--s1)),var(--s1) 60%)}
+.bidbox.bump .hb b{animation:bump .3s ease-out}
+.hb .leader{display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px;color:var(--lc,var(--tx2))}
+.hb .leader i{width:8px;height:8px;border-radius:50%;background:var(--lc)}
+.bmeta{display:grid;gap:6px;min-width:0;font-size:12px}
+.bmeta b{font:800 18px var(--num);margin-left:6px}
+.incs{display:flex;flex-wrap:wrap;gap:4px}
+.inc{padding:2px 6px;border-radius:5px;background:var(--s2);border:1px solid var(--bd);font-weight:600;color:var(--tx2)}
+.pp{display:flex;gap:10px;flex-wrap:wrap;font-weight:700}
+.confirm{flex-direction:column;gap:4px}
+.confirm .lbl{color:rgba(22,18,10,.65);font-size:10px}
+.confirm[aria-disabled=true] .lbl{color:inherit}
+.msk{height:26px}
+.history{margin-top:var(--g3);border-top:1px solid var(--bd);padding-top:var(--g2)}
+.history summary{display:flex;justify-content:space-between;align-items:center;cursor:pointer;list-style:none;padding:4px 0}
+.history summary::-webkit-details-marker{display:none}
+.history summary::after{content:"▾";color:var(--tx2);margin-left:8px}
+.history[open] summary::after{content:"▴"}
+.hcount{margin-left:auto;color:var(--tx2);font-size:12px}
+.history ol{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;max-height:220px;overflow:auto}
+.history li{display:grid;grid-template-columns:30px minmax(0,1.2fr) minmax(0,1fr) auto;gap:8px;align-items:center;padding:5px 8px;border-radius:var(--r1);background:var(--s0);border-left:3px solid var(--rc);font-size:12px}
+.rn{color:var(--tx3);font-weight:700;font-variant-numeric:tabular-nums}
+.hn{font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hn small{display:block;font-weight:500;color:var(--tx2);font-size:11px}
+.hb2 i{font-style:normal;font-weight:700}.hb2 .nob{color:var(--tx3);font-weight:500}
+.hr{font-weight:700;white-space:nowrap}.hr.gift{color:var(--green)}.hr.skip{color:var(--red)}.hr.now{color:var(--gold)}
+.toasts{position:fixed;z-index:50;left:50%;bottom:20px;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:min(440px,calc(100vw - 24px))}
+.stagebox:fullscreen .toasts{position:fixed}
+.toast{padding:9px 14px;border-radius:var(--r2);background:rgba(28,33,43,.97);border:1px solid var(--bd2);color:var(--tx);font:600 13px var(--ui);box-shadow:0 12px 30px -10px rgba(0,0,0,.7);animation:toastIn .2s ease-out;text-align:center}
+.toast.out{opacity:0;transform:translateY(6px);transition:all .2s}
+.toast.t-sold{border-color:color-mix(in srgb,var(--gold) 60%,transparent)}
+.toast.t-gift{border-color:color-mix(in srgb,var(--green) 60%,transparent)}
+.toast.t-skip,.toast.t-warn{border-color:color-mix(in srgb,var(--red) 60%,transparent)}
+.toast.t-end{border-color:var(--gold);color:var(--gold)}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}}
+dialog.dlg.wide{width:min(620px,calc(100vw - 24px))}
+.back.in-dlg{position:static;inset:auto;max-height:min(78vh,700px);border:0;padding:0 16px 14px}
+
+
+/* ---------- Step 8: controls, timer, hidden information ---------- */
+.modes{grid-template-columns:repeat(4,minmax(0,1fr))}
+.resume{display:flex;align-items:center;gap:var(--g3);flex-wrap:wrap;margin:0 0 var(--g3);padding:var(--g3) var(--g4);border-radius:var(--r2);background:color-mix(in srgb,var(--gold) 10%,var(--s1));border:1px solid color-mix(in srgb,var(--gold) 40%,var(--bd))}
+.resume p{margin:0;flex:1;min-width:200px;font-size:14px}.resume p small{display:block;color:var(--tx2)}
+.resume .gb{width:auto}
+.grp{margin-top:6px;padding-top:8px;border-top:1px solid var(--bd)}
+.clues{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--tx2);font-size:12px;font-weight:600}
+.clues legend{padding:0;margin-bottom:6px}.clues label{display:flex;gap:6px;align-items:center}.clues input{accent-color:var(--gold)}
+.fine{margin:0;color:var(--tx3);font-size:11px}
+.pauseov{position:absolute;inset:56px 0 0;z-index:20;display:grid;justify-items:center;align-items:start;background:rgba(11,13,18,.82);backdrop-filter:blur(2px);border-radius:0 0 var(--r3) var(--r3)}
+.pauseov>div{position:sticky;top:max(90px,28vh);margin-top:60px;text-align:center;padding:var(--g5);background:var(--s1);border:1px solid var(--bd2);border-radius:var(--r3)}
+.pauseov b{display:block;font:400 40px var(--disp);letter-spacing:1px;text-transform:uppercase}
+.pauseov p{color:var(--tx2);margin:6px 0 var(--g4)}
+.cfrow{display:flex;gap:var(--g2);justify-content:flex-end;margin-top:var(--g3)}.cfrow .gb{width:auto;min-width:120px}
+.timer{grid-column:1/-1;display:flex;align-items:center;gap:10px;font:700 13px var(--ui);color:var(--tx2)}
+.timer .tbar{flex:1;height:5px;border-radius:99px;background:var(--s2);overflow:hidden}.timer .tbar i{display:block;height:100%;background:var(--gold);transition:width .2s linear}
+.timer b{font:800 16px var(--num);font-variant-numeric:tabular-nums;color:var(--tx);min-width:38px;text-align:right}
+.timer.low b,.timer.low{color:var(--red)}.timer.low .tbar i{background:var(--red)}
+.timer.off{opacity:.6}
+.hidden-val{color:var(--tx3);font-style:italic}
+.pcard.mystery{--rc:#8A8FA0}
+.mart{display:grid;place-items:center;width:100%;aspect-ratio:3/4;border-radius:var(--r2);background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--ac,#555) 30%,#0B0D12) 0 10px,color-mix(in srgb,var(--ac,#555) 18%,#0B0D12) 10px 20px);font:400 86px var(--disp);color:rgba(255,255,255,.5)}
+.clist{display:grid;gap:6px;margin-top:10px}
+.clue{display:flex;justify-content:space-between;gap:10px;padding:6px 9px;border-radius:var(--r1);background:var(--s2);font-size:13px}
+.clue span{color:var(--tx2)}.clue b{text-align:right}
+.keys2 td{padding:6px 8px;border-top:1px solid var(--bd)}.keys2 td:first-child{white-space:nowrap}
+.focus-mode .top,.focus-mode .gt,.focus-mode .below,.focus-mode #list,.focus-mode .foot{display:none!important}
+.focus-mode main.page{max-width:none;padding-top:8px}
+
+
+/* ---------- Step 9: results ---------- */
+.res{display:grid;gap:var(--g4)}
+.res-hero{position:relative;overflow:hidden;padding:var(--g5) var(--g5) var(--g4);text-align:center;border-radius:var(--r3);background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--gold) 14%,var(--s1)),var(--s1) 60%);border:1px solid color-mix(in srgb,var(--gold) 45%,var(--bd))}
+.res-hero::after{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.res-hero .lbl{display:block}
+.res-hero h2{margin:10px 0 4px;font:400 clamp(44px,6vw,76px)/1 var(--disp);letter-spacing:1px;text-transform:uppercase;color:var(--gold);animation:resIn .45s cubic-bezier(.2,.8,.3,1)}
+.res-hero h2 .wcol{color:var(--wc)}
+.res-hero p{margin:0 auto;color:var(--tx2);max-width:60ch}
+@keyframes resIn{from{opacity:0;transform:translateY(10px) scale(.97)}}
+.res-score{display:grid;grid-template-columns:1fr auto 1fr;gap:var(--g4);align-items:end;max-width:760px;margin:var(--g4) auto 6px}
+.res-score div{display:grid;gap:4px}
+.res-score b{font:800 clamp(40px,5vw,60px)/1 var(--num);font-variant-numeric:tabular-nums}
+.res-score small{color:var(--tx2);font-weight:600}
+.res-score .win b{text-shadow:0 0 24px color-mix(in srgb,var(--gold) 35%,transparent)}
+.res-score .crown{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--gold)}
+.res .bar{max-width:760px;margin:10px auto 0;height:10px}
+.res-totals{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:var(--g4)}
+.res-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--g2);margin-top:var(--g4)}
+.res-actions .gb{width:auto;min-width:150px}
+.res-teams{display:grid;grid-template-columns:1fr 1fr;gap:var(--g4)}
+.rteam{padding:var(--g4);border-top:3px solid var(--pc)}
+.rteam.won{box-shadow:var(--sh),0 0 0 1px color-mix(in srgb,var(--gold) 55%,transparent)}
+.rteam .ph h3{color:var(--pc)}
+.rnums{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:var(--g3) 0}
+.rnums div{background:var(--s2);border-radius:var(--r1);padding:7px 9px}.rnums b{display:block;font:800 18px var(--num);font-variant-numeric:tabular-nums;margin-top:3px}
+.rcards{display:grid;gap:6px}
+.rcard{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;padding:6px 10px 6px 6px;text-align:left;color:inherit;font:inherit;cursor:pointer;
+  background:var(--s0);border:1px solid var(--bd);border-left:3px solid var(--rc);border-radius:var(--r1)}
+.rcard:hover{border-color:var(--bd2)}.rcard:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.rcard .ini{width:44px;height:56px;border-radius:6px}
+.rcard .nm{min-width:0;font-weight:700;line-height:1.25}
+.rcard .nm small{display:block;font-weight:500;color:var(--tx2);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rcard .rv{text-align:right;font-size:11px;color:var(--tx2)}.rcard .rv b{display:block;font:800 18px var(--num);color:var(--tx)}
+.rcard .rv .pr{color:var(--gold);font-weight:800}.rcard .rv .pr.gift{color:var(--green)}
+.awards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:var(--g2)}
+.award{padding:var(--g3);border-radius:var(--r2);background:var(--s1);border:1px solid var(--bd)}
+.award .lbl{color:var(--gold)}.award b{display:block;margin-top:6px;font-size:15px}.award small{color:var(--tx2)}
+.res-sec{padding:var(--g3) var(--g4)}
+.res-sec summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.res-sec summary::-webkit-details-marker{display:none}.res-sec summary::after{content:"▾";color:var(--tx2)}.res-sec[open] summary::after{content:"▴"}
+.st-grid{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px 14px;margin-top:var(--g3);font-size:13px}
+.st-grid .h{font-weight:800}.st-grid .k{color:var(--tx2)}
+.mini-bars{display:flex;gap:2px;align-items:flex-end;height:28px}.mini-bars i{flex:1;background:var(--pc);border-radius:2px 2px 0 0;min-height:2px;opacity:.85}
+.hfil{display:flex;flex-wrap:wrap;gap:4px;margin:var(--g3) 0}
+.res .history ol{max-height:none}
+.prev li{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--bd)}
+.prev ol{list-style:none;margin:0;padding:0}.prev small{color:var(--tx2)}
+.su-links{display:flex;gap:6px;justify-content:flex-end}
+@media(max-width:820px){.res-teams{grid-template-columns:1fr}.st-grid{grid-template-columns:auto 1fr 1fr}}
+@media(max-width:600px){.res-hero{padding:var(--g4) var(--g3)}.res-actions .gb{min-width:0;flex:1 1 45%}.rnums b{font-size:15px}.res-score{gap:8px}}
+
+
+/* ---------- full-window app shell (Deep Cut style) ---------- */
+body.app{min-height:100vh;background:#07080C;overflow-x:hidden}
+body.app header.top,body.app .gt,body.app .below,body.app .foot{display:none}
+body.app main.page{max-width:none;padding:0;position:relative;z-index:2}
+body.app .stagebox{margin:0}
+body.app #stage{max-width:1440px;margin:0 auto;min-height:calc(100vh - 60px);padding:0 var(--g4) var(--g5);background:transparent;border:0;box-shadow:none;border-radius:0}
+body.app .ghead{margin:0 0 var(--g4);border:1px solid var(--bd);border-radius:var(--r2);background:rgba(19,23,32,.88);backdrop-filter:blur(6px)}
+.appbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;height:60px;padding:0 20px;background:linear-gradient(180deg,rgba(7,8,12,.92),rgba(7,8,12,.55) 70%,transparent)}
+.appbar .rlogo svg{height:44px}
+.app-tools{display:flex;align-items:center;gap:8px;margin-left:auto}
+.app-exit{width:auto;min-height:36px;padding:0 14px;font-size:13px;text-decoration:none;letter-spacing:.06em;text-transform:uppercase}
+#soundBtn .off,#soundBtn[aria-pressed=true] .on{display:inline}#soundBtn .on,#soundBtn[aria-pressed=true] .off{display:none}
+/* backdrop: spotlight, drifting rarity cards, arena floor */
+.scene{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:radial-gradient(120% 80% at 50% -10%,#1a1e2b 0%,#0b0d12 55%,#06070a 100%);transition:opacity .4s}
+.scene .spot{position:absolute;left:50%;top:-20vh;width:120vh;height:120vh;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(213,174,94,.16),rgba(213,174,94,.05) 55%,transparent 75%);animation:spotSway 14s ease-in-out infinite alternate}
+.scene .floor{position:absolute;left:-10%;right:-10%;bottom:-30vh;height:55vh;border-radius:50%;background:radial-gradient(closest-side,rgba(213,174,94,.10),transparent 70%);border-top:1px solid rgba(213,174,94,.12)}
+.scene .fc{position:absolute;left:var(--x);bottom:-140px;width:64px;height:88px;border-radius:8px;border:2px solid var(--c);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 22%,#0B0D12),#0B0D12);opacity:.22;transform:rotate(var(--r));animation:drift var(--d) linear var(--t) infinite}
+.scene .fc::after{content:"★";position:absolute;inset:0;display:grid;place-items:center;color:var(--c);font-size:22px;opacity:.8}
+@keyframes drift{to{transform:translateY(-130vh) rotate(calc(var(--r) * -1))}}
+@keyframes spotSway{to{transform:translateX(-46%)}}
+body.in-match .scene{opacity:.35}
+/* intro */
+.intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:#06070A;cursor:pointer;transition:opacity .35s}
+.intro.out{opacity:0;pointer-events:none}
+.in-spot{position:absolute;inset:0;background:radial-gradient(50% 45% at 50% 42%,rgba(213,174,94,.22),transparent 70%);opacity:0;animation:inFade .6s ease-out .1s forwards}
+.in-cards{position:absolute;top:50%;left:50%;width:0;height:0}
+.in-cards i{position:absolute;left:-46px;top:-150px;width:92px;height:128px;border-radius:10px;border:2px solid var(--c);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 30%,#0B0D12),#0B0D12);box-shadow:0 18px 40px -16px rgba(0,0,0,.8);
+  transform:translateY(60vh) rotate(0);opacity:0;animation:deal .55s cubic-bezier(.2,.8,.3,1) calc(.35s + var(--i) * .09s) forwards}
+.in-cards i::after{content:"★";position:absolute;inset:0;display:grid;place-items:center;color:var(--c);font-size:30px}
+@keyframes deal{to{opacity:1;transform:translate(calc((var(--i) - 2) * 74px),0) rotate(calc((var(--i) - 2) * 9deg))}}
+.in-title{position:relative;margin-top:150px;text-align:center}
+.in-title b{display:block;font:400 clamp(84px,14vw,150px)/.9 var(--disp);color:var(--gold);letter-spacing:2px;transform:scale(1.6);opacity:0;animation:stamp .4s cubic-bezier(.2,.9,.3,1.2) 1s forwards;text-shadow:0 10px 40px rgba(213,174,94,.35)}
+.in-title span{display:block;margin-top:8px;font:400 clamp(22px,3.4vw,36px) var(--disp);letter-spacing:.22em;text-transform:uppercase;color:var(--tx);opacity:0;animation:inRise .5s ease-out 1.35s forwards}
+.in-skip{position:absolute;bottom:28px;left:0;right:0;text-align:center;color:var(--tx3);font-size:12px;letter-spacing:.08em;opacity:0;animation:inFade .4s ease-out 1.2s forwards}
+@keyframes inFade{to{opacity:1}}
+@keyframes stamp{to{opacity:1;transform:scale(1)}}
+@keyframes inRise{from{opacity:0;transform:translateY(10px);letter-spacing:.5em}to{opacity:1;transform:none;letter-spacing:.22em}}
+/* start screen */
+.home{display:grid;place-items:center;min-height:calc(100vh - 120px);padding:var(--g4) 0}
+.home-card{width:min(560px,100%);display:flex;flex-direction:column;align-items:center;gap:var(--g4);text-align:center;padding:var(--g5) var(--g5) var(--g4);
+  background:rgba(13,15,18,.93);border:1px solid var(--bd2);border-radius:var(--r3);backdrop-filter:blur(8px);box-shadow:0 30px 80px -30px rgba(0,0,0,.8);animation:pop .45s ease-out}
+.wordmark{margin:0;display:flex;flex-direction:column;align-items:center;line-height:.9}
+.wm-20{font:400 clamp(72px,12vw,112px)/.85 var(--disp);color:var(--gold);letter-spacing:2px;text-shadow:0 8px 32px rgba(213,174,94,.3)}
+.wm-t{font:400 clamp(22px,3.6vw,32px) var(--disp);letter-spacing:.16em;text-transform:uppercase;color:var(--tx);margin-top:8px}
+.home-tag{margin:-4px 0 0;color:var(--tx2);font-size:16px;font-weight:600}
+.home-stats{display:flex;justify-content:center;gap:var(--g5);margin:0}
+.home-stats div{display:flex;flex-direction:column;gap:4px}
+.home-stats dd{margin:0;font:800 26px var(--num);font-variant-numeric:tabular-nums;color:var(--gold)}
+.home-actions{display:grid;gap:var(--g3);width:100%}
+.gb.stack{flex-direction:column;gap:3px;min-height:64px;font-size:17px;letter-spacing:.04em;text-transform:uppercase}
+.gb.stack small{font:600 12px var(--ui);letter-spacing:0;text-transform:none;opacity:.8}
+.home-links{display:flex;flex-wrap:wrap;justify-content:center;gap:4px}
+.home-links .ib{border:0;text-transform:uppercase;letter-spacing:.08em;font-size:12px}
+.su-top{display:flex;align-items:center;gap:var(--g3);margin:var(--g2) 0 var(--g3)}
+.su-title{margin:0;font:400 30px/1 var(--disp);letter-spacing:.5px;text-transform:uppercase}
+dialog.listdlg{width:min(1100px,calc(100vw - 24px))}
+.listdlg .db{max-height:min(78vh,900px)}
+@media(max-width:600px){.appbar{padding:0 10px;height:54px}.appbar .rlogo svg{height:34px}.app-tools .ib span{display:none}.app-exit{padding:0 10px;font-size:11px}
+  .home-card{padding:var(--g4) var(--g3) var(--g3)}.home-stats{gap:var(--g4)}.home-stats dd{font-size:21px}.in-cards i{width:70px;height:98px;left:-35px;top:-120px}}
+@media(prefers-reduced-motion:reduce){.scene .fc,.scene .spot{animation:none}.intro{display:none!important}}
+.no-motion .scene .fc,.no-motion .scene .spot{animation:none}
+
+/* ---------- motion ---------- */
+.no-motion #stage *,.no-motion #stage *::before,.no-motion #stage *::after{animation:none!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){#stage *,#stage *::before,#stage *::after{animation:none!important;transition:none!important}}
+
+/* ---------- short desktop screens (1280x720, 1440x900) ---------- */
+@media(min-width:1001px) and (max-height:920px){
+  .cc.slot .nm small:not(.meta){display:none}
+  .bal{margin-top:8px;padding:7px 10px}.bal .money{font-size:30px;margin:3px 0 2px}
+  .ph h3{font-size:21px}
+  .gt .meta{display:none}
+  .cc.slot,.slot.empty{min-height:40px;padding-top:3px;padding-bottom:3px}.cc.slot .ini{width:30px;height:30px}
+  .stats{margin:10px 0}.stat{padding:6px 9px}.stat b{font-size:19px}
+  .pcard{grid-template-columns:minmax(150px,40%) minmax(0,1fr)}
+  .cname{font-size:clamp(28px,2.4vw,38px)}.pwr b{font-size:38px}
+  .bidbox .gb{min-height:56px}.hb b{font-size:34px}
+  .power{margin-top:var(--g3);padding:var(--g2) var(--g4)}
+}
+
+/* ---------- tablet ---------- */
+@media(min-width:1001px) and (max-width:1180px){
+  .bidbox{grid-template-columns:auto minmax(0,1fr)}.bidbox .confirm{grid-column:1/-1;min-height:48px}
+  .bmeta .incs{display:none}
+  .cc.slot .nm small:not(.meta){display:none}
+}
+@media(max-width:1000px){
+  .modes{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .pcard{grid-template-columns:minmax(150px,min(40%,250px)) minmax(0,1fr)}
+  .arena{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);grid-template-areas:"lot host" "p0 p1"}
+  .host .row{grid-template-columns:1fr}
+  .below{grid-template-columns:1fr}
+}
+@media(max-width:820px){
+  .su-grid{grid-template-columns:1fr}
+  .arena{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"lot lot" "p0 p1" "host host"}
+  .host .row{grid-template-columns:1fr 1fr 1fr}
+  .ghead .ib span{display:none}
+  .pcard{grid-template-columns:min(210px,40%) minmax(0,1fr)}
+  /* rosters become an avatar strip so the bid buttons stay close to the card */
+  .slots{grid-template-columns:repeat(5,1fr);gap:6px}
+  .slots{grid-template-columns:repeat(var(--n,5),1fr)}
+  .cc.slot{min-height:0;padding:0;border:0;background:none;aspect-ratio:1}
+  .cc.slot .nm,.cc.slot .pr,.slot .sn,.slot.empty span:last-child{display:none}
+  .slot.empty{min-height:0;aspect-ratio:1;padding:0}
+  .bidbox{grid-template-columns:auto minmax(0,1fr)}.bidbox .confirm{grid-column:1/-1}
+  .cc.slot .ini{width:100%;height:100%;font-size:11px;box-shadow:inset 0 -3px 0 var(--rc)}
+  .slot.empty{border:1px dashed var(--bd2);border-radius:var(--r1);font-size:0}
+  .ghead .ib{padding:0 9px}
+  .bal{margin-top:8px;padding:8px 10px}.bal .money{font-size:32px;margin:4px 0 2px}.note:empty{display:none}
+  .stats{margin:8px 0}
+}
+
+/* ---------- phone ---------- */
+@media(max-width:600px){
+  #stage{padding:0 10px 10px;border-radius:var(--r2)}
+  .ghead{margin:0 -10px var(--g3);padding:8px 10px;border-radius:var(--r2) var(--r2) 0 0}
+  .ghead .chip{height:28px;padding:0 8px}
+  .ghead .chip.mchip{display:none}
+  .ghead{min-height:0}
+  .round b{font-size:19px}
+  .arena{gap:var(--g2)}
+  .names{grid-template-columns:1fr 1fr}
+  .su-grid,.su-two,.su-foot{grid-template-columns:1fr}
+  .su-go{justify-items:stretch}.su-go .gb{min-width:0}.su-sum{text-align:left}
+  .modes{grid-template-columns:1fr 1fr}.mode{min-height:54px}
+  .sr-list{grid-template-columns:1fr}
+  
+  .pcard{grid-template-columns:120px minmax(0,1fr);gap:var(--g3);padding:10px}
+  .pc-art .ini{font-size:34px}
+  .pc-stars{font-size:13px;letter-spacing:1px;bottom:7px}
+  .pc-rar{font-size:9px;left:5px;top:5px;padding:2px 6px}
+  .cname{font-size:26px;margin-top:8px}
+  .sr{grid-template-columns:1fr;gap:2px}
+  .form{font-size:13px}
+  .pwr b{font-size:30px}
+  .pc-statsbtn{margin-top:8px;height:28px}
+  .pc-tags .show{padding:3px 7px;font-size:10px}.med,.src{padding:3px 7px;font-size:10px}
+  .tdesc{margin-top:6px}.form{margin-top:4px}
+  .bidbox{grid-template-columns:1fr 1.3fr;padding:10px}
+  .hb b{font-size:30px}
+  .bidbox .gb{min-height:54px;font-size:14px}
+  /* players side by side, compact */
+  .pl{padding:10px}
+  .ph h3{font-size:19px}
+  .ph .badge{display:none}
+  .stats{grid-template-columns:1.15fr 1fr 1fr;gap:4px;margin:8px 0}
+  .stat{padding:5px 6px}.stat b{font-size:15px;margin-top:3px}
+  .stat .lbl{font-size:9px;letter-spacing:.03em}
+  .bal{margin-top:8px;padding:6px 9px}.bal .money{font-size:28px;margin:3px 0 2px}.bal .sub{font-size:10.5px}
+  .bal .lbl{display:none}
+  .stats{margin:6px 0}.stat{padding:4px 6px}.stat b{font-size:14px;margin-top:2px}
+  .note:empty{display:none}
+  .bidbox{grid-template-columns:auto auto minmax(0,1fr)!important;gap:10px;padding:10px}
+  .bidbox .confirm{grid-column:auto!important;min-height:52px!important}
+  .confirm .lbl{display:none}
+  .hb b{font-size:26px}.hb .lbl{font-size:9px}.hb .leader{font-size:11px}
+  .bmeta .lbl{font-size:9px}.bmeta b{display:block;margin:2px 0 0;font-size:16px}
+  .ghead .r{gap:4px}.ghead .ib{height:30px;padding:0 7px}
+  .pc-body .tdesc .vfb{display:none}
+  .skp .pips{display:none}
+  .bmeta .pp,.bmeta .incs{display:none}
+  .tdesc{font-size:11px}
+  .bids{grid-template-columns:1fr 1fr}
+  .bids .gb{min-height:44px}
+  .pskip{font-size:13px;padding:0 6px}
+  .pskip .pips{display:none}
+  .note{font-size:11px}
+  .host{padding:var(--g3)}
+  .host .hd .lbl:last-child{display:none}
+  .host .gb{font-size:12px;padding:0 6px}
+  .power .hd{font-size:12px}.power .hd b{font-size:16px}
+}
+@media(max-width:380px){
+  .pcard{grid-template-columns:100px minmax(0,1fr)}
+  .host .row{grid-template-columns:1fr 1fr}
+  .host .row .g-red{grid-column:1/-1;order:3}
+}
+</style>
+</head>
+<body class="app">
+<header class="top">
+  <a class="logo" href="/" aria-label="Recess home"><span class="rlogo"></span></a>
+  <nav class="nav"><a class="on" href="/">Games</a><a href="/#board">Board</a><a href="/#prof">Profile</a></nav>
+  <a class="me" href="/#prof"><div><span>@ruben</span><small>Level 3</small></div><span class="orb">R</span></a>
+</header>
+
+<header class="appbar" id="appbar">
+  <a class="logo" href="/" aria-label="Recess home"><span class="rlogo"></span></a>
+  <div class="app-tools">
+    <button class="ib" id="soundBtn" aria-pressed="false" title="Sound effects"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="on" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/><path class="off" d="M17 9l5 6M22 9l-5 6"/></svg><span>Sound</span></button>
+    <button class="ib" id="appSetBtn" title="Settings"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span>Settings</span></button>
+    <a class="gb app-exit" href="/">Exit game</a>
+  </div>
+</header>
+<div class="scene" id="scene" aria-hidden="true"><div class="spot"></div>
+  <i class="fc" style="--c:#9098A5;--x:6%;--d:26s;--t:-4s;--r:-12deg"></i><i class="fc" style="--c:#58B87B;--x:18%;--d:31s;--t:-17s;--r:9deg"></i>
+  <i class="fc" style="--c:#55A5EE;--x:31%;--d:24s;--t:-9s;--r:-6deg"></i><i class="fc" style="--c:#B18AF4;--x:46%;--d:34s;--t:-22s;--r:14deg"></i>
+  <i class="fc" style="--c:#EBA34D;--x:60%;--d:28s;--t:-2s;--r:-10deg"></i><i class="fc" style="--c:#E96878;--x:73%;--d:22s;--t:-13s;--r:7deg"></i>
+  <i class="fc" style="--c:#E8CB79;--x:86%;--d:30s;--t:-25s;--r:-8deg"></i><i class="fc" style="--c:#55A5EE;--x:94%;--d:27s;--t:-6s;--r:11deg"></i>
+  <div class="floor"></div></div>
+<div class="intro hide" id="intro" role="presentation">
+  <div class="in-spot"></div>
+  <div class="in-cards"><i style="--c:#9098A5;--i:0"></i><i style="--c:#55A5EE;--i:1"></i><i style="--c:#E8CB79;--i:2"></i><i style="--c:#E96878;--i:3"></i><i style="--c:#B18AF4;--i:4"></i></div>
+  <div class="in-title"><b>$20</b><span>Anime Battle</span></div>
+  <p class="in-skip">Click or press any key to skip</p>
+</div>
+<main class="page">
+  <div class="gt">
+    <div><h1><em>$20</em> Anime Battle</h1><p class="meta">by Ruben &middot; Anime &middot; 2 players and a host, one screen</p></div>
+    <button class="fav" id="favBtn" aria-pressed="false"><span class="h">&#9829;</span><span id="favTxt">Add to My Recess</span></button>
+  </div>
+
+  <div class="stagebox" id="box">
+  <div id="stage">
+
+    <div class="ghead">
+      <div class="l" id="hudL"></div>
+      <div class="r">
+        <button class="ib" id="undoBtn" disabled title="Undo the last action"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg><span>Undo</span></button>
+        <button class="ib" id="pauseBtn" title="Pause (P)" disabled><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg><span>Pause</span></button>
+        <button class="ib" id="listBtn" title="Every character"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span>Characters</span></button>
+        <button class="ib" id="rulesBtn" title="Rules"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5h.01"/></svg><span>Rules</span></button>
+        <button class="ib" id="setBtn" title="Settings"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span>Settings</span></button>
+        <button class="ib" id="fsBtn" title="Full screen"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Full screen</span></button>
+        <button class="ib" id="restartBtn" title="Rematch: same setup, new characters"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v4h-4"/></svg><span>Rematch</span></button>
+        <button class="ib" id="setupBtn" title="Back to setup (the match stays saved)"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></svg><span>Setup</span></button>
+      </div>
+    </div>
+
+    <section class="home hide" id="home" aria-labelledby="homeTitle">
+      <div class="home-card">
+        <h1 class="wordmark" id="homeTitle"><span class="wm-20">$20</span><span class="wm-t">Anime Battle</span></h1>
+        <p class="home-tag">Two players. Twenty bucks. Build the strongest team in anime.</p>
+        <dl class="home-stats"><div><dt class="lbl">Matches</dt><dd id="hsMatches">0</dd></div><div><dt class="lbl">Best team</dt><dd id="hsBest">&mdash;</dd></div><div><dt class="lbl">Characters</dt><dd id="hsChars">0</dd></div></dl>
+        <div class="home-actions">
+          <button class="gb g-gold stack" id="homeResume" hidden>Resume match<small id="homeResumeSub"></small></button>
+          <button class="gb g-gold stack" id="homeQuick">Quick match<small>Classic &middot; $20 each &middot; 5 per team</small></button>
+          <button class="gb stack" id="homeSetup">Set up a match<small>Modes, series, Blind &amp; Mystery, timer</small></button>
+        </div>
+        <nav class="home-links" aria-label="More"><button class="ib" id="homeHow">How to play</button><button class="ib" id="homePrev">Previous matches</button><button class="ib" id="homeChars">Characters</button></nav>
+      </div>
+    </section>
+    <section class="setup hide" id="setup" aria-label="Match setup">
+      <div class="su-top"><button type="button" class="ib" id="setupBack">&larr; Back</button><h2 class="su-title">Match setup</h2></div>
+      <div class="resume hide" id="resumeBox" role="region" aria-label="Unfinished match"></div>
+      <div class="su-grid">
+        <div class="su-col">
+          <div class="su-card">
+            <div class="names">
+              <div><label class="lbl p0" for="n0">Player 1</label><input type="text" id="n0" maxlength="16" placeholder="Player 1" autocomplete="off"></div>
+              <div><label class="lbl p1" for="n1">Player 2</label><input type="text" id="n1" maxlength="16" placeholder="Player 2" autocomplete="off"></div>
+            </div>
+          </div>
+          <div class="su-card">
+            <span class="lbl" id="modeLbl">Game mode</span>
+            <div class="modes" role="radiogroup" aria-labelledby="modeLbl" id="suModes"></div>
+          </div>
+          <div class="su-card su-two">
+            <div><span class="lbl" id="budLbl">Budget per player</span>
+              <div class="presets" role="group" aria-labelledby="budLbl" id="suBudgets"></div>
+              <label class="custom">Custom $<input type="number" id="suBudget" min="1" max="1000" step="1" inputmode="numeric"></label></div>
+            <div><span class="lbl" id="teamLbl">Team size</span>
+              <div class="presets" role="group" aria-labelledby="teamLbl" id="suTeams"></div>
+              <label class="custom">Custom <input type="number" id="suTeam" min="1" max="10" step="1" inputmode="numeric"></label></div>
+          </div>
+          <div class="su-card">
+            <span class="lbl" id="eligLbl">Characters from</span>
+            <div class="seg wide" role="radiogroup" aria-labelledby="eligLbl"><button type="button" role="radio" data-elig="all">Anime + Manga + Manhwa</button><button type="button" role="radio" data-elig="anime">Anime only</button></div>
+            <p class="spoiler" id="suSpoiler"></p>
+          </div>
+        </div>
+        <div class="su-col">
+          <div class="su-card series">
+            <div class="sr-hd"><span class="lbl">Series</span><span class="sr-count" id="suSeriesCount"></span></div>
+            <div class="sr-tools">
+              <input type="search" id="suSearch" placeholder="Search series" aria-label="Search series" autocomplete="off">
+              <button type="button" class="ib sm" data-series="all">All</button><button type="button" class="ib sm" data-series="none">None</button><button type="button" class="ib sm" data-series="default">Defaults</button>
+            </div>
+            <div class="sr-list" id="suSeries" role="group" aria-label="Series"></div>
+          </div>
+          <details class="su-card adv" id="suAdv">
+            <summary><span class="lbl">Advanced</span><span class="adv-sum" id="suAdvSum"></span></summary>
+            <div class="adv-grid">
+              <label>Skips per player<input type="number" id="suSkips" min="0" max="10" step="1" inputmode="numeric"></label>
+              <label>Master skips<input type="number" id="suMaster" min="0" max="20" step="1" inputmode="numeric"></label>
+              <label>Lowest star<select id="suMin"></select></label>
+              <label>Highest star<select id="suMax"></select></label>
+              <label class="span2">Character versions<select id="suVersion">
+                <option value="strongest">Strongest canonical form</option><option value="random">Random canonical form</option><option value="base">Base forms (where recorded)</option></select></label>
+              <div class="span2 grp"><span class="lbl">Hidden information</span></div>
+              <label class="span2">Information<select id="suInfo"><option value="open">Open: everything visible</option><option value="blind">Blind: power and VS tiers hidden until the end</option><option value="mystery">Mystery: identity hidden until sold or gifted</option></select></label>
+              <label class="opt span2" id="suBlindRow"><span><b>Show stars in Blind</b><small>Off hides star ratings too.</small></span><input class="tog" type="checkbox" id="suBlindStars"></label>
+              <fieldset class="span2 clues" id="suClues"><legend>Mystery clues</legend>
+                <label><input type="checkbox" data-clue="series"> Series</label><label><input type="checkbox" data-clue="power"> Power class</label>
+                <label><input type="checkbox" data-clue="ability"> Fighting style</label><label><input type="checkbox" data-clue="stars"> Stars</label><label><input type="checkbox" data-clue="role"> Role</label></fieldset>
+              <p class="span2 fine">Hiding is for playing on one screen. Anyone who opens the browser's developer tools can still read the data.</p>
+              <div class="span2 grp"><span class="lbl">Auction timer</span></div>
+              <label>Timer<select id="suTimer"><option value="0">Off</option><option value="10">10 seconds</option><option value="15">15 seconds</option><option value="30">30 seconds</option><option value="60">60 seconds</option></select></label>
+              <label>After a bid<select id="suTimerBid"><option value="reset">Reset to full</option><option value="extend">Add 5 seconds</option><option value="none">Keep running</option></select></label>
+              <label class="span2">When time runs out<select id="suTimerExp"><option value="sell">Sell to the high bidder (no bid: host decides)</option><option value="wait">Always wait for the host</option></select></label>
+              <div class="span2 grp"><span class="lbl">Pool</span></div>
+              <label class="opt span2"><span><b>Include unreviewed characters</b><small>Adds characters still in the manual-review queue (estimated or ambiguous tiers).</small></span><input class="tog" type="checkbox" id="suUnrev"></label>
+              <label class="opt span2"><span><b>Sound effects</b><small>Short tones for bids, sales, gifts and skips.</small></span><input class="tog" type="checkbox" data-pref="sound"></label>
+              <label class="opt span2"><span><b>Reveal animations</b><small>Card reveals and bar movement.</small></span><input class="tog" type="checkbox" data-pref="motion"></label>
+            </div>
+          </details>
+        </div>
+      </div>
+      <div class="su-foot">
+        <div class="su-msgs" id="suMsgs" role="status" aria-live="polite"></div>
+        <div class="su-go">
+          <p class="su-sum" id="suSum"></p>
+          <button class="gb g-gold lg" id="startBtn">Start the auction</button>
+          <span class="su-links"><button type="button" class="ib sm" id="prevBtn">Previous matches</button><button type="button" class="ib sm" id="suReset">Reset to defaults</button></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="hide" id="game">
+      <div class="arena" id="arena">
+        <div class="pl surface" id="pl0" style="--pc:var(--p0)"></div>
+        <div class="centre" id="centre"></div>
+        <div class="host surface" id="host"></div>
+        <div class="pl surface" id="pl1" style="--pc:var(--p1)"></div>
+      </div>
+      <div class="power surface" id="power"></div>
+      <div class="res hide" id="results"></div>
+    </section>
+
+    <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+    <div class="pauseov hide" id="pauseOv" role="dialog" aria-label="Match paused"><div><b>Paused</b><p>Timer and actions are on hold.</p><button class="gb g-gold" id="resumeBtn">Resume</button></div></div>
+    <dialog class="dlg" id="confirmDlg" aria-labelledby="confirmH"><div class="dh"><h2 id="confirmH">Are you sure?</h2></div>
+      <div class="db"><p id="confirmMsg"></p><div class="cfrow"><button class="gb" data-confirm="0">Cancel</button><button class="gb g-red" data-confirm="1" id="confirmOk">Confirm</button></div></div></dialog>
+    <dialog class="dlg wide" id="histDlg" aria-labelledby="histH"><div class="dh"><h2 id="histH">Previous matches</h2><button class="ib" data-close>Close</button></div><div class="db" id="histBody"></div></dialog>
+    <dialog class="dlg" id="keysDlg" aria-labelledby="keysH"><div class="dh"><h2 id="keysH">Keyboard shortcuts</h2><button class="ib" data-close>Close</button></div><div class="db" id="keysBody"></div></dialog>
+    <dialog class="dlg wide" id="inspectDlg" aria-label="Character statistics"><div id="inspectBody"></div></dialog>
+    <dialog class="dlg" id="rulesDlg" aria-labelledby="rulesH">
+      <div class="dh"><h2 id="rulesH">Rules</h2><button class="ib" data-close>Close</button></div>
+      <div class="db" id="rulesBody"></div>
+    </dialog>
+    <dialog class="dlg" id="setDlg" aria-labelledby="setH">
+      <div class="dh"><h2 id="setH">Settings</h2><button class="ib" data-close>Close</button></div>
+      <div class="db">
+        <label class="opt"><span><b>Character images</b><small>Turn off to show coloured initials instead.</small></span><input class="tog" type="checkbox" data-pref="img"></label>
+        <label class="opt"><span><b>VS Battles details</b><small>Show the VS Battles tier on the card.</small></span><input class="tog" type="checkbox" data-pref="vs"></label>
+        <label class="opt"><span><b>Animations</b><small>Card reveals and bar movement.</small></span><input class="tog" type="checkbox" data-pref="motion"></label>
+        <label class="opt"><span><b>Sound effects</b><small>Short tones for bids, sales, gifts and skips.</small></span><input class="tog" type="checkbox" data-pref="sound"></label>
+        <label class="opt"><span><b>Volume</b><small>Applies when sound effects are on.</small></span><input type="range" id="volume" min="0" max="1" step="0.05" aria-label="Volume"></label>
+        <label class="opt"><span><b>Keyboard shortcuts</b><small>Press ? during a match for the list.</small></span><input class="tog" type="checkbox" data-pref="keys"></label>
+        <div class="opt"><span><b>Recently seen characters</b><small id="recentInfo">Classic-style draws show recent characters a bit less often.</small></span><button type="button" class="ib sm" id="recentReset">Reset</button></div>
+      </div>
+    </dialog>
+
+  </div>
+  </div>
+
+  <div class="below">
+    <section class="card" id="howto">
+      <h2>How to play</h2>
+      <div id="howBody">
+      <p>One character goes on the block at a time, in a random order. Players bid with their $20. When the bidding stops, the host hits Sold. Once a player has five characters, they're out of the bidding.</p>
+      <p>Every card is a <b>version</b> of a character (Gojo in Hidden Inventory and Gojo at Shinjuku are different cards). A match draws one version per character: the strongest one allowed in your mode.</p>
+      <p><b>Stars</b> come from the character's <a href="https://vsbattles.fandom.com/wiki/Tiering_System" target="_blank" rel="noopener">VS Battles Wiki tier</a>: Tier 10 is 1★ Human, 9 is 2★ Fighter, 8 is 3★ Elite, 7 is 4★ Master, 6 is 5★ Legendary, 5&ndash;3 is 6★ Mythic and 2&ndash;0 is 7★ God Tier. That's this game's conversion, not an official VS Battles rating, and VS Battles is a community wiki, not official canon.</p>
+      <p><b>Power</b> (1&ndash;100) places the tier inside its star's band, then speed, durability, hax, resistances, regeneration, intelligence and stamina separate characters on the same tier. Open <b>View stats</b> on any card to see the numbers and the source.</p><p><b>Anime + Manga</b> is the default and uses every canon character and form. <b>Anime only</b> drops characters the anime hasn't shown and scores the rest on their animated forms.</p><p>The team with the highest total power wins. If it's a tie, the strongest single character decides it, then whoever has more money left.</p>
+      <table class="keys">
+        <tr><td class="k-y">Bid</td><td>+$1, +$2, +$5 or everything you've got. You can't raise your own bid.</td></tr>
+        <tr><td class="k-r">Skip</td><td>3 per player. Throws the character out, but only before anyone bids on it.</td></tr>
+        <tr><td class="k-r">Master skip</td><td>5 for the host, kept apart from player skips. Works any time.</td></tr>
+        <tr><td class="k-g">Gift</td><td>The host hands the character to either player for free.</td></tr>
+        <tr><td>Mode</td><td>Pick Anime + Manga or Anime only before you start.</td></tr>
+        <tr><td><span class="kbd">`</span></td><td>Somebody's coming</td></tr>
+      </table>
+      </div>
+    </section>
+    <section class="card">
+      <h2>Last game</h2>
+      <div class="best" id="lastBox">No games yet. Go run one.</div>
+    </section>
+  </div>
+
+  <dialog class="dlg wide listdlg" id="listDlg" aria-labelledby="listH">
+  <div class="dh"><h2 id="listH">Every character</h2><button class="ib" data-close>Close</button></div>
+  <section class="db list" id="list">
+    <div class="hd">
+      <div class="seg" role="group" aria-label="Sort the list">
+        <button id="sortTier" class="on">Strongest &rarr; weakest</button>
+        <button id="sortDraw">Random order</button>
+      </div>
+    </div>
+    <div id="listBody"></div>
+  </section>
+  </dialog>
+</main>
+
+<footer class="foot"><h6>Every game on Recess</h6><div class="az" id="allgames"></div><p>&copy; <span id="yr"></span> Recess &middot; someone coming? <span class="kbd">`</span></p></footer>
+
+<script src="/assets/logo.js"></script>
+<script src="/assets/teacher.js"></script>
+<script src="/assets/recess.js"></script>
+<script src="data/config.js"></script>
+<script src="data/engine.js"></script>
+<!-- characters:begin -->
+<script src="data/characters/nar.js"></script>
+<script src="data/characters/ble.js"></script>
+<script src="data/characters/hxh.js"></script>
+<script src="data/characters/bc.js"></script>
+<script src="data/characters/sl.js"></script>
+<script src="data/characters/sds.js"></script>
+<script src="data/characters/jjk.js"></script>
+<script src="data/characters/ft.js"></script>
+<script src="data/characters/op.js"></script>
+<script src="data/characters/db.js"></script>
+<script src="data/characters/ds.js"></script>
+<script src="data/characters/aot.js"></script>
+<script src="data/characters/fma.js"></script>
+<script src="data/characters/ff.js"></script>
+<script src="data/characters/mha.js"></script>
+<script src="data/characters/vin.js"></script>
+<script src="data/characters/opm.js"></script>
+<script src="data/characters/dn.js"></script>
+<script src="data/characters/cote.js"></script>
+<!-- characters:end -->
+<script src="data/auction.js"></script>
+<script src="data/setup.js"></script>
+<script src="data/draw.js"></script>
+<script src="data/session.js"></script>
+<script src="data/results.js"></script>
+<script>
+{
+/* Page: views + input. Character data/scoring: data/engine.js. Auction rules + events: data/auction.js (pure). */
+const CFG=ABC.config, ENG=ABC.engine, AU=ABC.auction, SU=ABC.setup, SE=ABC.session, RS=ABC.results, SIDS=Object.keys(ABC.config.series), SER=CFG.series, STARS=CFG.stars;
+const BUILT=ENG.build(ABC.characters||[]);
+if(BUILT.errors.length)console.warn('Character data errors:',BUILT.errors);
+const C={};
+for(const e of BUILT.entries)C[e.id]={id:e.id,cid:e.charId,n:e.name,f:e.form||'',a:e.series,p:e.game.power,s:e.game.star,rar:e.game.rarity,rc:e.game.color,
+  vs:e.game.tier+(e.game.plus?'+':''),img:e.img||'',e};
+const CTX={charOf:id=>({charId:C[id].cid,power:C[id].p})};
+/* A match keeps the power/star of every character it can draw (S.snap) from the moment it starts, so later data or
+   scoring changes never alter an active or saved match. applySnap() puts those values into the view; resetSnap() undoes it. */
+function applySnap(st){if(!st||!st.snap)return;for(const [id,[p,s]] of Object.entries(st.snap))if(C[id]){C[id].p=p;C[id].s=s;const b=STARS[s];if(b){C[id].rar=b.name;C[id].rc=b.color}}}
+function resetSnap(){for(const e of BUILT.entries){const c=C[e.id];c.p=e.game.power;c.s=e.game.star;c.rar=e.game.rarity;c.rc=e.game.color}}
+/* recent-character history across completed matches (bounded, local, resettable) */
+const RECENT_KEY='recess-anime-auction-recent';
+const loadRecent=()=>{try{const r=JSON.parse(localStorage.getItem(RECENT_KEY));return r&&r.v===1&&Array.isArray(r.ids)?r.ids:[]}catch(e){return []}};
+const saveRecent=ids=>{try{localStorage.setItem(RECENT_KEY,JSON.stringify({v:1,ids}))}catch(e){}};
+const encountered=st=>[...new Set(st.events.filter(e=>e.t==='reveal').map(e=>C[e.id]&&C[e.id].cid).filter(Boolean))];
+const MODES={all:'Anime + Manga',anime:'Anime only'};
+const MEDIUM={anime:'Anime',manga:'Manga',manhwa:'Manhwa',novel:'Light novel'};
+let MODE='all';                                     // eligibility of what's on screen: the live match, else the setup
+const setMode=m=>{MODE=m==='anime'?'anime':'all'};
+const SETUP_KEY='recess-anime-auction-setup';
+let setupS=null;                                    // next-match settings (never the live match: S.setup is a copy)
+const previewIds=()=>SU.pool(BUILT.entries,setupS,()=>0).ids;
+
+const SLUG='best-anime-character', KEY='recess-anime-auction-match', OLD_KEY='recess-anime-auction', DATA_V=4, LAST='recess-anime-auction-last';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ini=n=>n.replace(/^The /,'').replace(/["']/g,'').split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+/* image sizes: card = stored 400px thumbnail, small = 120px (VS Battles) / medium (AniList); lazy except the live card */
+const thumb=(u,big)=>!u?'':big?u:u.replace('/large/','/medium/').replace(/scale-to-width-down\/\d+/,'scale-to-width-down/120');
+const av=(c,cls='',big=false)=>`<span class="ini ${cls}" style="--ac:${SER[c.a].color}"><i>${ini(c.n)}</i>${c.img?`<img src="${thumb(c.img,big)}" alt="" ${big?'fetchpriority="high" ':'loading="lazy" '}decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">`:''}</span>`;
+const stars=s=>'<span class="on">'+'★'.repeat(s)+'</span><span class="off">'+'★'.repeat(7-s)+'</span>';
+const rv=c=>`--rc:${c.rc};--ac:${SER[c.a].color}`;
+const dis=why=>why?` aria-disabled="true" data-why="${esc(AU.REASONS[why]||why)}"`:'';
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+
+
+/* display settings (no effect on rules) */
+const PREFS_KEY='recess-anime-auction-prefs';
+let prefs={img:true,vs:true,motion:true,sound:false,volume:0.6,keys:true,mode:'all'};
+try{Object.assign(prefs,JSON.parse(localStorage.getItem(PREFS_KEY))||{})}catch(e){}
+function applyPrefs(){
+  const b=document.body.classList;
+  b.toggle('no-img',!prefs.img);b.toggle('no-vs',!prefs.vs);b.toggle('no-motion',!prefs.motion);
+  document.querySelectorAll('[data-pref]').forEach(i=>i.checked=!!prefs[i.dataset.pref]);
+  if($('volume'))$('volume').value=prefs.volume;
+}
+document.querySelectorAll('[data-pref]').forEach(i=>i.addEventListener('change',()=>{
+  prefs[i.dataset.pref]=i.checked;try{localStorage.setItem(PREFS_KEY,JSON.stringify(prefs))}catch(e){}applyPrefs()}));
+applyPrefs();
+
+let view='home', S=null, undo=[], sortMode='tier', popNext=false, statsOpen=false, histOpen=false, fx=null, lockUntil=0, saved=null;
+/* what may be shown right now (Blind / Mystery hide information until the match ends) */
+const VIS=()=>SE.visibility(S?S.setup:null,!S||S.over);
+const cur=()=>S?AU.current(S):null;
+const power=p=>AU.power(S,p,CTX);
+const starsOfTeam=p=>S.players[p].roster.reduce((t,id)=>t+C[id].s,0);
+const rank=()=>AU.rank(S,CTX);
+/* autosave after every change: state (incl. order, seed, snapshot scores, events, timer, pause) + bounded undo */
+const frozen=st=>st&&st.timer?Object.assign({},st,{timer:SE.timerPause(st.timer,Date.now())}):st;
+function save(){if(!S)return;try{localStorage.setItem(KEY,SE.pack(frozen(S),undo))}catch(e){}}
+
+/* ---------- feedback: toasts (aria-live), no browser alerts ---------- */
+function toast(msg,kind='info'){
+  const box=$('toasts');if(!box)return;
+  const t=document.createElement('div');t.className='toast t-'+kind;t.textContent=msg;box.prepend(t);
+  while(box.children.length>3)box.lastChild.remove();
+  setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),200)},2200);
+}
+/* sound: tiny WebAudio tones, off by default, no files */
+let actx=null;
+function sfx(kind){
+  if(!prefs.sound)return;
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();}catch(e){return}
+  try{
+  const N={bid:[[660,.06]],sold:[[523,.08],[784,.12]],gift:[[587,.08],[880,.14]],skip:[[330,.1]],warn:[[196,.09]],
+    reveal:[[440,.05],[554,.07]],high:[[440,.06],[659,.06],[880,.14]],tick:[[988,.04]],end:[[523,.1],[659,.1],[784,.18]],victory:[[523,.1],[659,.1],[784,.1],[1047,.24]]}[kind];
+  if(!N)return;let t=actx.currentTime;const peak=Math.max(.0002,.1*Math.min(1,Math.max(0,+prefs.volume||0)));
+  for(const [f,d] of N){const o=actx.createOscillator(),gn=actx.createGain();o.type='triangle';o.frequency.value=f;
+    gn.gain.setValueAtTime(.0001,t);gn.gain.exponentialRampToValueAtTime(peak,t+.01);gn.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o.connect(gn).connect(actx.destination);o.start(t);o.stop(t+d+.02);t+=d*.9}
+  }catch(e){}                                                   // audio problems never interrupt play
+}
+function shake(el){if(!el)return;el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),380)}
+const nm=p=>S.players[p].name;
+function describe(e){
+  const c=C[e.id],hidden=!VIS().identity&&(e.t==='skip'||e.t==='unsold');
+  if(hidden)return [e.t==='skip'?(e.kind==='master'?'Master skip: a mystery character':`${nm(e.p)} skipped a mystery character`):'A mystery character went unsold','skip'];
+  switch(e.t){
+    case 'bid':return [`${nm(e.p)} leads at $${e.amt}`,'bid'];
+    case 'sold':return [`${nm(e.p)} bought ${c.n} for $${e.price}`,'sold'];
+    case 'gift':return [`${c.n} gifted to ${nm(e.p)} · $0`+(e.voided?` (voided ${nm(e.voided.p)}'s $${e.voided.amt} bid)`:''),'gift'];
+    case 'skip':return [e.kind==='master'?`Master skip: ${c.n}`+(e.voided?` (bid voided)`:''):`${nm(e.p)} skipped ${c.n}`,'skip'];
+    case 'unsold':return [`${c.n} went unsold`,'skip'];
+    case 'end':return [{'teams-complete':'Both teams are complete.','pool-exhausted':'Every character has been drawn.','no-buyers':'Nobody can afford another character.'}[e.reason]||'Match over.','end'];
+  }
+  return null;
+}
+
+/* ---------- actions: one path for everything ---------- */
+function dispatch(action,el){
+  if(!S)return;
+  if(performance.now()<lockUntil)return;                       // swallow double-clicks across a round change
+  if(S.paused){toast('The match is paused. Resume first.','warn');shake(el);return}
+  const r=AU.apply(S,action,CTX);
+  if(!r.ok){toast(r.message,'warn');shake(el);sfx('warn');return}
+  undo=SE.pushUndo(undo,frozen(S));
+  const before=S;S=r.state;
+  const now=Date.now();
+  if(S.pos!==before.pos||S.over){popNext=!S.over;statsOpen=false;lockUntil=performance.now()+300;startTimer()}
+  else if(action.type==='bid')S.timer=SE.timerOnBid(S.timer,S.setup.timerBid,now);
+  const main=r.events.find(e=>e.t!=='reveal'&&e.t!=='end')||r.events[0];
+  fx=main?{t:main.t,p:main.p,id:main.id}:null;
+  for(const e of r.events){const d=describe(e);if(d&&e.t!=='bid')toast(d[0],d[1])}
+  if(main)sfx(main.t);
+  if(!S.over&&S.pos!==before.pos)setTimeout(()=>sfx(VIS().stars&&VIS().identity&&C[cur()].s>=6?'high':'reveal'),180);
+  if(S.over&&!before.over){
+    S.timer=null;setTimeout(()=>sfx('victory'),250);
+    S.summary=RS.summarize(S,infoOf,{modeLabel:SU.MODES[S.setup.mode].label});resFilter='all';
+    saveHistory(RS.addToHistory(loadHistory(),S.summary));
+    saveRecent(ABC.draw.remember(loadRecent(),encountered(S)));
+    const w=rank();try{localStorage.setItem(LAST,JSON.stringify({names:S.players.map(p=>p.name),pow:[power(0),power(1)],w}))}catch(e){}
+  }
+  save();render();fx=null;
+}
+
+/* ---------- views ---------- */
+function ccHTML(id,right,cls=''){
+  const c=C[id],V=VIS(),meta=[V.stars?`<span class="cs">${'★'.repeat(c.s)}</span> ${esc(c.rar)}`:'',V.power?c.p:''].filter(Boolean).join(' &middot; ');
+  return `<div class="cc ${cls}" style="${rv(c)}" title="${esc(c.n)}${V.power?` · ${c.s}★ ${esc(c.rar)} · PWR ${c.p}`:''}">${av(c)}
+    <span class="nm">${esc(c.n)}<small>${meta||esc(c.f||SER[c.a].name)}</small></span>${right||''}</div>`;
+}
+const STATUS_TXT={complete:'Team complete',leading:'Leading','can-bid':'Can bid',outbid:'Outbid','cant-afford':"Can't afford",done:'Final'};
+function slotHTML(id,i){
+  const c=C[id],f=S.fate[id],isNew=fx&&fx.id===id&&(fx.t==='sold'||fx.t==='gift'),V=VIS();
+  const meta=[V.stars?`<span class="cs">${'★'.repeat(c.s)}</span>`:'',V.power?`${c.p} PWR`:''].filter(Boolean).join(' ');
+  return `<button type="button" class="cc slot${isNew?' slot-new':''}${f.gift?' is-gift':''}" style="${V.stars?rv(c):`--rc:var(--bd2);--ac:${SER[c.a].color}`}" data-inspect="${esc(id)}" aria-label="${esc(c.n)}${V.stars?`, ${c.s} star`:''}${V.power?`, power ${c.p}`:''}, ${f.gift?'gift':'$'+f.price}. Show details">
+    <span class="sn">${i+1}</span>${av(c)}
+    <span class="nm">${esc(c.n)}<small>${esc(c.f||'Base form')}</small><small class="meta">${meta||esc(SER[c.a].name)}</small></span>
+    <span class="pr${f.gift?' gift':''}">${f.gift?'GIFT':'$'+f.price}</span></button>`;
+}
+function playerHTML(p){
+  const P=S.players[p],R=S.rules.maxRoster,st=AU.status(S,p),full=st==='complete',live=!S.over,rd=AU.round(S);
+  let slots='';for(let i=0;i<R;i++)slots+=P.roster[i]!=null?slotHTML(P.roster[i],i):`<div class="slot empty"><span class="sn">${i+1}</span><span>Open slot</span></div>`;
+  const pips=Array.from({length:S.rules.playerSkips},(_,i)=>`<i class="${i<P.skips?'':'off'}"></i>`).join('');
+  const opts=AU.bidOptions(S,p);
+  const btn=o=>`<button class="gb bidb${S.bid.by===p?' g-p':''}" data-bid="${p}" data-amt="${o.amt}" data-round="${rd}"${dis(o.why)}><span>${o.all?'All in':o.label}</span><small>$${o.amt}</small></button>`;
+  const skipWhy=AU.skipWhy(S,p);
+  let note='';
+  if(full)note='';
+  else if(st==='leading')note=`Holding the high bid at $${S.bid.amt}.`;
+  else if(st==='cant-afford')note=`Needs $${AU.nextBid(S)} to bid. Has $${P.money}.`;
+  else if(live&&S.bid.by>=0&&P.skips>0)note='Skips only work before anyone bids.';
+  const statusLbl=st==='cant-afford'?`Can't afford $${AU.nextBid(S)}`:STATUS_TXT[st];
+  const flash=fx&&fx.t==='bid'&&fx.p===p;
+  return `<div class="ph"><h3>${esc(P.name)}</h3><span class="badge st-${st}">${statusLbl}</span></div>
+    <div class="bal${flash?' bump':''}"><span class="lbl">Balance</span><b class="money">$${P.money}</b>
+      <span class="sub">Spent $${AU.spent(S,p)}${full||S.over?'':` &middot; Max bid $${P.money}`}</span></div>
+    <div class="stats">
+      <div class="stat"><span class="lbl">Team</span><b>${P.roster.length}/${R}</b></div>
+      <div class="stat"><span class="lbl">Power</span><b>${VIS().teamPower?power(p):'<span class="hidden-val">?</span>'}</b></div>
+      <div class="stat"><span class="lbl">Skips</span><b class="skp">${P.skips}<span class="pips">${pips}</span></b></div>
+    </div>
+    <div class="slots" style="--n:${R}">${slots}</div>
+    ${full?`<div class="complete">TEAM COMPLETE</div>`:live?`<div class="bids">${opts.map(btn).join('')}</div>
+    <button class="gb g-red pskip" data-pskip="${p}" data-round="${rd}"${dis(skipWhy)}>Skip <span class="pips">${pips}</span> ${P.skips} left</button>`:''}
+    <p class="note">${note}</p>`;
+}
+const NA='<span class="na">Not available</span>';
+const txt=v=>v?esc(v):NA;
+const chips=(a,max=10)=>Array.isArray(a)?(a.length?a.slice(0,max).map(x=>`<span class="sc">${esc(x)}</span>`).join('')+(a.length>max?`<span class="sc more">+${a.length-max}</span>`:''):'<span class="na">None listed</span>'):NA;
+const VSTAT={verified:'Verified',imported:'Imported, not reviewed',legacy:'Legacy (tier only)','needs-review':'Needs manual review',excluded:'Excluded'};
+const vlabel=r=>r.status==='verified'?(r.by==='reviewer'?'Verified by reviewer':'Machine-verified'):VSTAT[r.status]||r.status;
+function statsHTML(c,inDialog){
+  const e=c.e,st=e.stats||{},sp=st.speed||{},rv_=e.review||{},v=e.vsb||{};
+  const row=(k,val)=>`<div class="sr"><dt>${k}</dt><dd>${val}</dd></div>`;
+  if(!VIS().stats)return hiddenStatsHTML(c,inDialog,row);
+  if(MODE==='anime')return spoilerSafeHTML(c,inDialog,row);
+  return `<div class="back${inDialog?' in-dlg':''}" id="${inDialog?'inspectPanel':'statsPanel'}" role="region" aria-label="${esc(c.n)} statistics" tabindex="-1">
+    <div class="bk-hd"><span class="lbl">${inDialog?`${esc(c.n)} &middot; ${c.s}★ ${esc(c.rar)} &middot; ${c.p} power`:`Statistics &middot; ${esc(st.source||'—')}`}</span>${inDialog?'<button class="ib sm" data-close>Close</button>':'<button class="ib sm" data-stats>Back to card</button>'}</div>
+    <dl>
+      ${row('Attack potency',txt(st.ap))}
+      ${row('Combat speed',txt(sp.combat))}${sp.reaction?row('Reactions',esc(sp.reaction)):''}
+      ${row('Durability',txt(st.durability))}
+      ${row('Intelligence',txt(st.intelligence))}
+      ${row('Abilities',`<div class="scs">${chips(st.abilities)}</div>`)}
+      ${row('Hax',`<div class="scs">${chips(st.hax,8)}</div>`)}
+      ${row('Resistances',`<div class="scs">${chips(st.resistances,8)}</div>`)}
+      ${row('Weaknesses',txt(st.weaknesses))}
+      ${row('Version',`${esc(e.form||'Base')} &middot; ${esc(e.continuity)}${v.key?` &middot; VS key “${esc(v.key)}”`:''}<br><small>${MEDIUM[e.medium]} &middot; ${{shown:'Shown in the anime','anime-only':'Anime-original form','not-shown':'Not in the anime yet',unknown:'Anime appearance not confirmed'}[e.anime]}</small>`)}
+      ${row('Verification',`<b class="vf ${rv_.status}">${esc(vlabel(rv_))}</b>${rv_.date?` &middot; ${esc(rv_.date)}`:''}${v.revid?` &middot; rev ${v.revid}`:''}${(rv_.notes||[]).length?`<ul class="notes">${rv_.notes.slice(0,3).map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:''}`)}
+      ${row('Source',v.url?`<a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.title||'VS Battles Wiki')} ↗</a><br><small>Community power-scaling assessment, not official canon. Text CC BY-SA.</small>`:NA)}
+      ${row('Artwork',e.imgSource==='vsbattles'?`<a href="${esc(e.imgPage)}" target="_blank" rel="noopener">VS Battles file ↗</a><br><small>${{key:'Gallery tab for this version',single:'Only image on a single-version profile',latest:'Strongest look in the gallery (probable match)',base:'Base look in the gallery (probable match)'}[e.imgMatch]||''}${e.imgTab?' · '+esc(e.imgTab):''}</small>`:e.imgSource==='anilist'?'AniList character portrait':'<span class="na">No form-specific image found (flagged for review)</span>')}
+      ${(e.canon&&e.canon.refs&&e.canon.refs.length)?row('Canon cited',`<ul class="notes">${e.canon.refs.slice(0,4).map(r=>`<li>${esc(r)}</li>`).join('')}</ul>`):''}
+    </dl>
+    <p class="game-note">Game rating: ${c.s}★ ${esc(c.rar)}, ${c.p}/100 power &mdash; this game's conversion of the VS Battles tier, not a VS Battles rating.</p>
+  </div>`;
+}
+/* Anime only: VS Battles profiles mix manga feats into every key, so detailed stats, abilities, notes, chapter
+   citations and source previews stay hidden. Only the game rating and the animated form are shown. */
+function spoilerSafeHTML(c,inDialog,row){
+  const e=c.e;
+  return `<div class="back${inDialog?' in-dlg':''}" id="${inDialog?'inspectPanel':'statsPanel'}" role="region" aria-label="${esc(c.n)} statistics" tabindex="-1">
+    <div class="bk-hd"><span class="lbl">${esc(c.n)} &middot; Anime only</span>${inDialog?'<button class="ib sm" data-close>Close</button>':'<button class="ib sm" data-stats>Back to card</button>'}</div>
+    <dl>${row('Version',esc(e.form||'Base form')+'<br><small>Shown in the anime</small>')}${row('Game rating',`${c.s}★ ${esc(c.rar)} &middot; ${c.p}/100 power`)}${row('VS Battles tier',esc(c.vs))}</dl>
+    <p class="spoilsafe">Detailed statistics, abilities and sources are hidden in Anime only mode: the VS Battles profiles they come from include manga feats. Switch to Anime + Manga + Manhwa to see them (spoilers).</p>
+  </div>`;
+}
+function hiddenStatsHTML(c,inDialog,row){
+  const e=c.e,V=VIS();
+  return `<div class="back${inDialog?' in-dlg':''}" id="${inDialog?'inspectPanel':'statsPanel'}" role="region" aria-label="${esc(c.n)} details" tabindex="-1">
+    <div class="bk-hd"><span class="lbl">${esc(c.n)}</span>${inDialog?'<button class="ib sm" data-close>Close</button>':'<button class="ib sm" data-stats>Back to card</button>'}</div>
+    <dl>${row('Series',esc(SER[c.a].name))}${row('Version',esc(e.form||'Base form'))}${V.stars?row('Stars',`${c.s}★ ${esc(c.rar)}`):''}</dl>
+    <p class="spoilsafe">${V.info==='blind'?'Blind Auction':'Mystery Auction'}: power, VS Battles tiers and statistics are revealed when the match ends.</p>
+  </div>`;
+}
+/* Mystery: identity, art, form and power stay hidden until the lot is sold or gifted; only the chosen clues show. */
+function mysteryCardHTML(c){
+  const o=S.setup.clues||{},cl=SE.clues(c.e,o,SER[c.a].name,c.s);
+  return `<article class="pcard mystery${popNext?' reveal':''}" style="--ac:${o.series?SER[c.a].color:'#555'}" aria-label="Mystery character">
+    <div class="pc-art"><div class="mart" aria-hidden="true">?</div><span class="pc-rar">Mystery</span></div>
+    <div class="pc-body"><h2 class="cname">Mystery character</h2><div class="form">Revealed when sold or gifted</div>
+      <div class="clist">${cl.length?cl.map(x=>`<div class="clue"><span>${x.label}</span><b>${esc(x.value)}</b></div>`).join(''):'<div class="clue"><span>No clues</span><b>Bid blind</b></div>'}</div></div>
+  </article>`;
+}
+function cardHTML(c){
+  const V=VIS();
+  if(!V.identity)return mysteryCardHTML(c);
+  if(!V.power)return blindCardHTML(c,V);
+  const A=SER[c.a],e=c.e,ns=e.anime==='not-shown';
+  return `<article class="pcard s${c.s}${statsOpen?' flipped':''}${popNext?' reveal':''}" style="${rv(c)}" aria-label="${esc(c.n)}, ${c.s} star ${esc(c.rar)}">
+    <div class="pc-art">${av(c,'big',true)}
+      <span class="pc-rar">${esc(c.rar)}</span>
+      <div class="pc-stars" aria-label="${c.s} of 7 stars">${stars(c.s)}</div>
+    </div>
+    ${statsOpen?statsHTML(c):`<div class="pc-body">
+      <div class="pc-tags"><span class="show">${A.name}</span><span class="med m-${e.medium}">${MEDIUM[e.medium]}</span>${ns&&MODE==='all'?'<span class="src">Not in anime</span>':''}</div>
+      <h2 class="cname">${esc(c.n)}</h2>
+      <div class="form">${esc(c.f||'Base form')}</div>
+      <div class="pwr"><b>${c.p}</b><span class="lbl">/ 100 power</span></div>
+      <div class="pbar"><i style="width:${c.p}%"></i></div>
+      <div class="tdesc"><span>VS Battles tier <b>${esc(c.vs)}</b></span>${e.review.status!=='verified'?`<span class="vfb ${e.review.status}">${VSTAT[e.review.status]}</span>`:e.review.by==='auto'?'<span class="vfb auto">Machine-verified</span>':''}</div>
+      <button class="ib sm pc-statsbtn" data-stats aria-expanded="false">View stats</button>
+    </div>`}
+  </article>`;
+}
+function blindCardHTML(c,V){
+  const A=SER[c.a],e=c.e;
+  return `<article class="pcard ${V.stars?'s'+c.s:'mystery'}${statsOpen?' flipped':''}${popNext?' reveal':''}" style="${V.stars?rv(c):`--ac:${A.color}`}" aria-label="${esc(c.n)}${V.stars?`, ${c.s} star`:''}">
+    <div class="pc-art">${av(c,'big',true)}${V.stars?`<span class="pc-rar">${esc(c.rar)}</span><div class="pc-stars" aria-label="${c.s} of 7 stars">${stars(c.s)}</div>`:'<span class="pc-rar">Blind</span>'}</div>
+    ${statsOpen?statsHTML(c):`<div class="pc-body">
+      <div class="pc-tags"><span class="show">${A.name}</span><span class="med m-${e.medium}">${MEDIUM[e.medium]}</span></div>
+      <h2 class="cname">${esc(c.n)}</h2><div class="form">${esc(c.f||'Base form')}</div>
+      <div class="pwr"><b class="hidden-val">??</b><span class="lbl">power hidden</span></div>
+      <div class="tdesc"><span>Power and VS Battles tier show at the end.</span></div>
+    </div>`}
+  </article>`;
+}
+function centreHTML(){
+  const c=C[cur()],b=S.bid,lead=b.by>=0,nb=AU.nextBid(S),sw=AU.sellWhy(S);
+  const incs=S.rules.increments.map(i=>`<span class="inc">+$${i}</span>`).join('')+'<span class="inc">All in</span>';
+  return `${cardHTML(c)}
+    <div class="bidbox surface${lead?' has-lead':''}${fx&&fx.t==='bid'?' bump':''}" style="${lead?`--lc:var(--p${b.by})`:''}">
+      ${S.timer?`<div class="timer" id="timerBox" role="timer" aria-live="off"><span>Timer</span><span class="tbar"><i></i></span><b></b></div>`:''}
+      <div class="hb">
+        <span class="lbl">${lead?'High bid':'No bids yet'}</span><b>$${b.amt}</b>
+        <span class="leader">${lead?`<i></i>${esc(S.players[b.by].name)} leads`:'Opening bid is $1'}</span>
+      </div>
+      <div class="bmeta">
+        <div><span class="lbl">Next valid bid</span><b>$${nb}</b></div>
+        <div class="incs">${incs}</div>
+        <div class="pp">${S.players.map((P,p)=>`<span style="color:var(--p${p})">${esc(P.name)} $${P.money}</span>`).join('')}</div>
+      </div>
+      <button class="gb g-gold confirm" id="sellBtn" data-seq="${b.seq}" data-round="${AU.round(S)}"${dis(sw)}>
+        <span class="lbl">Host · confirm sale</span><span>${lead?`Sold to ${esc(S.players[b.by].name)} · $${b.amt}`:'Waiting for a bid'}</span></button>
+    </div>`;
+}
+function histHTML(){
+  const R=AU.rounds(S).reverse();
+  const res=x=>{
+    if(!x)return '<span class="hr now">On the block</span>';
+    if(x.t==='sold')return `<span class="hr" style="color:var(--p${x.p})">Sold to ${esc(nm(x.p))} · $${x.price}</span>`;
+    if(x.t==='gift')return `<span class="hr gift">Gift to ${esc(nm(x.p))}${x.voided?' · bid voided':''}</span>`;
+    if(x.t==='skip')return `<span class="hr skip">${x.kind==='master'?'Master skip'+(x.voided?' · bid voided':''):esc(nm(x.p))+"'s skip"}</span>`;
+    if(x.t==='unsold')return '<span class="hr skip">Unsold</span>';
+    return '';
+  };
+  return `<details class="history" id="histBox"${histOpen?' open':''}><summary><span class="lbl">Auction history</span><span class="hcount">${R.length} round${R.length===1?'':'s'}</span></summary>
+    <ol>${R.map(r=>{const c=C[r.id],V=VIS(),known=V.identity||(r.result&&(r.result.t==='sold'||r.result.t==='gift'));
+      const sub=[known?esc(c.f||'Base form'):'',V.stars&&known?c.s+'★':'',V.power?c.p:''].filter(Boolean).join(' &middot; ');
+      return `<li style="${known&&V.stars?rv(c):'--rc:var(--bd2)'}"><span class="rn">R${r.round}</span><span class="hn">${known?esc(c.n):'Mystery character'}<small>${sub||'&nbsp;'}</small></span>
+      <span class="hb2">${r.bids.length?r.bids.map(b=>`<i style="color:var(--p${b.p})">$${b.amt}</i>`).join(' → '):'<i class="nob">no bids</i>'}</span>${res(r.result)}</li>`}).join('')}</ol></details>`;
+}
+function hostHTML(){
+  if(!S)return '';
+  const rd=AU.round(S);
+  const gb=p=>`<button class="gb g-mint" data-gift="${p}" data-round="${rd}"${dis(AU.giftWhy(S,p))}><span>${AU.isFull(S,p)?'Team complete':'Gift to '+esc(S.players[p].name)}</span></button>`;
+  return `<div class="hd"><span class="lbl">Host controls</span><span class="chip red msk">Master skips <b>${S.master}</b>/${S.rules.masterSkips}</span></div>
+    <div class="row">${gb(0)}<button class="gb g-red" id="mskipBtn" data-round="${rd}"${dis(AU.mskipWhy(S))}><span>Master skip</span></button>${gb(1)}</div>
+    ${histHTML()}`;
+}
+function powerHTML(){
+  if(!VIS().teamPower)return `<div class="hd"><span style="color:var(--p0)">${esc(S.players[0].name)}</span><span class="lbl">Who's stronger</span><span style="color:var(--p1)">${esc(S.players[1].name)}</span></div>
+    <div class="bar"><i style="width:50%;background:var(--s3)"></i><i style="width:50%;background:var(--s3)"></i></div><div class="verdict">Team power is hidden until the match ends</div>`;
+  const a=power(0),b=power(1),t=a+b,P=S.players,pa=t?a/t*100:50;
+  const w=S.over?rank():-1;
+  const v=a===b?(w>=0?`Tied on power. ${esc(P[w].name)} wins the tiebreak`:S.over?'Dead even':'Dead even right now')
+    :`${esc(P[a>b?0:1].name)} has the stronger team (+${Math.abs(a-b)} power)`;
+  return `<div class="hd"><span style="color:var(--p0)">${esc(P[0].name)} <b>${a}</b> <small>${starsOfTeam(0)}★</small></span><span class="lbl">Who's stronger</span><span style="color:var(--p1)"><small>${starsOfTeam(1)}★</small> <b>${b}</b> ${esc(P[1].name)}</span></div>
+    <div class="bar"><i style="width:${pa}%;background:var(--p0)"></i><i style="width:${100-pa}%;background:var(--p1)"></i></div>
+    <div class="verdict">${v}</div>`;
+}
+function hudHTML(){
+  if(!S)return `<span class="round"><b>Ready</b><small>2 players &middot; 1 host</small></span><span class="chip mchip">${SU.MODES[setupS.mode].label} &middot; ${MODES[MODE]}</span>`;
+  const n=S.order.length;
+  return `<span class="round"><b>${S.over?'Final':'Round '+AU.round(S)}</b><small>of ${n}</small></span>
+    ${S.paused?'<span class="chip gold"><b>Paused</b></span>':''}<span class="chip red">Master skips <b>${S.master}</b></span><span class="chip">Left <b>${Math.max(0,n-S.pos-(S.over?0:1))}</b></span><span class="chip mchip">${S.setup?SU.MODES[S.setup.mode].label+' &middot; ':''}${MODES[MODE]}</span>`;
+}
+function rowHTML(id,k){
+  const c=C[id],e=c.e,f=S&&S.fate[id],now=S&&cur()===id;let tag='';
+  if(now)tag='<span class="tag now">Up now</span>';
+  else if(f&&f.skip)tag='<span class="tag sk">Skipped</span>';
+  else if(f&&f.unsold)tag='<span class="tag sk">Unsold</span>';
+  else if(f)tag=`<span class="tag p${f.p}">${esc(S.players[f.p].name)} ${f.gift?'(gift)':'$'+f.price}</span>`;
+  const ns=e.anime==='not-shown'&&MODE==='all'?'<span class="src">Not in anime</span>':'';
+  return `<div class="r${f?' gone':''}${now?' now':''}" style="${rv(c)}">${k!=null?`<span class="k">${k}</span>`:''}${av(c)}
+    <span class="nm">${esc(c.n)}${ns}<small>${c.f?esc(c.f)+' &middot; ':''}${SER[c.a].name} &middot; ${MEDIUM[e.medium]}</small></span>${tag||`<span class="st"><span class="cs">${c.s}★</span> ${c.p}<br><small class="vs">${esc(c.vs)}${e.review.status==='verified'?' ✓':''}</small></span>`}</div>`;
+}
+let preview=null;
+function listHTML(){
+  if(!VIS().list)return '<p class="empty-tier">The character list is hidden during Blind and Mystery matches. It comes back when the match ends.</p>';
+  /* never reveal the upcoming draw order during a match */
+  if(sortMode==='draw'&&!(S&&!S.over)){
+    const key=JSON.stringify(setupS);
+    const order=S?S.order:(preview=preview&&preview.k===key?preview:Object.assign(shuffle(previewIds()),{k:key}));
+    return `<div class="rows">${order.map((id,i)=>rowHTML(id,i+1)).join('')}</div>`;
+  }
+  const ids=S?S.order:previewIds();
+  let h=sortMode==='draw'?'<p class="empty-tier">The draw order stays hidden until the match ends.</p>':'';
+  for(let s=7;s>=1;s--){
+    const list=ids.filter(id=>C[id].s===s).sort((a,b)=>C[b].p-C[a].p||C[a].n.localeCompare(C[b].n));
+    const st=STARS[s];
+    h+=`<div class="th" style="--tc:${st.color}">${s}★ ${st.name}<small>Power ${st.lo}&ndash;${st.hi} &middot; VS Battles Tier ${st.majors.join(', ')} &middot; ${list.length} characters</small></div>${list.length?`<div class="rows">${list.map(id=>rowHTML(id)).join('')}</div>`:'<p class="empty-tier">None in this pool yet.</p>'}`;
+  }
+  return h;
+}
+function lastHTML(){
+  let L=null;try{L=JSON.parse(localStorage.getItem(LAST))}catch(e){}
+  if(!L)return 'No games yet. Go run one.';
+  return `<b>${L.pow[0]} &ndash; ${L.pow[1]}</b><div class="who">${L.w<0?'Dead even':esc(L.names[L.w])+' won'}</div>${esc(L.names[0])} vs ${esc(L.names[1])}`;
+}
+
+/* the full character list (1,000+ rows) only renders while it is on screen */
+let listDirty=true,listVisible=false;
+function renderList(){$('listBody').innerHTML=listHTML();listDirty=false}
+function openList(){listVisible=true;renderList();$('listDlg').showModal()}
+$('listDlg').addEventListener('close',()=>{listVisible=false});
+function render(){
+  const playing=!!S;
+  $('home').classList.toggle('hide',playing||view!=='home');
+  $('setup').classList.toggle('hide',playing||view!=='setup');
+  document.querySelector('.ghead').classList.toggle('hide',!playing);
+  document.body.classList.toggle('in-match',playing);
+  if(!playing&&view==='home')renderHome();
+  $('game').classList.toggle('hide',!playing);
+  $('undoBtn').disabled=!undo.length||!playing;
+  $('restartBtn').disabled=!playing;$('setupBtn').disabled=!playing;$('pauseBtn').disabled=!playing||S.over;
+  $('pauseBtn').querySelector('span').textContent=playing&&S.paused?'Resume':'Pause';
+  $('pauseOv').classList.toggle('hide',!(playing&&S.paused&&!S.over));
+  $('hudL').innerHTML=hudHTML();
+  $('results').classList.toggle('hide',!(playing&&S.over));
+  if(playing){$('arena').classList.toggle('hide',S.over);$('power').classList.toggle('hide',S.over)}
+  if(playing&&S.over){if(!S.summary)S.summary=RS.summarize(S,infoOf,{modeLabel:SU.MODES[S.setup.mode].label});$('results').innerHTML=resultsHTML(S.summary,true)}
+  else if(playing){
+    $('pl0').innerHTML=playerHTML(0);$('pl1').innerHTML=playerHTML(1);
+    $('centre').innerHTML=centreHTML();$('host').innerHTML=hostHTML();$('power').innerHTML=powerHTML();
+    S.players.forEach((P,p)=>{const el=$('pl'+p),st=AU.status(S,p);el.classList.toggle('lead',S.bid.by===p);el.classList.toggle('complete',st==='complete');
+      el.classList.toggle('flash',!!(fx&&fx.t==='bid'&&fx.p===p))});
+  }
+  if(S&&!S.over&&VIS().identity){const nx=C[S.order[S.pos+1]];if(nx&&nx.img){const im=new Image();im.referrerPolicy='no-referrer';im.src=nx.img}}   // one upcoming portrait, never shown
+  if(!playing)renderResume();
+  tick();
+  listDirty=true;if(listVisible)renderList();
+  $('lastBox').innerHTML=lastHTML();
+  popNext=false;
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t||t.disabled)return;
+  if(t.dataset.close!=null){t.closest('dialog').close();return}
+  if(t.dataset.confirm!=null){t.closest('dialog').close(t.dataset.confirm);return}
+  if(!S)return;
+  if(t.getAttribute('aria-disabled')==='true'){toast(t.dataset.why||'Not available right now.','warn');shake(t);return}
+  const rd=t.dataset.round!=null?+t.dataset.round:undefined;
+  if(t.dataset.stats!=null){statsOpen=!statsOpen;render();const f=statsOpen?$('statsPanel'):document.querySelector('.pc-statsbtn');if(f)f.focus({preventScroll:true});return}
+  if(t.dataset.inspect!=null){const c=C[t.dataset.inspect];$('inspectBody').innerHTML=statsHTML(c,true);$('inspectDlg').showModal();return}
+  if(t.dataset.bid!=null)dispatch({type:'bid',p:+t.dataset.bid,amt:+t.dataset.amt,round:rd},t);
+  else if(t.dataset.gift!=null)dispatch({type:'gift',p:+t.dataset.gift,round:rd},t);
+  else if(t.dataset.pskip!=null)dispatch({type:'pskip',p:+t.dataset.pskip,round:rd},t);
+  else if(t.id==='sellBtn')dispatch({type:'sell',seq:+t.dataset.seq,round:rd},t);
+  else if(t.id==='mskipBtn')dispatch({type:'mskip',round:rd},t);
+  else if(t.id==='againBtn')rematch(false);
+});
+document.addEventListener('toggle',e=>{if(e.target.id==='histBox')histOpen=e.target.open},true);
+document.querySelectorAll('dialog.dlg').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));
+/* ---------- results (Step 9): rendered from the stored summary, never from live database values ---------- */
+const HIST_KEY='recess-anime-auction-history';
+const loadHistory=()=>RS.readHistory(localStorage.getItem(HIST_KEY));
+const saveHistory=list=>{try{localStorage.setItem(HIST_KEY,RS.writeHistory(list))}catch(e){}};
+let resFilter='all',prevView=null;
+function infoOf(id){const c=C[id],e=c.e;return {charId:c.cid,name:c.n,series:c.a,seriesName:SER[c.a].name,form:c.f||'',star:c.s,rarity:STARS[c.s]?STARS[c.s].name:'',
+  power:c.p,tier:c.vs||null,img:c.img||null,medium:e.medium,anime:e.anime}}
+const END_TXT={'teams-complete':'Both teams are complete','pool-exhausted':'Every character has been drawn','no-buyers':'Nobody could afford another character'};
+function rcardHTML(c,live){
+  const col=STARS[c.star]?STARS[c.star].color:'#888';
+  const av2=`<span class="ini" style="--ac:${SER[c.series]?SER[c.series].color:'#555'}"><i>${ini(c.name)}</i>${c.img?`<img src="${thumb(c.img,false)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">`:''}</span>`;
+  return `<button type="button" class="rcard" style="--rc:${col}" data-rinspect="${esc(c.id)}"${live?'':` data-past="1"`} aria-label="${esc(c.name)}, ${c.star} star, power ${c.power}, ${c.gift?'gift':'$'+c.price}. Show details">
+    ${av2}<span class="nm">${esc(c.name)}<small>${esc(c.seriesName)}${c.form?' · '+esc(c.form):''}</small><small><span style="color:${col}">${'★'.repeat(c.star)}</span>${c.tier?' · VS '+esc(c.tier):''}</small></span>
+    <span class="rv"><b>${c.power}</b><span class="pr${c.gift?' gift':''}">${c.gift?'GIFT':'$'+c.price}</span></span></button>`;
+}
+function awardHTML(a,sum){
+  const who=i=>i.kind==='player'?`<b style="color:var(--p${i.p})">${esc(i.name)}</b>`:`<b>${esc(i.name)}</b><small style="color:var(--p${i.p})">${esc(sum.players[i.p].name)}</small>`;
+  const val={mvp:v=>v+' power',bargain:v=>(Math.round(v*10)/10)+' power per $',expensive:v=>'$'+v,efficient:v=>(Math.round(v*10)/10)+' power per $ spent',
+    war:v=>v+' bids',legendary:v=>v+' characters at 6★+',gift:v=>v+' power'}[a.key](a.value);
+  return `<div class="award"><span class="lbl">${a.title}${a.tie?' · tie':''}</span>${a.items.map(who).join('')}<small>${val}</small></div>`;
+}
+function resultsHTML(sum,live){
+  const P=sum.players,w=sum.winner,sh=RS.share(P[0].power,P[1].power);
+  const head=sum.draw?'Draw':`<span class="wcol" style="--wc:var(--p${w})">${esc(P[w].name)}</span> wins`;
+  const why=sum.draw?'Same total power, same strongest character and same money left.':sum.tiebreak==='tiebreak'?'Tied on power, decided by the existing tiebreak: strongest single character, then money left.':`Won by ${sum.diff} power.`;
+  const team=(p)=>{const T=P[p];return `<div class="rteam surface${!sum.draw&&w===p?' won':''}" style="--pc:var(--p${p})">
+    <div class="ph"><h3>${esc(T.name)}</h3><span class="badge ${!sum.draw&&w===p?'st-leading':'st-done'}">${!sum.draw&&w===p?'Winner':sum.draw?'Draw':'Runner-up'}</span></div>
+    <div class="rnums"><div><span class="lbl">Power</span><b>${T.power}</b></div><div><span class="lbl">Spent</span><b>$${T.spent}</b></div><div><span class="lbl">Left</span><b>$${T.balance}</b></div>
+      <div><span class="lbl">Bought</span><b>${T.purchased}</b></div><div><span class="lbl">Gifted</span><b>${T.gifted}</b></div><div><span class="lbl">Skips used</span><b>${T.skipsUsed}</b></div></div>
+    <div class="rcards">${T.roster.length?T.roster.map(c=>rcardHTML(c,live)).join(''):'<p class="note">No characters</p>'}</div></div>`};
+  const t=sum.totals,st=sum.stats;
+  const row=(k,a,b)=>`<span class="k">${k}</span><span>${a}</span><span>${b}</span>`;
+  const bars=s=>`<span class="mini-bars">${s.stars.map(n=>`<i style="height:${Math.max(2,n*9)}px" title="${n}"></i>`).join('')}</span>`;
+  const fmt=v=>v==null?'—':v;
+  const statsBlock=`<div class="st-grid">${row('','<span class="h" style="color:var(--p0)">'+esc(P[0].name)+'</span>','<span class="h" style="color:var(--p1)">'+esc(P[1].name)+'</span>')}
+    ${row('Power min · avg · max',`${fmt(st[0].min)} · ${fmt(st[0].avg)} · ${fmt(st[0].max)}`,`${fmt(st[1].min)} · ${fmt(st[1].avg)} · ${fmt(st[1].max)}`)}
+    ${row('Stars 1★→7★',`<span style="--pc:var(--p0)">${bars(st[0])}</span>`,`<span style="--pc:var(--p1)">${bars(st[1])}</span>`)}
+    ${row('Total spending','$'+st[0].spent,'$'+st[1].spent)}${row('Average purchase',st[0].avgPrice==null?'—':'$'+st[0].avgPrice,st[1].avgPrice==null?'—':'$'+st[1].avgPrice)}
+    ${row('Purchased power per $',fmt(st[0].powerPerDollar),fmt(st[1].powerPerDollar))}${row('Power from gifts',st[0].giftedPower,st[1].giftedPower)}
+    ${row('Highest purchase',st[0].highest?esc(st[0].highest.name)+' $'+st[0].highest.price:'—',st[1].highest?esc(st[1].highest.name)+' $'+st[1].highest.price:'—')}
+    ${row('Series on team',Object.entries(st[0].series).map(([k,v])=>esc(k)+' '+v).join(', ')||'—',Object.entries(st[1].series).map(([k,v])=>esc(k)+' '+v).join(', ')||'—')}
+    ${row('Bids placed',st[0].bids,st[1].bids)}${row('Auctions won',st[0].wins,st[1].wins)}${row('Unused skips',st[0].skipsLeft,st[1].skipsLeft)}</div>
+    <p class="note" style="text-align:left">Skipped characters: ${sum.rounds.filter(r=>r.result&&r.result.t==='skip').map(r=>esc(r.char.name)).join(', ')||'none'} · Unused master skips: ${t.masterSkipsLeft}</p>`;
+  const R=RS.filterRounds(sum.rounds,resFilter).slice().reverse();
+  const res=x=>!x?'<span class="hr skip">Unresolved</span>':x.t==='sold'?`<span class="hr" style="color:var(--p${x.p})">Sold to ${esc(P[x.p].name)} · $${x.price}</span>`:x.t==='gift'?`<span class="hr gift">Gift to ${esc(P[x.p].name)}${x.voided?' · bid voided':''}</span>`:x.t==='skip'?`<span class="hr skip">${x.kind==='master'?'Master skip'+(x.voided?' · bid voided':''):esc(P[x.p].name)+"'s skip"}</span>`:'<span class="hr skip">Unsold</span>';
+  const FIL=[['all','All'],['p0',P[0].name],['p1',P[1].name],['buy','Purchases'],['gift','Gifts'],['skip','Skips']];
+  const hist=`<div class="hfil seg" role="group" aria-label="Filter history">${FIL.map(([k,l])=>`<button type="button" data-rfilter="${k}" class="${resFilter===k?'on':''}" aria-pressed="${resFilter===k}">${esc(l)}</button>`).join('')}</div>
+    <div class="history"><ol>${R.map(r=>{const c=r.char,col=STARS[c.star]?STARS[c.star].color:'#888';return `<li style="--rc:${col}"><span class="rn">R${r.round}</span><span class="hn">${esc(c.name)}<small>${esc(c.form||'Base form')} · ${c.star}★ ${c.power}</small></span>
+      <span class="hb2">${r.bids.length?r.bids.map(b=>`<i style="color:var(--p${b.p})">$${b.amt}</i>`).join(' → '):'<i class="nob">no bids</i>'}</span>${res(r.result)}</li>`}).join('')||'<li>No rounds match this filter.</li>'}</ol></div>`;
+  return `<div class="res-hero"><span class="lbl">${live?'Auction over':new Date(sum.date).toLocaleString()} · ${esc(sum.modeLabel||sum.mode)}${sum.config&&sum.config.eligibility==='anime'?' · Anime only':''} · ${esc(END_TXT[sum.end]||'')}</span>
+      <h2>${head}</h2><p>${why}</p>
+      <div class="res-score"><div class="${!sum.draw&&w===0?'win':''}">${!sum.draw&&w===0?'<span class="crown">WINNER</span>':''}<b style="color:var(--p0)">${P[0].power}</b><small>${esc(P[0].name)}</small></div><span class="lbl">vs</span>
+        <div class="${!sum.draw&&w===1?'win':''}">${!sum.draw&&w===1?'<span class="crown">WINNER</span>':''}<b style="color:var(--p1)">${P[1].power}</b><small>${esc(P[1].name)}</small></div></div>
+      <div class="bar" role="img" aria-label="Share of combined power: ${Math.round(sh*100)}% to ${Math.round(100-sh*100)}%"><i style="width:${sh*100}%;background:var(--p0)"></i><i style="width:${100-sh*100}%;background:var(--p1)"></i></div>
+      <div class="res-totals"><span class="chip">Revealed <b>${t.revealed}</b></span><span class="chip gold">Auctions <b>${t.auctions}</b></span><span class="chip">Bids <b>${t.bids}</b></span>
+        <span class="chip">Gifts <b>${t.gifts}</b></span><span class="chip red">Skips <b>${t.playerSkips}</b></span><span class="chip red">Master skips <b>${t.masterSkipsUsed}</b></span></div>
+      ${live?`<div class="res-actions"><button class="gb g-gold lg" id="againBtn">Rematch</button><button class="gb" id="resSetup">Match setup</button><button class="gb" id="resHistBtn">Full auction history</button><button class="gb" id="resPrev">Previous matches</button></div>`:''}
+    </div>
+    <div class="res-teams">${team(0)}${team(1)}</div>
+    ${sum.awards.length?`<div class="awards">${sum.awards.map(a=>awardHTML(a,sum)).join('')}</div>`:''}
+    <details class="res-sec surface"><summary><span class="lbl">Match statistics</span></summary>${statsBlock}</details>
+    <details class="res-sec surface" id="resHist"${live&&resHistOpen?' open':''}><summary><span class="lbl">Complete auction history · ${sum.rounds.length} rounds</span></summary>${hist}</details>`;
+}
+let resHistOpen=false;
+/* stored-only character details for previous matches (no live lookups, so no later data leaks in) */
+function pastDetailHTML(c,sum){
+  const row=(k,v)=>`<div class="sr"><dt>${k}</dt><dd>${v}</dd></div>`;
+  return `<div class="back in-dlg" id="inspectPanel" role="region" aria-label="${esc(c.name)}" tabindex="-1"><div class="bk-hd"><span class="lbl">${esc(c.name)} · as recorded</span><button class="ib sm" data-close>Close</button></div>
+    <dl>${row('Series',esc(c.seriesName))}${row('Version',esc(c.form||'Base form'))}${row('Game rating',`${c.star}★ ${esc(c.rarity)} · ${c.power} power`)}${c.tier?row('VS Battles tier',esc(c.tier)):''}${row('Acquired',c.gift?'Gift':'$'+c.price)}</dl>
+    <p class="game-note">Values recorded when this match ended (${new Date(sum.date).toLocaleDateString()}); later database changes don't affect them.</p></div>`;
+}
+function prevListHTML(){
+  const L=loadHistory();
+  if(!L.length)return '<p class="note" style="text-align:left">No completed matches yet.</p>';
+  return `<div class="prev"><ol>${L.map((m,i)=>`<li><span><b>${m.draw?'Draw':esc(m.players[m.winner].name)+' won'}</b> · ${m.players[0].power}–${m.players[1].power}<br><small>${esc(m.players[0].name)} vs ${esc(m.players[1].name)} · ${esc(m.modeLabel||m.mode)} · ${new Date(m.date).toLocaleString()}</small></span><button class="ib sm" data-prev="${i}">View</button></li>`).join('')}</ol>
+    <div class="cfrow"><button class="gb g-red" id="clearHist">Clear history</button></div></div>`;
+}
+function openPrev(){prevView=null;$('histBody').innerHTML=prevListHTML();if(!$('histDlg').open)$('histDlg').showModal()}
+document.addEventListener('click',async e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.rfilter){resFilter=t.dataset.rfilter;resHistOpen=true;if(prevView){$('histBody').innerHTML=`<button class="ib sm" id="prevBack">← All matches</button>`+resultsHTML(prevView,false);$('histBody').querySelector('#resHist').open=true}else render();return}
+  if(t.dataset.rinspect){
+    if(t.dataset.past&&prevView){const c=prevView.players.flatMap(p=>p.roster).find(x=>x.id===t.dataset.rinspect);if(c){$('inspectBody').innerHTML=pastDetailHTML(c,prevView);$('inspectDlg').showModal()}return}
+    const c=C[t.dataset.rinspect];if(c){$('inspectBody').innerHTML=statsHTML(c,true);$('inspectDlg').showModal()}return}
+  if(t.id==='resSetup')toSetup();
+  else if(t.id==='resHistBtn'){resHistOpen=true;const d=$('resHist');if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'start'})}}
+  else if(t.id==='resPrev'||t.id==='prevBtn')openPrev();
+  else if(t.dataset.prev!=null){prevView=loadHistory()[+t.dataset.prev];resFilter='all';resHistOpen=false;if(prevView)$('histBody').innerHTML=`<button class="ib sm" id="prevBack">← All matches</button>`+resultsHTML(prevView,false)}
+  else if(t.id==='prevBack'){resFilter='all';openPrev()}
+  else if(t.id==='clearHist'){$('histDlg').close();if(await ask('Clear every saved match result on this device? This cannot be undone.','Clear history')){saveHistory([]);toast('Match history cleared','info')}openPrev()}
+});
+document.addEventListener('toggle',e=>{if(e.target.id==='resHist'&&!prevView)resHistOpen=e.target.open},true);
+
+/* ---------- confirm dialog (no browser alerts for routine actions) ---------- */
+function ask(msg,ok='Confirm'){return new Promise(res=>{const d=$('confirmDlg');$('confirmMsg').textContent=msg;$('confirmOk').textContent=ok;
+  d.returnValue='0';d.addEventListener('close',()=>res(d.returnValue==='1'),{once:true});d.showModal();$('confirmOk').focus()})}
+
+/* ---------- timer: elapsed-time based; one expiry per round ---------- */
+function startTimer(){S.timer=S.setup&&S.setup.timer&&!S.over?SE.timerNew(S.setup.timer,AU.round(S),Date.now(),!S.paused):null}
+let lastWarn=null;
+function tick(){
+  const box=$('timerBox');if(!S||!S.timer){return}
+  const left=SE.timerLeft(S.timer,Date.now()),sec=Math.ceil(left/1000);
+  if(box){box.querySelector('b').textContent=S.timer.fired?'Time!':(S.timer.running?'':'⏸ ')+sec+'s';
+    box.querySelector('i').style.width=(100*left/S.timer.dur)+'%';box.classList.toggle('low',left<=5000);box.classList.toggle('off',!S.timer.running)}
+  if(S.timer.running&&!S.timer.fired&&sec<=3&&sec>0&&lastWarn!==AU.round(S)+':'+sec){lastWarn=AU.round(S)+':'+sec;sfx('tick')}
+  if(S.timer.running&&!S.timer.fired&&left<=0&&!S.paused&&!S.over){
+    S.timer=Object.assign({},S.timer,{fired:true,running:false,left:0});
+    const ex=SE.timerExpiry(S,S.setup.timerExpire);toast(ex.note,'warn');sfx('warn');save();
+    if(ex.action){lockUntil=0;dispatch(ex.action)}else render();      // seq/round tokens stop a double resolution
+  }
+}
+setInterval(tick,200);
+document.addEventListener('visibilitychange',tick);
+
+/* ---------- match controls ---------- */
+function setPaused(p){if(!S||S.over)return;S.paused=p;S.timer=p?SE.timerPause(S.timer,Date.now()):SE.timerResume(S.timer,Date.now());save();render();toast(p?'Paused':'Resumed','info')}
+function doUndo(){
+  if(!S||!undo.length){toast('Nothing to undo.','warn');return}
+  const prev=undo[undo.length-1],why=SE.undoBlockedReason(S,prev);
+  if(why){toast(why,'warn');return}
+  if(S.over&&S.summary)saveHistory(loadHistory().filter(m=>m.id!==S.summary.id));
+  undo=undo.slice(0,-1);S=SE.restoreUndo(prev,S);applySnap(S);
+  if(S.timer&&!S.timer.fired){S.timer=SE.timerPause(S.timer,Date.now());S.paused=!S.over}   // host resumes the clock deliberately
+  statsOpen=false;save();render();toast(S.timer?'Undone. Paused: press Resume or P.':'Undone','info');
+}
+async function rematch(confirmFirst=true){
+  if(!S)return;
+  if(confirmFirst&&!S.over&&!await ask('Start a rematch? This match will be lost: balances, rosters, skips and history reset, and a new set of characters is drawn.','Rematch'))return;
+  start([S.players[0].name,S.players[1].name],S.setup,true);
+}
+function toSetup(){if(!S)return;view='setup';save();saved=S.over?null:{state:S,undo};if(S.over)try{localStorage.removeItem(KEY)}catch(e){}
+  S=null;undo=[];resetSnap();setMode(setupS.eligibility);renderSetup();render()}
+function renderResume(){
+  const box=$('resumeBox');
+  if(!saved){box.classList.add('hide');box.innerHTML='';return}
+  const st=saved.state,m=st.setup?SU.MODES[st.setup.mode].label:'';
+  box.classList.remove('hide');
+  box.innerHTML=`<p><b>Unfinished match:</b> ${esc(st.players[0].name)} vs ${esc(st.players[1].name)} · ${m}<small>Round ${st.pos+1} of ${st.order.length} · $${st.players[0].money} / $${st.players[1].money} left</small></p>
+    <button class="gb g-gold" id="resumeMatch">Resume match</button><button class="gb" id="discardMatch">Discard</button>`;
+}
+document.addEventListener('click',async e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if((t.id==='resumeMatch'||t.id==='homeResume')&&saved){S=saved.state;undo=saved.undo||[];saved=null;setMode(S.mode);applySnap(S);
+    if(S.timer)S.timer=SE.timerPause(S.timer,Date.now());if(S.timer&&!S.over)S.paused=true;
+    popNext=true;save();render();window.scrollTo(0,0);toast(S.paused&&S.timer?'Match resumed (paused — press Resume)':'Match resumed','info')}
+  else if(t.id==='discardMatch'&&saved){if(await ask('Discard the unfinished match? It cannot be recovered.','Discard')){saved=null;try{localStorage.removeItem(KEY)}catch(e){}render()}}
+});
+/* ---------- start screen ---------- */
+function renderHome(){
+  const L=loadHistory(),best=L.length?Math.max(...L.flatMap(m=>m.players.map(p=>p.power))):null;
+  $('hsMatches').textContent=L.length;$('hsBest').textContent=best==null?'—':best;
+  $('hsChars').textContent=new Set(BUILT.entries.filter(ENG.playable).map(e=>e.charId)).size.toLocaleString();
+  $('homeResume').hidden=!saved;
+  if(saved){const st=saved.state;$('homeResumeSub').textContent=`${st.players[0].name} vs ${st.players[1].name} · round ${st.pos+1}`}
+  $('homeQuick').classList.toggle('g-gold',!saved);
+}
+$('homeQuick').onclick=async()=>{
+  if(saved&&!await ask('Start a new match? The unfinished match will be replaced.','Start new'))return;
+  const n=setupS.names;start([n[0]||'Player 1',n[1]||'Player 2'],SU.normalize({names:n},SIDS));
+};
+$('homeSetup').onclick=()=>{view='setup';render();window.scrollTo(0,0)};
+$('setupBack').onclick=()=>{view='home';render();window.scrollTo(0,0)};
+$('homeHow').onclick=()=>$('rulesBtn').onclick();
+$('homePrev').onclick=()=>openPrev();
+$('homeChars').onclick=openList;
+$('appSetBtn').onclick=()=>$('setBtn').onclick();
+function drawSound(){$('soundBtn').setAttribute('aria-pressed',String(!!prefs.sound))}
+$('soundBtn').onclick=()=>{prefs.sound=!prefs.sound;try{localStorage.setItem(PREFS_KEY,JSON.stringify(prefs))}catch(e){}applyPrefs();drawSound();if(prefs.sound)sfx('reveal')};
+document.querySelectorAll('[data-pref="sound"]').forEach(i=>i.addEventListener('change',drawSound));
+drawSound();
+/* ---------- intro: ~2.5 s, once per visit, any click or key skips; off with reduced motion ---------- */
+(function intro(){
+  const el=$('intro'),reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let seen=false;try{seen=sessionStorage.getItem('aba-intro')==='1'}catch(e){}
+  if(seen||reduce||!prefs.motion)return;
+  el.classList.remove('hide');
+  const done=()=>{if(el.classList.contains('hide'))return;el.classList.add('out');try{sessionStorage.setItem('aba-intro','1')}catch(e){}
+    setTimeout(()=>el.classList.add('hide'),360);document.removeEventListener('keydown',key,true)};
+  const key=e=>{e.preventDefault();e.stopPropagation();done()};
+  el.addEventListener('click',done);document.addEventListener('keydown',key,true);
+  setTimeout(done,2600);
+})();
+function start(names,settings,fromRematch){
+  const cfg=SU.normalize(settings||setupS,SIDS),v=SU.validate(cfg,BUILT.entries,SIDS);
+  if(!v.ok){toast(v.errors[0],'warn');sfx('warn');return false}
+  setMode(cfg.eligibility);resetSnap();
+  const seed=ABC.draw.newSeed();                       // one seed per match: version choice + appearance order
+  const ids=SU.pool(BUILT.entries,cfg,ABC.draw.rng(seed)).ids;
+  const order=SU.drawOrder(ids,BUILT.byId,cfg,{seed:(seed^0x9E3779B9)>>>0,recent:new Set(loadRecent())});
+  S=AU.create({names,order,mode:cfg.eligibility,rules:SU.rulesOf(cfg)});
+  saved=null;S.paused=false;
+  S.setup=Object.assign(JSON.parse(JSON.stringify(cfg)),{seed});S.matchId='m'+seed.toString(36)+'-'+Date.now().toString(36);   // frozen copy: editing setup later never touches this match
+  S.snap=Object.fromEntries(order.map(id=>[id,[C[id].p,C[id].s]]));
+  startTimer();
+  undo=[];popNext=true;statsOpen=false;lockUntil=0;save();render();window.scrollTo(0,0);setTimeout(()=>sfx('reveal'),150)
+}
+$('startBtn').onclick=async()=>{
+  if(saved&&!await ask('Start a new match? The unfinished match will be replaced.','Start new'))return;
+  if(start([$('n0').value.trim()||'Player 1',$('n1').value.trim()||'Player 2'])===false)shake($('startBtn'))};
+['n0','n1'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')$('startBtn').click()}));
+$('undoBtn').onclick=doUndo;
+$('pauseBtn').onclick=()=>S&&setPaused(!S.paused);
+$('resumeBtn').onclick=()=>setPaused(false);
+$('setupBtn').onclick=toSetup;
+$('listBtn').onclick=openList;
+const KEYS=[['1 · 2 · 3','Player 1 bids +$1 · +$2 · +$5'],['8 · 9 · 0','Player 2 bids +$1 · +$2 · +$5'],['Shift + S','Host confirms the sale'],['U','Undo last action'],['P','Pause / resume'],['V','View stats'],['F','Full screen'],['?','This list'],['Esc','Close a dialog']];
+const keysHTML=()=>`<table class="keys2">${KEYS.map(([k,d])=>`<tr><td><span class="kbd">${k}</span></td><td>${d}</td></tr>`).join('')}</table><p class="fine">No shortcut gifts, skips, goes all-in or discards a match. Shortcuts pause while you type or a dialog is open${prefs.keys?'':' — currently turned off in Settings'}.</p>`;
+$('rulesBtn').onclick=()=>{$('rulesBody').innerHTML=$('howBody').innerHTML+'<h3 class="lbl" style="margin-top:14px">Keyboard shortcuts</h3>'+keysHTML();$('rulesDlg').showModal()};
+$('setBtn').onclick=()=>{$('recentInfo').textContent=`${loadRecent().length} recent characters appear less often in Classic-style draws (never excluded).`;$('setDlg').showModal()};
+$('recentReset').onclick=()=>{saveRecent([]);$('recentInfo').textContent='History cleared.';toast('Recent-character history cleared','info')};
+$('restartBtn').onclick=()=>rematch(true);
+/* full screen: native API when available, otherwise a CSS focus mode; match state is untouched either way */
+function toggleFull(){
+  if(SE.fullscreenMode(document)==='native'){
+    if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else document.documentElement.requestFullscreen().catch(()=>document.body.classList.toggle('focus-mode'));
+  }else{document.body.classList.toggle('focus-mode');toast(document.body.classList.contains('focus-mode')?'Focus mode (press F or Esc to leave)':'Focus mode off','info')}
+}
+$('fsBtn').onclick=toggleFull;
+$('volume').addEventListener('input',()=>{prefs.volume=+$('volume').value;try{localStorage.setItem(PREFS_KEY,JSON.stringify(prefs))}catch(e){}});
+$('volume').addEventListener('change',()=>sfx('sold'));
+
+/* ---------- keyboard shortcuts (optional) ---------- */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.body.classList.contains('focus-mode')&&!document.querySelector('dialog[open]')){document.body.classList.remove('focus-mode');return}
+  if(!prefs.keys||e.repeat||e.isComposing||e.ctrlKey||e.metaKey||e.altKey)return;
+  const a=document.activeElement;
+  if(a&&(/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName)||a.isContentEditable))return;
+  if(document.querySelector('dialog[open]'))return;
+  if(e.key==='?'){e.preventDefault();$('keysBody').innerHTML=keysHTML();$('keysDlg').showModal();return}
+  if(!S||$('game').classList.contains('hide'))return;
+  const k=e.key.toLowerCase(),click=sel=>{const b=document.querySelector(sel);if(b){e.preventDefault();b.click()}};
+  const bidKey={'1':[0,0],'2':[0,1],'3':[0,2],'8':[1,0],'9':[1,1],'0':[1,2]}[e.key];
+  if(bidKey){click(`#pl${bidKey[0]} .bids .bidb:nth-child(${bidKey[1]+1})`);return}
+  if(e.shiftKey&&k==='s'){click('#sellBtn');return}
+  if(e.shiftKey)return;
+  if(k==='u'){e.preventDefault();doUndo()}
+  else if(k==='p'){e.preventDefault();setPaused(!S.paused)}
+  else if(k==='v')click('.pc-statsbtn,[data-stats]');
+  else if(k==='f'){e.preventDefault();toggleFull()}
+});
+$('sortTier').onclick=()=>{sortMode='tier';$('sortTier').classList.add('on');$('sortDraw').classList.remove('on');render()};
+$('sortDraw').onclick=()=>{sortMode='draw';$('sortDraw').classList.add('on');$('sortTier').classList.remove('on');render()};
+{const fb=$('favBtn');const draw=()=>{const on=Recess.isFav(SLUG);fb.setAttribute('aria-pressed',String(on));$('favTxt').textContent=on?'In My Recess':'Add to My Recess'};draw();fb.onclick=()=>{Recess.toggleFav(SLUG);draw()}}
+
+/* ---------- setup screen controller (edits setupS only) ---------- */
+{let raw=null;try{raw=JSON.parse(localStorage.getItem(SETUP_KEY))}catch(e){}
+ setupS=SU.migrate(raw,prefs,SIDS);}
+function saveSetup(){try{localStorage.setItem(SETUP_KEY,JSON.stringify(setupS))}catch(e){}}
+function updateSetup(patch,{mode}={}){
+  setupS=mode?SU.applyMode(Object.assign({},setupS,patch),mode,SIDS):SU.settle(Object.assign({},setupS,patch),SIDS);
+  saveSetup();if(!S)setMode(setupS.eligibility);renderSetup();render();
+}
+{
+  $('suModes').innerHTML=Object.entries(SU.MODES).map(([k,m])=>`<button type="button" class="mode" role="radio" data-setmode="${k}"><b>${m.label}</b><small>${m.desc}</small></button>`).join('');
+  $('suBudgets').innerHTML=SU.BUDGETS.map(b=>`<button type="button" class="pre" data-budget="${b}">$${b}</button>`).join('');
+  $('suTeams').innerHTML=SU.TEAMS.map(t=>`<button type="button" class="pre" data-team="${t}">${t}</button>`).join('');
+  const opts=[1,2,3,4,5,6,7].map(s=>`<option value="${s}">${s}★ ${STARS[s].name}</option>`).join('');
+  $('suMin').innerHTML=opts;$('suMax').innerHTML=opts;
+  $('suSeries').innerHTML=SIDS.map(id=>`<label class="srow" style="--ac:${SER[id].color}" data-name="${esc(SER[id].name.toLowerCase())}"><input type="checkbox" value="${id}"><i></i><span>${esc(SER[id].name)}</span><small data-count="${id}"></small></label>`).join('');
+}
+function renderSetup(){
+  const s=setupS,act=document.activeElement;
+  document.querySelectorAll('[data-setmode]').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.setmode===s.mode)));
+  document.querySelectorAll('[data-budget]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.budget===s.budget)));
+  document.querySelectorAll('[data-team]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.team===s.team)));
+  document.querySelectorAll('[data-elig]').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.elig===s.eligibility)));
+  const setv=(id,v)=>{const el=$(id);if(el!==act)el.value=v;el.removeAttribute('aria-invalid')};
+  $('suUnrev').checked=!!s.unreviewed;
+  setv('suInfo',s.info);setv('suTimer',s.timer);setv('suTimerBid',s.timerBid);setv('suTimerExp',s.timerExpire);
+  $('suBlindStars').checked=s.blindStars;$('suBlindRow').hidden=s.info!=='blind';$('suClues').hidden=s.info!=='mystery';
+  document.querySelectorAll('[data-clue]').forEach(i=>i.checked=!!s.clues[i.dataset.clue]);
+  setv('suBudget',s.budget);setv('suTeam',s.team);setv('suSkips',s.skips);setv('suMaster',s.master);setv('suMin',s.minStar);setv('suMax',s.maxStar);setv('suVersion',s.version);
+  ['n0','n1'].forEach((id,i)=>{if($(id)!==act&&!$(id).value)$(id).value=s.names[i]||''});
+  $('suSpoiler').className='spoiler'+(s.eligibility==='all'?' warn':'');
+  $('suSpoiler').textContent=s.eligibility==='all'?'Spoiler notice: includes manga and manhwa characters, forms and feats the anime hasn\'t reached.':'Spoiler-safe: only characters and forms shown in released anime. Detailed stats stay hidden during play.';
+  const counts=SU.seriesCounts(BUILT.entries,s),sel=s.series||SIDS;
+  document.querySelectorAll('#suSeries input').forEach(i=>{i.checked=sel.includes(i.value);const n=counts[i.value]||0;
+    const sm=document.querySelector(`[data-count="${i.value}"]`);sm.textContent=n;i.closest('.srow').classList.toggle('zero',!n)});
+  const v=SU.validate(s,BUILT.entries,SIDS);
+  $('suSeriesCount').textContent=`${sel.length} of ${SIDS.length} selected · ${v.count} characters`;
+  $('suAdvSum').textContent=`${s.info!=='open'?s.info+' · ':''}${s.timer?s.timer+'s timer · ':''}${s.unreviewed?'incl. unreviewed · ':''}${s.skips} skips · ${s.master} master · ${s.minStar}–${s.maxStar}★ · ${{strongest:'strongest form',random:'random form',base:'base forms'}[s.version]}`;
+  $('suMsgs').innerHTML=v.errors.map(m=>`<div class="msg err">${esc(m)}</div>`).join('')+v.warnings.map(m=>`<div class="msg wrn">${esc(m)}</div>`).join('');
+  $('suSum').innerHTML=`<b>${SU.MODES[s.mode].label}</b> · $${s.budget} each · ${s.team} per team · <b>${v.count}</b> characters (${v.need} needed)`;
+  $('startBtn').setAttribute('aria-disabled',String(!v.ok));
+}
+$('setup').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.setmode)updateSetup({},{mode:b.dataset.setmode});
+  else if(b.dataset.budget)updateSetup({budget:+b.dataset.budget});
+  else if(b.dataset.team)updateSetup({team:+b.dataset.team});
+  else if(b.dataset.elig)updateSetup({eligibility:b.dataset.elig});
+  else if(b.dataset.series==='all'||b.dataset.series==='default')updateSetup({series:null});
+  else if(b.dataset.series==='none')updateSetup({series:[]});
+  else if(b.id==='suReset'){setupS=SU.normalize({},SIDS);$('n0').value='';$('n1').value='';saveSetup();setMode(setupS.eligibility);renderSetup();render();toast('Setup reset to Classic defaults','info')}
+});
+/* number inputs: validate as you type, commit valid values */
+const NUM={suBudget:['budget',SU.LIMITS.budget],suTeam:['team',SU.LIMITS.team],suSkips:['skips',SU.LIMITS.skips],suMaster:['master',SU.LIMITS.master]};
+for(const [id,[k,[lo,hi]]] of Object.entries(NUM)){
+  $(id).addEventListener('input',()=>{const n=Number($(id).value),ok=$(id).value!==''&&Number.isInteger(n)&&n>=lo&&n<=hi;
+    $(id).setAttribute('aria-invalid',String(!ok));if(ok)updateSetup({[k]:n})});
+  const restore=()=>{$(id).removeAttribute('aria-invalid');$(id).value=setupS[k]};
+  $(id).addEventListener('blur',restore);$(id).addEventListener('change',restore);
+}
+$('suMin').addEventListener('change',()=>updateSetup({minStar:+$('suMin').value}));
+$('suMax').addEventListener('change',()=>updateSetup({maxStar:+$('suMax').value}));
+$('suVersion').addEventListener('change',()=>updateSetup({version:$('suVersion').value}));
+$('suUnrev').addEventListener('change',()=>updateSetup({unreviewed:$('suUnrev').checked}));
+$('suInfo').addEventListener('change',()=>updateSetup({info:$('suInfo').value}));
+$('suBlindStars').addEventListener('change',()=>updateSetup({blindStars:$('suBlindStars').checked}));
+$('suClues').addEventListener('change',()=>updateSetup({clues:Object.fromEntries([...document.querySelectorAll('[data-clue]')].map(i=>[i.dataset.clue,i.checked]))}));
+$('suTimer').addEventListener('change',()=>updateSetup({timer:+$('suTimer').value}));
+$('suTimerBid').addEventListener('change',()=>updateSetup({timerBid:$('suTimerBid').value}));
+$('suTimerExp').addEventListener('change',()=>updateSetup({timerExpire:$('suTimerExp').value}));
+$('suSeries').addEventListener('change',()=>updateSetup({series:[...document.querySelectorAll('#suSeries input:checked')].map(i=>i.value)}));
+$('suSearch').addEventListener('input',()=>{const q=$('suSearch').value.trim().toLowerCase();document.querySelectorAll('#suSeries .srow').forEach(r=>r.hidden=!!q&&!r.dataset.name.includes(q))});
+['n0','n1'].forEach((id,i)=>$(id).addEventListener('input',()=>{const n=setupS.names.slice();n[i]=$(id).value.slice(0,16);setupS=Object.assign({},setupS,{names:n});saveSetup()}));
+setMode(setupS.eligibility);renderSetup();
+{
+  const raw=localStorage.getItem(KEY);
+  if(raw){const r=SE.unpack(raw,id=>!!C[id]);
+    if(r.ok&&!r.state.over){if(r.state.timer)r.state.timer=SE.timerPause(r.state.timer,r.savedAt||Date.now());saved={state:r.state,undo:r.undo}}
+    else if(!r.ok){try{localStorage.removeItem(KEY)}catch(e){}setTimeout(()=>toast('A saved match could not be restored ('+r.reason+') and was cleared.','warn'),400)}}
+  if(localStorage.getItem(OLD_KEY)){try{localStorage.removeItem(OLD_KEY)}catch(e){}setTimeout(()=>toast('A match saved by an older version could not be restored.','warn'),600)}
+}
+$('yr').textContent=new Date().getFullYear();
+Recess.played(SLUG);
+render();
+}
+</script>
+</body>
+</html>
