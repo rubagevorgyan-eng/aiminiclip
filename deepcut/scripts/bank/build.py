@@ -16,6 +16,7 @@ BUILT = os.path.join(os.path.dirname(__file__), 'built')
 os.makedirs(BUILT, exist_ok=True)
 TIERS = ['common', 'uncommon', 'notable', 'rare', 'legendary', 'mythic']
 MAX_ANSWERS = 300
+FAMILY_CAP = 40  # most questions kept from one repeated template (best-known parameters first)
 
 ROMAN = re.compile(r'^(x{0,3})(ix|iv|v?i{0,3})$')
 def _roman(t):
@@ -25,7 +26,7 @@ def _roman(t):
         a, b = v[ch], v.get(t[i + 1], 0) if i + 1 < len(t) else 0
         n += -a if a < b else a
     return str(n)
-WORD = {'st': 'saint', 'mt': 'mount', 'ft': 'fort'}
+WORD = {'st': 'saint', 'mt': 'mount', 'ft': 'fort', 'dr': 'doctor', 'jr': 'junior', 'sr': 'senior', 'vs': 'versus'}
 def norm(s):
     """Mirror of normalize() in src/engine/match.ts (used for de-duplication and alias clashes)."""
     s = unicodedata.normalize('NFD', s)
@@ -41,17 +42,19 @@ def clean_label(l):
     base = PAREN.sub('', l).strip()
     return base if base else l
 
-def rarity(links, top):
-    r = math.log(links + 1) / math.log(top + 1)
-    for t, cut in zip(TIERS, (0.82, 0.70, 0.58, 0.46, 0.34)):
-        if r >= cut: return t
+CUTS = (0.08, 0.20, 0.38, 0.58, 0.80)  # share of a question's answers (by fame rank) in each tier above Diamond
+def rarity_by_rank(i, n):
+    if i < 2: return 'common'
+    f = i / max(n - 1, 1)
+    for t, cut in zip(TIERS, CUTS):
+        if f <= cut: return t
     return 'mythic'
 
 def make_answers(rows, exclude_qid=None, people=False):
     seen, out = set(), []
     for r in rows:
         if r['qid'] == exclude_qid or re.fullmatch(r'Q\d+', r['label']) or len(r['label']) > 60: continue
-        name = clean_label(r['label']); k = norm(name)
+        name = clean_label(r['label']); k = norm(name).replace(' ', '')
         if not k or k in seen: continue
         seen.add(k)
         aliases = []
@@ -66,20 +69,23 @@ def make_answers(rows, exclude_qid=None, people=False):
             parts = norm(a['name']).split()
             if len(parts) > 1 and len(parts[-1]) >= 4 and sur[parts[-1]] == 1: a['aliases'].append(a['name'].split()[-1])
     # drop aliases that clash with another answer's name/alias (the better-known answer keeps it)
+    # the game also matches names with spaces removed ("Dream World" = "Dreamworld"), so clashes count both ways
     owner = {}
-    for a in out: owner.setdefault(norm(a['name']), a['name'])
+    for a in out:
+        k = norm(a['name'])
+        for kk in (k, k.replace(' ', '')): owner.setdefault(kk, a['name'])
     for a in out:
         keep = []
         for al in a['aliases']:
             k = norm(al)
             if not k or k == norm(a['name']): continue
-            if owner.setdefault(k, a['name']) != a['name']: continue
+            if any(owner.setdefault(kk, a['name']) != a['name'] for kk in (k, k.replace(' ', ''))): continue
             keep.append(al)
         a['aliases'] = list(dict.fromkeys(keep))[:5]
-    top = max((a['links'] for a in out), default=1)
+    out.sort(key=lambda a: -a['links'])
     res = []
-    for a in out:
-        e = {'name': a['name'], 'rarity': rarity(a['links'], top)}
+    for i, a in enumerate(out):
+        e = {'name': a['name'], 'rarity': rarity_by_rank(i, len(out)), 'links': a['links']}
         if a['aliases']: e['aliases'] = a['aliases']
         res.append(e)
     return res
@@ -175,7 +181,78 @@ def build_static(fam):
                    'source': {'dataset': 'DEEPCUT editorial (complete fixed set, hand-checked)'}})
     return qs
 
+def resolve_labels(labels):
+    """Exact English label -> best-linked QID, many per query."""
+    out, labels = {}, sorted(set(labels))
+    for i in range(0, len(labels), 8):
+        chunk = labels[i:i + 8]
+        vals = ' '.join(json.dumps(l, ensure_ascii=False) + '@en' for l in chunk)
+        rows = wd.sparql(f'SELECT ?l ?i ?links WHERE {{ VALUES ?l {{ {vals} }} ?i rdfs:label ?l ; wikibase:sitelinks ?links }}') or []
+        best = {}
+        for r in rows:
+            l, n = r['l'], int(r['links'])
+            if n > best.get(l, (None, -1))[1]: best[l] = (wd.qid(r['i']), n)
+        out.update({l: q for l, (q, _) in best.items()})
+    return out
+
+def broad_pattern(spec, L, T):
+    kind, body = spec[:2], spec[2:]
+    if kind == 'R:':
+        def sub(m):
+            q = L.get(m.group(1)); 
+            if not q: raise KeyError(m.group(1))
+            return 'wd:' + q
+        return re.sub(r'<<(.+?)>>', sub, body.replace('wdt:P31/wdt:P279* ', 'wdt:P31/wdt:P279?/wdt:P279? '))
+    if kind == 'T:' or kind == 'G:':
+        q = T.get(body)
+        if not q: raise KeyError(body)
+        if kind == 'G:': return f'?item wdt:P171+ wd:{q} ; wdt:P105 wd:Q34740 .'
+        return (f'?item wdt:P171+ wd:{q} ; wdt:P105 wd:Q7432 ; wdt:P225 ?tn ; rdfs:label ?l0 . '
+                f'FILTER(lang(?l0) = "en" && STR(?l0) != STR(?tn))')
+    q = L.get(body)
+    if not q: raise KeyError(body)
+    # Walk at most one or two subclass levels from the class: full class trees time out on big classes.
+    return {'K:': f'?c wdt:P279?/wdt:P279? wd:{q} . ?item wdt:P31|wdt:P279 ?c .', 'I:': f'?c wdt:P279? wd:{q} . ?item wdt:P31 ?c .',
+            'S:': f'?item wdt:P279/wdt:P279?/wdt:P279? wd:{q} .'}[kind]
+
+def build_broad():
+    from broad import BROAD
+    from concurrent.futures import ThreadPoolExecutor
+    labels, taxa = [], []
+    for _, _, spec in BROAD:
+        if spec[:2] in ('T:', 'G:'): taxa.append(spec[2:])
+        elif spec[:2] == 'R:': labels += re.findall(r'<<(.+?)>>', spec)
+        else: labels.append(spec[2:])
+    L = resolve_labels(labels)
+    T = {}
+    vals = ' '.join(json.dumps(t) for t in set(taxa))
+    for r in wd.sparql(f'SELECT ?n ?i ?links WHERE {{ VALUES ?n {{ {vals} }} ?i wdt:P225 ?n ; wikibase:sitelinks ?links }}') or []:
+        if int(r['links']) > T.get(r['n'], (None, -1))[1]: T[r['n']] = (wd.qid(r['i']), int(r['links']))
+    T = {k: v[0] for k, v in T.items()}
+    jobs = []
+    for cat, text, spec in BROAD:
+        try: jobs.append((cat, text, spec, broad_pattern(spec, L, T)))
+        except KeyError as e: print(f'  ! unresolved {e} in: {text}')
+    wd.CACHE_ONLY = bool(os.environ.get('WD_CACHE_ONLY'))  # labels above resolve online; answers may come from cache only
+    def run(j): return j, wd.pool(j[3], 3)
+    qs = []
+    with ThreadPoolExecutor(5) as ex:
+        for (cat, text, spec, pat), rows in ex.map(run, jobs):
+            if rows is None: print(f'  ! failed: {text}'); continue
+            people = 'P106' in spec or 'P39' in spec or 'P166' in spec
+            answers = make_answers(rows, None, people)
+            if len(answers) < 10: print(f'  - skip ({len(answers)}): {text}'); continue
+            tenth = sorted((a['links'] for a in answers), reverse=True)[min(9, len(answers) - 1)]
+            diff = 'easy' if tenth >= 80 else 'medium' if tenth >= 35 else 'hard'
+            qid_ = 'b-' + slug(text.replace('Name ', '').rstrip('.'))
+            qs.append({'id': qid_, 'text': text, 'category': cat, 'difficulty': diff, 'family': qid_, 'broad': True, 'answers': answers,
+                       'source': {'dataset': 'Wikidata (CC0)', 'query': pat, 'retrieved': time.strftime('%Y-%m-%d')}})
+    print(f'broad: {len(qs)} of {len(BROAD)} questions, {sum(len(q["answers"]) for q in qs)} answers')
+    with open(os.path.join(BUILT, 'fam-broad.json'), 'w') as f: json.dump(qs, f, ensure_ascii=False)
+    return qs
+
 def build_one(fid):
+    if fid == 'broad': return build_broad()
     """Build one family into built/fam-<id>.json (resumable: a finished family is never rebuilt unless --force)."""
     fam = next(f for f in FAMILIES if f['id'] == fid)
     qs = build_static(fam) if fam.get('static') else build_family(fam)
@@ -209,10 +286,18 @@ def curated():
 def write():
     allq = curated()
     for fn in sorted(glob.glob(os.path.join(BUILT, 'fam-*.json'))): allq += json.load(open(fn))
-    ids = set(); bank = []
+    ids, texts, bank, per_family, dropped = set(), set(), [], {}, {'obscure': 0, 'cap': 0, 'dup': 0}
     for q in allq:
-        if q['id'] in ids: continue
-        ids.add(q['id']); bank.append(q)
+        if q['id'] in ids or norm(q['text']) in texts: dropped['dup'] += 1; continue
+        links = [a['links'] for a in q['answers'] if 'links' in a]
+        # Every generated question needs obvious answers: at least 3 widely covered ones (20+ Wikipedias).
+        if links and sum(l >= 20 for l in links) < 3: dropped['obscure'] += 1; continue
+        if not q.get('broad') and links:
+            per_family[q['family']] = per_family.get(q['family'], 0) + 1
+            if per_family[q['family']] > FAMILY_CAP: dropped['cap'] += 1; continue
+        for a in q['answers']: a.pop('links', None)
+        ids.add(q['id']); texts.add(norm(q['text'])); bank.append(q)
+    print('dropped:', dropped)
     out = os.path.join(ROOT, 'public', 'bank'); qdir = os.path.join(out, 'q')
     os.makedirs(qdir, exist_ok=True)
     for f in glob.glob(os.path.join(qdir, '*.json')): os.remove(f)
@@ -220,7 +305,13 @@ def write():
     for q in bank:
         body = {k: q[k] for k in ('id', 'answers', 'ignore', 'reject', 'source') if k in q}
         with open(os.path.join(qdir, q['id'] + '.json'), 'w') as f: json.dump(body, f, ensure_ascii=False, separators=(',', ':'))
-        index.append({'id': q['id'], 'text': q['text'], 'category': q['category'], 'difficulty': q['difficulty'], 'family': q['family'], 'n': len(q['answers'])})
+        meta = {'id': q['id'], 'text': q['text'], 'category': q['category'], 'difficulty': q['difficulty'], 'family': q['family'], 'n': len(q['answers'])}
+        if q.get('broad') or q['family'] == q['id'] or q['family'].startswith('curated'): meta['broad'] = True
+        index.append(meta)
+    names = sorted({norm(n).replace(' ', '') for q in bank for a in q['answers'] for n in [a['name'], *a.get('aliases', [])]} - {''})
+    names = [n for n in names if 4 <= len(n) <= 9]  # short names are where a 1-2 letter slip lands on a different real thing
+    with open(os.path.join(out, 'names.json'), 'w') as f: json.dump(names, f, ensure_ascii=False, separators=(',', ':'))
+    print(f'names guard: {len(names)} names')
     with open(os.path.join(out, 'index.json'), 'w') as f:
         json.dump({'version': 2, 'source': 'Wikidata (CC0 1.0, https://www.wikidata.org) + DEEPCUT editorial', 'questions': index}, f, ensure_ascii=False, separators=(',', ':'))
     print(f'wrote {len(index)} questions, {sum(q["n"] for q in index)} answers')

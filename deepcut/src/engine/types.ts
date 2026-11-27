@@ -18,6 +18,8 @@ export interface QuestionMeta {
   family: string;
   /** Number of accepted answers. */
   n: number;
+  /** A broad, standalone question ("Name a gemstone.") rather than one of a repeated template. */
+  broad?: boolean;
 }
 
 export interface Question extends QuestionMeta {

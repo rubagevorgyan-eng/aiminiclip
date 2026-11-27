@@ -78,6 +78,11 @@
 ## Stage 14: volume control (done)
 - The sound button opens a volume bar on hover/focus (first tap on touchscreens); dragging or arrow keys set the volume with a preview tick, clicking the speaker mutes/unmutes, the icon shows muted/low/high. Volume persists; audio uses a perceptual curve. Phone header stays within the screen. 30 tests pass.
 
-## Stage 15: generated question bank (partial)
-- Questions now load lazily from `public/bank/` (index + one file per question), built by `scripts/bank/build.py` from Wikidata (CC0; rarity from sitelink counts) plus the editorial sets. Every game mixes categories (`pickGame`), tested for 365 dailies and 200 unlimited games.
-- Built so far: 336 questions / 20,476 answers (directors, actors, artists' songs, football clubs, birthplaces, fixed sets, editorial). Remaining families in `families.py` batches 1–3 are defined but not yet built; run `--batch N` then `--write` to add them.
+## Stages 15-23: refinement pass (done)
+- Bank: 490 questions, 46,365 accepted answers (217 broad, 5 vocabulary = 1%); Wikidata CC0 + editorial. Rank-based rarity, obscurity filter, template cap, near-duplicate families retired, noisy broad questions removed.
+- Selection: varied 7-question games (max 2 template questions, unique subjects), verified for 365 dailies and 200 unlimited games.
+- Matching: configurable typo thresholds, known-name guard, focused tests. Input: persistent focused field, Enter guards, canonical answer shown on accept.
+- Mine: relief rock, caverns, roots, veins, parallax edges, dust, lamp glints, depth darkness; timed dig sequence with per-rarity impacts; calm surface home with a camera glide into the game.
+- UI: decluttered round layout (timer on the answer bar, depth gauge, stable heights); result card with answer, mineral, tier, depth and a tier scale.
+- QA: 39 tests pass, production build OK; browser-checked desktop + 375px, all six tiers, skip/timeout, reduced motion, daily recording.
+- Limitations: bank below the 2,000-question target and still Movies-heavy (176); ~300 broad/template queries timed out on Wikidata and need re-running; some generated answer lists are incomplete or include odd entries.

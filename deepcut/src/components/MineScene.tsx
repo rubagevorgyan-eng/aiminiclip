@@ -30,7 +30,6 @@ export function MineScene({ depth, digs, tier, ambient = false, hud = false, dim
   const markRef = useRef<HTMLElement>(null);
   const renderer = useRef<MineRenderer | null>(null);
   const prevDigs = useRef(digs);
-  const prevDepth = useRef(depth);
   const startDepth = useRef(depth);
 
   useEffect(() => {
@@ -63,7 +62,6 @@ export function MineScene({ depth, digs, tier, ambient = false, hud = false, dim
     r.setAmbient(ambient);
     if (!ambient) r.reset(depth, true); // the camera glides from the menu shot into the game
     prevDigs.current = digs;
-    prevDepth.current = depth;
   }, [ambient]);
 
   useEffect(() => {
@@ -74,7 +72,6 @@ export function MineScene({ depth, digs, tier, ambient = false, hud = false, dim
       r.dig(depth, tier);
     }
     prevDigs.current = digs;
-    prevDepth.current = depth;
   }, [digs, depth, tier]);
 
   return (

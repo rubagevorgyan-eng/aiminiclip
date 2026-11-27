@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { QuestionMeta } from '../engine/types.ts';
 import { mulberry32 } from '../utils/random.ts';
-import { GROUPS, dailyNumber, dailyPick, msUntilNextDaily, pickGame, previousDateKey, unlimitedPick, utcDateKey } from './selection.ts';
+import { GROUPS, MAX_TEMPLATE, dailyNumber, dailyPick, msUntilNextDaily, pickGame, subjectOf, previousDateKey, unlimitedPick, utcDateKey } from './selection.ts';
 
 const INDEX = join(import.meta.dirname, '..', '..', 'public', 'bank', 'index.json');
 const bank: QuestionMeta[] = existsSync(INDEX) ? JSON.parse(readFileSync(INDEX, 'utf8')).questions : [];
@@ -27,6 +27,8 @@ function assertVaried(game: QuestionMeta[], label: string) {
   for (const g of ['everyday', 'world', 'nature'] as const) assert.ok(game.some((q) => groupOf(q).includes(g)), `${label}: no ${g} question`);
   assert.ok(game.filter((q) => groupOf(q).includes('vocab')).length <= 1, `${label}: more than one vocabulary question`);
   assert.ok(game.some((q) => q.difficulty !== 'easy'), `${label}: all easy`);
+  assert.ok(game.filter((q) => !q.broad).length <= MAX_TEMPLATE, `${label}: too many template questions`);
+  assert.equal(new Set(game.map(subjectOf)).size, 7, `${label}: two questions on the same subject`);
 }
 
 test('real bank: daily picks are deterministic and varied every day for a year', { skip: !bank.length && 'bank not built' }, () => {

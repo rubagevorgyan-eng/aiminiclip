@@ -149,6 +149,7 @@ export class MineRenderer {
     this.raf = requestAnimationFrame(this.frame);
     const dt = Math.min(0.05, (now - (this.last || now)) / 1000);
     this.last = now;
+    this.dt = dt;
     this.update(now, dt);
     this.draw(now);
   };
@@ -198,13 +199,7 @@ export class MineRenderer {
     if (z !== this.lastZone) { this.lastZone = z; this.hud.zone(z); }
   }
 
-  private lastDraw = 0;
-  private lastMote = 0;
-  private moteDt(now: number) {
-    const d = (now - (this.lastMote || now)) / 1000;
-    this.lastMote = now;
-    return d;
-  }
+  private dt = 0; // seconds since the previous frame (set once per frame)
 
   private feetY() { return Math.round(yForDepth(this.depth)); }
   private minerX() { return Math.round(MINE.width / 2 - MINER_W / 2); }
@@ -274,8 +269,7 @@ export class MineRenderer {
     // The camera trails the miner slightly (eased follow), so descents feel like travel, not a cut.
     const prev = this.cam ?? target;
     const rate = now < this.enteringUntil ? 2.6 : 13; // slow glide when entering the mine, else settles in ~150ms
-    this.cam = this.reduced ? target : prev + (target - prev) * Math.min(1, (now - (this.lastDraw || now)) / 1000 * rate);
-    this.lastDraw = now;
+    this.cam = this.reduced ? target : prev + (target - prev) * Math.min(1, this.dt * rate);
     const camF = this.cam;
     const camDelta = camF - prev;
     let camY = Math.floor(camF);
@@ -389,7 +383,7 @@ export class MineRenderer {
       if (this.motes.length < MOTES)
         for (let i = this.motes.length; i < MOTES; i++)
           this.motes.push({ x: Math.random() * W, y: Math.random() * H, vy: 1.5 + Math.random() * 4, vx: (Math.random() - 0.5) * 1.5, a: 0.15 + Math.random() * 0.35, size: Math.random() < 0.2 ? 2 : 1 });
-      const dt = Math.min(0.05, this.moteDt(now));
+      const dt = this.dt;
       const tint = ZONE_TINT[zoneIndexAt(this.depth)];
       for (const m of this.motes) {
         m.y += m.vy * dt - camDelta * 0.55;

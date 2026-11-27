@@ -11,19 +11,23 @@ CACHE = os.path.join(os.path.dirname(__file__), '.cache')
 os.makedirs(CACHE, exist_ok=True)
 _last = [0.0]
 
+CACHE_ONLY = False
+
 def sparql(query, retries=2):
     key = hashlib.sha1(query.encode()).hexdigest()
     path = os.path.join(CACHE, key + '.json')
     if os.path.exists(path):
         with open(path) as f:
             return json.load(f)
+    if CACHE_ONLY:  # rebuild from finished answer queries only (set by build_broad with WD_CACHE_ONLY=1)
+        return None
     for attempt in range(retries):
         wait = 0.35 - (time.time() - _last[0])
         if wait > 0: time.sleep(wait)
         _last[0] = time.time()
         # curl, not urllib: some Python installs lack CA certificates.
         try:
-            r = subprocess.run(['curl', '-sS', '--fail', '--max-time', '75', '-G', ENDPOINT,
+            r = subprocess.run(['curl', '-sS', '--fail', '--max-time', '62', '-G', ENDPOINT,
                                 '--data-urlencode', 'query=' + query, '-H', 'Accept: application/sparql-results+json', '-A', UA],
                                capture_output=True, text=True, check=True)
             rows = json.loads(r.stdout)['results']['bindings']

@@ -51,3 +51,11 @@ Lives in `deepcut/` inside the Recess static site repo. Stack: Vite + React + Ty
 
 ## Deployment
 Vite `base` is `./` (relative), so `dist/` runs at any path. `vercel.json` (Root Directory `deepcut`) or any static host. `public/` holds `favicon.svg` and `og-image.jpg`.
+
+## Refinement notes (stages 15-23)
+- Bank: `scripts/bank/broad.py` holds broad questions (one Wikidata class/pattern each, flagged `broad` in the index); `families.py` holds templated families (batch 0 = retired). Rarity is by fame rank inside each question (`rarity_by_rank`), not a fixed threshold. `--write` drops questions without 3 well-known answers and caps a template family at 40. `WD_CACHE_ONLY=1` rebuilds answers from cached queries only.
+- Selection (`pickGame`): at most `MAX_TEMPLATE` (2) template questions per game, never two on the same subject (`subjectOf`), broad questions preferred, relax only on tiny pools.
+- Matching: one typo stage (`fuzzy`) with thresholds in `TYPO` (config/game.ts); `setKnownNames` (from `bank/names.json`) stops a real different name being corrected.
+- Timing: `DIG` in config/game.ts drives the dig sequence; the engine holds ROUND_RESULT for `digDurationMs(tier)` and starts the question clock after `DIG.revealMs`. Animations never touch score.
+- Renderer: `setAmbient(true)` = calm surface shot (home), leaving it glides the camera in; `reset(depth, keepCamera)`. One frame `dt` drives camera, dust and particles.
+
